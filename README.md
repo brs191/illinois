@@ -1,1 +1,2 @@
-# illinois
+# illinois 
+# added syllabi

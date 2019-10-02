@@ -5,7 +5,7 @@ import re
 import urllib
 from selenium.webdriver.firefox.options import Options as firefoxOptions
 
-print('program started')
+# print('program started')
 options = firefoxOptions()
 options.add_argument("--headless")
 browser = webdriver.Firefox(firefox_options=options)
@@ -20,25 +20,27 @@ def get_js_soup(url,browser):
 def scrape_dir_page(dir_url, browser):
     print('-'*20, 'Scrapping directory page', '-'*20)
     faculty_links = []
-    # faculty_base_url = 'https://www.bitmesra.ac.in/'
-    faculty_base_url = "https://www.iima.ac.in/"
+    faculty_base_url = 'https://www.bitmesra.ac.in/'
+    # faculty_base_url = "https://www.iima.ac.in/"
 
     # execute js on webpage to load faculty listings on webpage and get ready to parse the loaded HTML
     soup = get_js_soup(dir_url, browser)
-    for staff_group in soup.find_all('div',class_='faculty-wrapper'): #get list of all <div> of class 'photo nocaption'
-        for full_time_f in staff_group.find_all('div', class_='full-time-f'):
-            for s in full_time_f.find_all('a', href=True):
+    # for staff_group in soup.find_all('div',class_='faculty-wrapper'): #get list of all <div> of class 'photo nocaption' for IIMB
+    #     for full_time_f in staff_group.find_all('div', class_='full-time-f'):
+    for staff_group in soup.find_all('div',class_='box-content-inner'): #get list of all <div> of class 'photo nocaption'
+        if staff_group is not None:
+            for s in staff_group.find_all('a', href=True, target='_blank'):
                 rel_link = s.get('href')
                 #url returned is relative, so we need to add base url
                 faculty_links.append(faculty_base_url+rel_link)
 
     print ('-'*20,'Found {} faculty profile urls'.format(len(faculty_links)),'-'*20)
-    print(faculty_links)
+    # print(faculty_links)
     return faculty_links
 
 # dir_url = 'https://cs.illinois.edu/people/faculty/department-faculty'
-# dir_url = 'https://www.bitmesra.ac.in/Show_Faculty_List?cid=1&deptid=70'
-dir_url = "https://www.iima.ac.in/web/faculty/faculty-profiles/areawise-list"
+dir_url = 'https://www.bitmesra.ac.in/Show_Faculty_List?cid=1&deptid=70'
+# dir_url = "https://www.iima.ac.in/web/faculty/faculty-profiles/areawise-list"
 browser.get(dir_url)
 faculty_links = scrape_dir_page(dir_url, browser)
 
@@ -80,7 +82,7 @@ def scrape_faculty_page(fac_url,browser):
     bio = ''
     #find overview tab
     try:
-        overview_tab = soup.find('div',class_='tab-inr-box-right')
+        overview_tab = soup.find('div',class_='stylepanel')
     except:
         print (soup)
 
@@ -88,25 +90,54 @@ def scrape_faculty_page(fac_url,browser):
     # if ot is not None:
     #     faculty_last_name = ot.get_text()
     # # print("name ", faculty_last_name)
+    faculty_last_name = "Prof "
+    if overview_tab is not None:
+        ot = overview_tab.find('span', id='lblname')
+        if ot is not None:
+            faculty_last_name = ot.get_text()
 
-    for my_ref in soup.find('div', class_='tab-inr-box-left').find_all('a', href=True):
-        ref = my_ref.get('href')
-        if "http" in ref:
-            bio_url = ref
-            homepage_found = True
-            # check if homepage url is valid
-            bio_soup = remove_script(get_js_soup(bio_url, browser))
-            bio = process_bio(bio_soup.get_text(separator=' '))
-            break
+    # print("faculty_last_name ", faculty_last_name)
+
+    homepage_txts = ['site','page',' '+faculty_last_name]
+    exceptions = ['course ','research','group','cs','mirror','google scholar']
+    #find the homepage url and extract all text from it
+    if overview_tab is not None:
+        for hdr in overview_tab.find_all('h2'):  #first find the required header
+            if hdr.text.lower() == 'for more information':
+                next_tag = hdr.find_next('li')
+                #find <li> which has homepage url
+                while next_tag is not None:
+                    cand = next_tag.find('a')
+                    next_tag = next_tag.next_sibling    #sibling means element present at the same level
+                    cand_text = cand.get_text().lower()
+                    if (any(hp_txt in cand_text for hp_txt in homepage_txts) and
+                        not any(e in cand_text for e in exceptions)): #compare text to predefined patterns
+                        bio_url = cand['href']
+                        homepage_found = True
+                        #check if homepage url is valid
+                        if not(is_valid_homepage(bio_url,fac_url)):
+                            homepage_found = False
+                        else:
+                            try:
+                                bio_soup = remove_script(get_js_soup(bio_url,browser))
+                            except:
+                                print ('Could not access {}'.format(bio_url))
+                                homepage_found = False
+                        break
+                if homepage_found:
+                    #get all the text from homepage(bio) since there's no easy to filter noise like navigation bar etc
+                    bio = process_bio(bio_soup.get_text(separator=' '))
 
     if not homepage_found:
         bio_url = fac_url #treat faculty profile page as homepage
         #we're only interested in some parts of the profile page namely the address
         #and information listed under the Overview, Research, Publication and Awards tab
-        bio = soup.find('div',class_='page-tab-content').get_text(separator=' ')+': '
-        for tab in soup.find_all('div',class_='tab-pane'):
-            bio += tab.get_text(separator=' ')+'. '
-        bio = process_bio(bio)
+        bio = soup.find('div',class_='stylepanel')
+        if bio is not None:
+            bio = bio.get_text(separator=' ') + ': '
+            for tab in soup.find_all('div',class_='tab-pane'):
+                bio += tab.get_text(separator=' ')+'. '
+            bio = process_bio(bio)
     return bio_url,bio
 
 #Scrape all faculty homepages using profile page urls
@@ -119,19 +150,22 @@ for i,link in enumerate(faculty_links):
     bio_urls.append(bio_url)
     bios.append(bio)
     cnt = cnt + 1
-    # if cnt == 100:
+    # if cnt == 10:
     #     break
 
 
 def write_lst(lst,file_):
     with open(file_,'w') as f:
         for l in lst:
-            f.write(l)
-            f.write('\n')
+            if l is not None:
+                f.write(l)
+                f.write('\n')
 
 bio_urls_file = 'bio_urls.txt'
 bios_file = 'bios.txt'
-write_lst(bio_urls,bio_urls_file)
-write_lst(bios,bios_file)
+if bio_urls is not None:
+    write_lst(bio_urls,bio_urls_file)
+if bios is not None:
+    write_lst(bios,bios_file)
 
 

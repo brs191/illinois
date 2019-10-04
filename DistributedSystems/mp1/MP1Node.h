@@ -31,6 +31,7 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
+	HEARBEAT,
     DUMMYLASTMSGTYPE
 };
 
@@ -39,8 +40,12 @@ enum MsgTypes{
  *
  * DESCRIPTION: Header and content of a message
  */
+// need more members in here;
 typedef struct MessageHdr {
 	enum MsgTypes msgType;
+	Address addr;
+	MemberListEntry *memberList;
+	int memberListCnt;
 }MessageHdr;
 
 /**
@@ -76,6 +81,8 @@ public:
 	void initMemberListTable(Member *memberNode);
 	void printAddress(Address *addr);
 	virtual ~MP1Node();
+	void sendJoinResponse();
+	void addMember(MessageHdr *);
 };
 
 #endif /* _MP1NODE_H_ */

@@ -1,0 +1,98 @@
+131
+
+ [0] init function
+ 1.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 2.0.0.0:0 [0] init function
+ 2.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 3.0.0.0:0 [0] init function
+ 3.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 4.0.0.0:0 [0] init function
+ 4.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 5.0.0.0:0 [0] init function
+ 5.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 6.0.0.0:0 [0] init function
+ 6.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 7.0.0.0:0 [0] init function
+ 7.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 8.0.0.0:0 [0] init function
+ 8.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 9.0.0.0:0 [0] init function
+ 9.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 10.0.0.0:0 [0] init function
+ 10.0.0.0:0 [0] Application Trigger init of all nodes APP
+ 4.0.0.0:0 [0] heartbeat: -276095512
+ 4.0.0.0:0 [0] Trying to join...
+ 3.0.0.0:0 [0] heartbeat: -276096344
+ 3.0.0.0:0 [0] Trying to join...
+ 2.0.0.0:0 [0] heartbeat: -276097176
+ 2.0.0.0:0 [0] Trying to join...
+ 1.0.0.0:0 [0] Starting up group...
+ 8.0.0.0:0 [1] heartbeat: -276092184
+ 8.0.0.0:0 [1] Trying to join...
+ 7.0.0.0:0 [1] heartbeat: -276093016
+ 7.0.0.0:0 [1] Trying to join...
+ 6.0.0.0:0 [1] heartbeat: -276093848
+ 6.0.0.0:0 [1] Trying to join...
+ 5.0.0.0:0 [1] heartbeat: -276094680
+ 5.0.0.0:0 [1] Trying to join...
+ 1.0.0.0:0 [1] received a msgType: 0 from 
+ 1.0.0.0:0 [1] with memberlistCnt 0
+ 1.0.0.0:0 [1] Node 0.0.0.0:0 joined at time 1
+ 1.0.0.0:0 [1] addMember: 0:0
+ 1.0.0.0:0 [1] received a msgType: 0 from 
+ 1.0.0.0:0 [1] with memberlistCnt 0
+ 1.0.0.0:0 [1] received a msgType: 0 from 
+ 1.0.0.0:0 [1] with memberlistCnt 0
+ 10.0.0.0:0 [2] heartbeat: -276090520
+ 10.0.0.0:0 [2] Trying to join...
+ 9.0.0.0:0 [2] heartbeat: -276091352
+ 9.0.0.0:0 [2] Trying to join...
+ 1.0.0.0:0 [2] received a msgType: 1 from 
+ 1.0.0.0:0 [2] with memberlistCnt 1
+ 1.0.0.0:0 [2] Node 1.0.0.0:0 joined at time 2
+ 1.0.0.0:0 [2] addMember: 1:0
+ 1.0.0.0:0 [2] received a msgType: 1 from 
+ 1.0.0.0:0 [2] with memberlistCnt 1
+ 1.0.0.0:0 [2] Node 1.0.0.0:0 joined at time 2
+ 1.0.0.0:0 [2] addMember: 1:0
+ 1.0.0.0:0 [2] received a msgType: 1 from 
+ 1.0.0.0:0 [2] with memberlistCnt 1
+ 1.0.0.0:0 [2] Node 1.0.0.0:0 joined at time 2
+ 1.0.0.0:0 [2] addMember: 1:0
+ 1.0.0.0:0 [2] received a msgType: 0 from 
+ 1.0.0.0:0 [2] with memberlistCnt 0
+ 1.0.0.0:0 [2] received a msgType: 0 from 
+ 1.0.0.0:0 [2] with memberlistCnt 0
+ 1.0.0.0:0 [2] received a msgType: 0 from 
+ 1.0.0.0:0 [2] with memberlistCnt 0
+ 1.0.0.0:0 [2] received a msgType: 0 from 
+ 1.0.0.0:0 [2] with memberlistCnt 0
+ 1.0.0.0:0 [3] received a msgType: 1 from 
+ 1.0.0.0:0 [3] with memberlistCnt 4
+ 1.0.0.0:0 [3] Node 1.0.0.0:0 joined at time 3
+ 1.0.0.0:0 [3] addMember: 1:0
+ 1.0.0.0:0 [3] received a msgType: 1 from 
+ 1.0.0.0:0 [3] with memberlistCnt 4
+ 1.0.0.0:0 [3] Node 1.0.0.0:0 joined at time 3
+ 1.0.0.0:0 [3] addMember: 1:0
+ 1.0.0.0:0 [3] received a msgType: 1 from 
+ 1.0.0.0:0 [3] with memberlistCnt 4
+ 1.0.0.0:0 [3] Node 1.0.0.0:0 joined at time 3
+ 1.0.0.0:0 [3] addMember: 1:0
+ 1.0.0.0:0 [3] received a msgType: 1 from 
+ 1.0.0.0:0 [3] with memberlistCnt 4
+ 1.0.0.0:0 [3] Node 1.0.0.0:0 joined at time 3
+ 1.0.0.0:0 [3] addMember: 1:0
+ 1.0.0.0:0 [3] received a msgType: 0 from 
+ 1.0.0.0:0 [3] with memberlistCnt 0
+ 1.0.0.0:0 [3] received a msgType: 0 from 
+ 1.0.0.0:0 [3] with memberlistCnt 0
+ 1.0.0.0:0 [4] received a msgType: 1 from 
+ 1.0.0.0:0 [4] with memberlistCnt 8
+ 1.0.0.0:0 [4] Node 1.0.0.0:0 joined at time 4
+ 1.0.0.0:0 [4] addMember: 1:0
+ 1.0.0.0:0 [4] received a msgType: 1 from 
+ 1.0.0.0:0 [4] with memberlistCnt 8
+ 1.0.0.0:0 [4] Node 1.0.0.0:0 joined at time 4
+ 1.0.0.0:0 [4] addMember: 1:0
+ 1.0.0.0:0 [100] Node failed at time=100

@@ -6,6 +6,7 @@
  **********************************/
 
 #include "MP1Node.h"
+#include <arpa/inet.h>
 
 /*
  * Note: You can change/add any functions in MP1Node.{h,cpp}
@@ -25,6 +26,9 @@ MP1Node::MP1Node(Member *member, Params *params, EmulNet *emul, Log *log, Addres
 	this->log = log;
 	this->par = params;
 	this->memberNode->addr = *address;
+#ifdef DEBUGLOG2
+        log->LOG(address, "init function");
+#endif
 }
 
 /**
@@ -92,6 +96,7 @@ void MP1Node::nodeStart(char *servaddrstr, short servport) {
  *
  * DESCRIPTION: Find out who I am and start up
  */
+//join addr is 1.0.0.0:0
 int MP1Node::initThisNode(Address *joinaddr) {
 	/*
 	 * This function is partially implemented and may require changes
@@ -134,10 +139,13 @@ int MP1Node::introduceSelfToGroup(Address *joinaddr) {
         size_t msgsize = sizeof(MessageHdr) + sizeof(joinaddr->addr) + sizeof(long) + 1;
         msg = (MessageHdr *) malloc(msgsize * sizeof(char));
 
-        // create JOINREQ message: format of data is {struct Address myaddr}
+        // create JOINREQ message: format of data is {struct Address myaddr} RAJA
         msg->msgType = JOINREQ;
         memcpy((char *)(msg+1), &memberNode->addr.addr, sizeof(memberNode->addr.addr));
         memcpy((char *)(msg+1) + 1 + sizeof(memberNode->addr.addr), &memberNode->heartbeat, sizeof(long));
+#ifdef DEBUGLOG2
+        log->LOG(&memberNode->addr, "heartbeat: %d", &memberNode->heartbeat);
+#endif
 
 #ifdef DEBUGLOG
         sprintf(s, "Trying to join...");
@@ -214,10 +222,83 @@ void MP1Node::checkMessages() {
  *
  * DESCRIPTION: Message handler for different message types
  */
+/**
+ * Message Types
+ enum MsgTypes{
+    JOINREQ,
+    JOINREP,
+    HEARBEAT,
+    DUMMYLASTMSGTYPE
+};
+*/
 bool MP1Node::recvCallBack(void *env, char *data, int size ) {
 	/*
 	 * Your code goes here
 	 */
+    MessageHdr *rxMsg = (MessageHdr *)data;
+#ifdef DEBUGLOG2 
+    log->LOG(&memberNode->addr, "received a msgType: %d from %s", rxMsg->msgType, rxMsg->addr);
+    log->LOG(&memberNode->addr, "with memberlistCnt %d", rxMsg->memberListCnt);
+#endif
+
+    if(rxMsg->msgType == MsgTypes::JOINREQ) {
+        //add new member to the member list
+        addMember(rxMsg);
+        //make a JOINResp
+        sendJoinResponse();
+    } else if (rxMsg->msgType == MsgTypes::JOINREP) {
+        // add to group
+        memberNode->inGroup = true;
+        // add member to list
+        addMember(rxMsg);
+    } else if (rxMsg->msgType == MsgTypes::HEARBEAT) {
+        // 1. find the member and increment heartbeat
+        // 2. if doesn't exist add the member
+    } else {
+ #ifdef DEBUGLOG2 
+    log->LOG(&memberNode->addr, "something went wrong. this message type shouldn't come");
+#endif       
+    }
+    // who deletes rxMsg??
+}
+
+void MP1Node::sendJoinResponse() {
+    MessageHdr *resp = new MessageHdr();
+    resp->msgType = MsgTypes::JOINREP;
+    memcpy(&resp->addr, &memberNode->addr, sizeof(Address));
+    resp->memberListCnt = memberNode->memberList.size();
+    //copy memberlist;
+    if(resp->memberListCnt > 0) {
+        resp->memberList = new MemberListEntry[resp->memberListCnt];
+        memcpy(resp->memberList, memberNode->memberList.data(), sizeof(MemberListEntry) * resp->memberListCnt);
+    }    
+    emulNet->ENsend(&memberNode->addr, &resp->addr, (char *)resp, sizeof(MessageHdr));
+    // who deletes *resp?
+}
+
+void MP1Node::addMember(MessageHdr *msg) {
+    int id = 0;
+    short port;
+    memcpy(&id, &msg->addr.addr[0], sizeof(int));
+    memcpy(&port, &msg->addr.addr[4], sizeof(short));
+
+    for(int i = 0; i < memberNode->memberList.size(); i++) {
+        MemberListEntry *temp = memberNode->memberList.data();
+        if(temp->getid() == id && temp->getport() == port) {
+            // already a member;
+            return;
+        }
+    }
+    //add to memberList
+    MemberListEntry *memb = new MemberListEntry(id, port, 1, par->getcurrtime());
+    memberNode->memberList.push_back(*memb);
+
+    //log it
+    log->logNodeAdd(&memberNode->addr, &msg->addr);
+#ifdef DEBUGLOG2
+    log->LOG(&memberNode->addr, "addMember: %d:%d", id, port);
+#endif
+    return;
 }
 
 /**
@@ -232,6 +313,16 @@ void MP1Node::nodeLoopOps() {
 	/*
 	 * Your code goes here
 	 */
+    // remove members whose time stamp difference is over TREMOVE\
+    
+    for(int i = 0; i < memberNode->memberList.size(); i++) {
+        MemberListEntry temp = memberNode->memberList[i];
+        if (par->getcurrtime() - temp.gettimestamp() >= TREMOVE) {
+            // find temp in memberNode->memberList
+        }
+    }
+
+    // now that the memberList is updated, send a heart beat message to everyone.
 
     return;
 }

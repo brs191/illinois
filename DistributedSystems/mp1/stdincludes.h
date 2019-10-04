@@ -41,5 +41,6 @@ using namespace std;
 #define STDCLLBKARGS (void *env, char *data, int size)
 #define STDCLLBKRET	void
 #define DEBUGLOG 1
+#define DEBUGLOG2 1
 		
 #endif	/* _STDINCLUDES_H_ */

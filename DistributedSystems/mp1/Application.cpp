@@ -64,7 +64,7 @@ Application::Application(char *infile) {
 		joinaddr = getjoinaddr();
 		addressOfMemberNode = (Address *) en->ENinit(addressOfMemberNode, par->PORTNUM);
 		mp1[i] = new MP1Node(memberNode, par, en, log, addressOfMemberNode);
-		log->LOG(&(mp1[i]->getMemberNode()->addr), "APP");
+		log->LOG(&(mp1[i]->getMemberNode()->addr), "Application Trigger init of all nodes APP");
 		delete addressOfMemberNode;
 	}
 }

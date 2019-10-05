@@ -8,6 +8,7 @@
 #include "MP1Node.h"
 #include <arpa/inet.h>
 
+using namespace std;
 /*
  * Note: You can change/add any functions in MP1Node.{h,cpp}
  */
@@ -236,24 +237,23 @@ bool MP1Node::recvCallBack(void *env, char *data, int size ) {
 	 * Your code goes here
 	 */
     MessageHdr *rxMsg = (MessageHdr *)data;
-#ifdef DEBUGLOG2 
-    log->LOG(&memberNode->addr, "received a msgType: %d from %s", rxMsg->msgType, rxMsg->addr);
-    log->LOG(&memberNode->addr, "with memberlistCnt %d", rxMsg->memberListCnt);
-#endif
-
     if(rxMsg->msgType == MsgTypes::JOINREQ) {
         //add new member to the member list
         addMember(rxMsg);
         //make a JOINResp
         sendJoinResponse();
+        cout << "send [" << par->getcurrtime() << "] JOINREP [" << memberNode->addr.getAddress() << "] to " << rxMsg->addr.getAddress() << endl;
     } else if (rxMsg->msgType == MsgTypes::JOINREP) {
         // add to group
         memberNode->inGroup = true;
         // add member to list
         addMember(rxMsg);
+        cout << "receive [" << par->getcurrtime() << "]  JOINREP [" << memberNode->addr.getAddress() << "] from " << rxMsg->addr.getAddress() << endl;
     } else if (rxMsg->msgType == MsgTypes::HEARBEAT) {
         // 1. find the member and increment heartbeat
         // 2. if doesn't exist add the member
+        cout << "received HeartBeat Message " << endl;
+
     } else {
  #ifdef DEBUGLOG2 
     log->LOG(&memberNode->addr, "something went wrong. this message type shouldn't come");
@@ -274,6 +274,29 @@ void MP1Node::sendJoinResponse() {
     }    
     emulNet->ENsend(&memberNode->addr, &resp->addr, (char *)resp, sizeof(MessageHdr));
     // who deletes *resp?
+    delete resp;
+}
+
+void MP1Node::sendHeatBeat() {
+    MessageHdr *heartbeat = new MessageHdr();
+    heartbeat->msgType = MsgTypes::HEARBEAT;
+    memcpy(&heartbeat->addr, &memberNode->addr, sizeof(Address));
+    heartbeat->memberListCnt = memberNode->memberList.size();
+
+    if(heartbeat->memberListCnt > 0) {
+        heartbeat->memberList = new MemberListEntry[heartbeat->memberListCnt];
+        memcpy(heartbeat->memberList, memberNode->memberList.data(), sizeof(MemberListEntry) * heartbeat->memberListCnt);
+    }
+
+    for(int i = 0; i < memberNode->memberList.size(); i++) {
+        MemberListEntry *temp = memberNode->memberList.data();
+        Address *tempAddr = new Address();
+        memcpy(tempAddr->addr, &temp->id, sizeof(int));
+        memcpy(tempAddr->addr + sizeof(int), &temp->port, sizeof(short));
+        emulNet->ENsend(&memberNode->addr, tempAddr, (char *) heartbeat, sizeof(MessageHdr));
+        delete tempAddr;
+    }
+    delete heartbeat;
 }
 
 void MP1Node::addMember(MessageHdr *msg) {
@@ -281,6 +304,12 @@ void MP1Node::addMember(MessageHdr *msg) {
     short port;
     memcpy(&id, &msg->addr.addr[0], sizeof(int));
     memcpy(&port, &msg->addr.addr[4], sizeof(short));
+
+    int msgid = *(int*)(&msg->addr.addr);
+    short msgport = *(short*)(&msg->addr.addr[4]);
+
+    if( id != msgid || port != msgport) 
+        cout << "RAJA Bug BUG BUG!!" << endl;
 
     for(int i = 0; i < memberNode->memberList.size(); i++) {
         MemberListEntry *temp = memberNode->memberList.data();
@@ -295,9 +324,6 @@ void MP1Node::addMember(MessageHdr *msg) {
 
     //log it
     log->logNodeAdd(&memberNode->addr, &msg->addr);
-#ifdef DEBUGLOG2
-    log->LOG(&memberNode->addr, "addMember: %d:%d", id, port);
-#endif
     return;
 }
 
@@ -319,10 +345,23 @@ void MP1Node::nodeLoopOps() {
         MemberListEntry temp = memberNode->memberList[i];
         if (par->getcurrtime() - temp.gettimestamp() >= TREMOVE) {
             // find temp in memberNode->memberList
+            Address *delAddr =  new Address();
+            memcpy(delAddr->addr, &temp.id, sizeof(int));
+            memcpy(delAddr->addr + sizeof(int), &temp.port, sizeof(short));
+            log->logNodeRemove(&memberNode->addr, delAddr);
+            // remove this temp from memberNode->memberList
+            vector<MemberListEntry>::iterator it = memberNode->memberList.begin();
+            for(; it != memberNode->memberList.end(); it++) {
+                MemberListEntry t = *it;
+                if(t.id == temp.id && t.port == temp.port) {
+                    it = memberNode->memberList.erase(it);
+                    break;
+                }
+            }
         }
     }
-
     // now that the memberList is updated, send a heart beat message to everyone.
+
 
     return;
 }

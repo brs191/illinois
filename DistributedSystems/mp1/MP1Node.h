@@ -83,6 +83,7 @@ public:
 	virtual ~MP1Node();
 	void sendJoinResponse();
 	void addMember(MessageHdr *);
+	void sendHeatBeat();
 };
 
 #endif /* _MP1NODE_H_ */

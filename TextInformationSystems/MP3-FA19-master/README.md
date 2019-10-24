@@ -29,6 +29,9 @@ The main data structures involved in the implementation of this EM algorithm are
     * E-step computes all Z's based on T and D. 
     * M-step uses all Z's to update T and D. 
     * We iterate until the likelihood doesn't change much when we would use T and D as our output. Note that Zs are also very useful (can you imagine some applications of Zs?).
+    
+    
+    https://github.com/hitalex/PLSA/blob/master/plsa.py
 
 
 

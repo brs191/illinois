@@ -4,18 +4,19 @@ import numpy as np
 import math
 import codecs
 
+
 def normalize(input_matrix):
     """
     Normalizes the rows of a 2d input_matrix so they sum to 1
     """
 
     row_sums = input_matrix.sum(axis=1)
-    assert (np.count_nonzero(row_sums)==np.shape(row_sums)[0]) # no row should sum to zero
+    assert (np.count_nonzero(row_sums) == np.shape(row_sums)[0])  # no row should sum to zero
     new_matrix = input_matrix / row_sums[:, np.newaxis]
     return new_matrix
 
-class Corpus(object):
 
+class Corpus(object):
     """
     A collection of documents.
     """
@@ -28,7 +29,7 @@ class Corpus(object):
         self.vocabulary = []
         self.likelihoods = []
         self.documents_path = documents_path
-        self.term_doc_matrix = None 
+        self.term_doc_matrix = None
         self.document_topic_prob = None  # P(z | d)
         self.topic_word_prob = None  # P(w | z)
         self.topic_prob = None  # P(z | d, w)
@@ -40,7 +41,7 @@ class Corpus(object):
         """
         Read document, fill in self.documents, a list of list of word
         self.documents = [["the", "day", "is", "nice", "the", ...], [], []...]
-        
+
         Update self.number_of_documents
         """
         # #############################
@@ -73,18 +74,18 @@ class Corpus(object):
                 if w[0].isdigit():
                     w = w[1:]
                 for junk in SPECIAL_CHARS + CARRIAGE_RETURNS:
-                    w = w.replace(junk,'').strip("'")
+                    w = w.replace(junk, '').strip("'")
                 w if re.match(ISWORD_REGEX, w) else None
                 if w not in unique_words and (len(w) > 1):
                     unique_words.append(w)
 
-        self.vocabulary = unique_words #how to remove stopwords.
+        self.vocabulary = unique_words  # how to remove stopwords.
         self.vocabulary_size = len(self.vocabulary)
         # pass    # REMOVE THIS
 
     def build_term_doc_matrix(self):
         """
-        Construct the term-document matrix where each row represents a document, 
+        Construct the term-document matrix where each row represents a document,
         and each column represents a vocabulary term.
 
         self.term_doc_matrix[i][j] is the count of term j in document i
@@ -93,7 +94,7 @@ class Corpus(object):
         # your code here
         # ############################
         self.term_doc_matrix = np.zeros([self.number_of_documents, self.vocabulary_size], dtype=np.int)
-        for docIdx, doc in enumerate(self.documents): # list of words in rows of documents
+        for docIdx, doc in enumerate(self.documents):  # list of words in rows of documents
             tc = np.zeros(self.vocabulary_size, dtype=int)
             for w in doc:
                 if w in self.vocabulary:
@@ -116,15 +117,15 @@ class Corpus(object):
         # ############################
         # your code here
         # ############################
-        self.document_topic_prob = np.random.random(size= (self.number_of_documents, number_of_topics))
+        self.document_topic_prob = np.random.random(size=(self.number_of_documents, number_of_topics))
         normalize(self.document_topic_prob)
-        self.topic_word_prob = np.random.random(size= (number_of_topics, self.vocabulary_size))
+        self.topic_word_prob = np.random.random(size=(number_of_topics, self.vocabulary_size))
         normalize(self.topic_word_prob)
         # pass    # REMOVE THIS
 
     def initialize_uniformly(self, number_of_topics):
         """
-        Initializes the matrices: self.document_topic_prob and self.topic_word_prob with a uniform 
+        Initializes the matrices: self.document_topic_prob and self.topic_word_prob with a uniform
         probability distribution. This is used for testing purposes.
 
         DO NOT CHANGE THIS FUNCTION
@@ -149,63 +150,65 @@ class Corpus(object):
         """ The E-step updates P(z | w, d)
         """
         print("E step:")
-        
+
         # ############################
         # your code here
         # ############################
 
-        pass    # REMOVE THIS
-            
+        pass  # REMOVE THIS
 
     def maximization_step(self, number_of_topics):
         """ The M-step updates P(w | z)
         """
         print("M step:")
-        
+
         # update P(w | z)
-        
+
         # ############################
         # your code here
         # ############################
 
-        
         # update P(z | d)
 
         # ############################
         # your code here
         # ############################
-        
-        pass    # REMOVE THIS
 
+        pass  # REMOVE THIS
 
     def calculate_likelihood(self, number_of_topics):
         """ Calculate the current log-likelihood of the model using
         the model's updated probability matrices
-        
+
         Append the calculated log-likelihood to self.likelihoods
 
         """
         # ############################
         # your code here
         # ############################
-        
+        likelihood = 0
+        for d_idx in range(self.number_of_documents):
+            for
+
+        self.likelihoods.append(likelihood)
+
         return
 
-    def EStepNormalize(self, values):
+    def EMNormalize(self, values):
         s = sum(values)
         for i in range(len(values)):
-            values[i] = (values[i] * 1.0)/s
+            values[i] = (values[i] * 1.0) / s
 
     def plsa(self, number_of_topics, max_iter, epsilon):
 
         """
         Model topics.
         """
-        print ("EM iteration begins...")
+        print("EM iteration begins...")
 
         # build term-doc matrix
         self.build_term_doc_matrix()
-        
+
         # Create the counter arrays.
         # P(z | d)
         self.document_topic_prob = np.zeros([self.number_of_documents, number_of_topics], dtype=np.float)
@@ -239,32 +242,33 @@ class Corpus(object):
             #             self.topic_prob[d_idx][t_idx][v_idx] = p
 
             for d_idx, d in enumerate(self.documents):  # for every document
-                for v_idx in range(self.vocabulary_size): # for every vocab
+                for v_idx in range(self.vocabulary_size):  # for every vocab
                     p = self.document_topic_prob[d_idx, :] * self.topic_word_prob[:, v_idx]
                     # print("p b4: ", p)
-                    self.EStepNormalize(p)
+                    self.EMNormalize(p)
                     # print("p after: ", p)
                     for t_idx in range(number_of_topics):
                         self.topic_prob[d_idx][t_idx][v_idx] = p[t_idx]
 
-            print("topic_prob \n", self.topic_prob)
-
             # M-Step
             # P(w|z)
-            # for z in range(number_of_topics):
-            #     for w_idx in range(self.vocabulary_size):
+            for z in range(number_of_topics):
+                for w_idx in range(self.vocabulary_size):
+                    p = 0
+                    for d_idx in range(self.number_of_documents):
+                        p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, z, w_idx]
+                    self.topic_word_prob[z][w_idx] = p
+                self.EMNormalize(self.topic_word_prob[z])
 
-            #
-            # for d_idx in range(self.number_of_documents):
-            #     for z in range(self.number_of_topics):
-            #         p = 0
-            #         for w_idx in range(self.vocabulary_size):
-            #             p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, w_idx, z]
-            #         self.document_topic_prob[d_idx][z] = p
-            #         # normalize(self.document_topic_prob[d_idx])
-
-            pass    # REMOVE THIS
-
+            # update P(z|d)
+            for d_idx in range(self.number_of_documents):
+                for z in range(number_of_topics):
+                    p = 0
+                    for w_idx in range(self.vocabulary_size):
+                        p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, z, w_idx]
+                    self.document_topic_prob[d_idx][z] = p
+                self.EMNormalize(self.document_topic_prob[z])
+            pass  # REMOVE THIS
 
 
 def main():
@@ -279,7 +283,6 @@ def main():
     max_iterations = 50
     epsilon = 0.001
     corpus.plsa(number_of_topics, max_iterations, epsilon)
-
 
 
 if __name__ == '__main__':

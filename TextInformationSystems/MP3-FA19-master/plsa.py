@@ -23,6 +23,11 @@ def normalize_col(input_matrix):
     new_matrix = input_matrix / col_sums[np.newaxis, :]
     return new_matrix
 
+def EMNormalize(values):
+    s = sum(values)
+    for i in range(len(values)):
+        values[i] = values[i] * 1.0 / s
+
 class Corpus(object):
     """
     A collection of documents.
@@ -99,12 +104,6 @@ class Corpus(object):
                 if w in self.vocabulary:
                     tc[self.vocabulary.index(w)] += 1
             self.term_doc_matrix[d_idx] = tc
-        """
-        print(self.term_doc_matrix)
-        [[36 27 35  0  0  0]
-         [22 48 29  0  0  0]
-        [4 0 8 31 33 23]
-        """
 
     def initialize_randomly(self, number_of_topics):
         """
@@ -146,65 +145,45 @@ class Corpus(object):
         """ The E-step updates P(z | w, d)
         """
         print("E step:")
-        for d_idx in range(self.number_of_documents):  # for every document
-            for v_idx in range(self.vocabulary_size):  # for every vocab
-                p = self.document_topic_prob[d_idx, :] * self.topic_word_prob[:, v_idx]
-                for t_idx in range(number_of_topics):
-                    self.topic_prob[d_idx][t_idx][v_idx] = p[t_idx]
-        normalize_col(self.topic_prob[:, 0, :])
-        normalize_col(self.topic_prob[:, 1, :])
-        # print(self.topic_prob)
+        for d_idx in range(self.number_of_documents):
+            for v_idx in range(self.vocabulary_size):
+                prob = self.document_topic_prob[d_idx, :] * self.topic_word_prob[:, v_idx]
+                EMNormalize(prob)
+                self.topic_prob[d_idx][v_idx] = prob
 
     def maximization_step(self, number_of_topics):
         """ The M-step updates P(w | z)
         """
         print("M step:")
-
         # update P(w | z)
-        # for w_idx in range(self.vocabulary_size):
-        #     for z in range(number_of_topics):
-        #         s = 0
-        #         for d_idx in range(self.number_of_documents):
-        #             s += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, z, w_idx]
-        #         self.topic_word_prob[z][w_idx] = s
-        #     # normalize_row(self.topic_word_prob)
-        # method1 = self.topic_word_prob
+        for z in range(number_of_topics):
+            for w_idx in range(self.vocabulary_size):
+                p = 0
+                for d_idx in range(len(self.documents)):
+                    p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, w_idx, z]
+                self.topic_word_prob[z][w_idx] = p
+            EMNormalize(self.topic_word_prob[z])
 
-        # test = self.topic_prob.transpose((1,0,2))
-        # print("transpose 1,0,2 ", test.shape)
-        # print("self.term_doc_matrix ", self.term_doc_matrix.shape)
+        method1 = self.topic_word_prob
+        # print("method1 shape ", method1.shape)
 
-        method2 = (self.topic_prob.transpose((1,0,2)) * self.term_doc_matrix).sum(1)
-        # print("method2 ", method2.shape)
-        # print("self.topic_word_prob ", self.topic_word_prob.shape)
-        self.topic_word_prob = method2
+        # print("topic_prob 2, 0, 1: ", self.topic_prob.transpose(2, 0, 1).shape)
+        # print("self.term_doc_matrix: ", self.term_doc_matrix.shape)
 
-        # print("Bollam : ", np.array_equal(method1, method2))
+        # m1 = (self.topic_prob.transpose((2, 0, 1)) * self.term_doc_matrix).sum(1)
+        # print("m1 shape ", m1.shape)
+        # print("m1 ", np.array_equal(method1, m1))
 
-        # p = self.term_doc_matrix @ self.topic_prob[:,0,:]
-        # print("p ", p.shape)
-        # print("term doc matrix ", self.term_doc_matrix.shape)
-        # print("self.topic_prob[:,0,:] ", self.topic_prob[:,0,:].shape)
-        # print("topic prob ", self.topic_prob.shape)
-
-        # update P(z|d)
-        # for d_idx in range(self.number_of_documents):
-        #     for z in range(number_of_topics):
-        #         p = 0
-        #         for w_idx in range(self.vocabulary_size):
-        #             p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, z, w_idx]
-        #         self.document_topic_prob[d_idx][z] = p
-            # normalize_row(self.document_topic_prob)
-        # pass  # REMOVE THIS
-        # test = self.topic_prob.transpose((1,2,0))
-        # print("transpose 1,2,0 ", test.shape)
-        # print("self.term_doc_matrix ", self.term_doc_matrix.transpose(1,0).shape)
-        # print("self.document_topic_prob ", self.document_topic_prob.shape)
-
-        method3 = (self.topic_prob.transpose((1,2,0)) * self.term_doc_matrix.transpose(1,0)).sum(1)
-        # print("method3 ", method3.transpose(1,0).shape)
-        self.document_topic_prob = method3.transpose(1,0)
-        # print("shekar ", np.array_equal(method3.transpose(1,0), self.document_topic_prob))
+        # update P(z | d)
+        for d_idx in range(len(self.documents)):
+            for z in range(number_of_topics):
+                p = 0
+                for w_idx in range(self.vocabulary_size):
+                    p += self.term_doc_matrix[d_idx][w_idx] * self.topic_prob[d_idx, w_idx, z]
+                self.document_topic_prob[d_idx][z] = p
+            EMNormalize(self.document_topic_prob[d_idx])
+        method2 = self.document_topic_prob
+        # print("method2 shape ", method2.shape)
 
     def calculate_likelihood(self, number_of_topics):
         """ Calculate the current log-likelihood of the model using
@@ -216,18 +195,15 @@ class Corpus(object):
         likelihood = 0
         p_wk = np.dot(self.document_topic_prob, self.topic_word_prob)
         ll = np.log(p_wk)
-        # print("ll shape is ", ll.shape)
-        # print("term_doc_matrix shape is ", self.term_doc_matrix.shape)
-        llm = np.multiply(self.term_doc_matrix, ll)
-        likelihood = np.sum(llm)
+        likelihood = np.sum(np.multiply(ll, self.term_doc_matrix))
         self.likelihoods.append(likelihood)
         return likelihood
 
     def plsa(self, number_of_topics, max_iter, epsilon):
 
-        """
+        '''
         Model topics.
-        """
+        '''
         print("EM iteration begins...")
 
         # build term-doc matrix
@@ -237,34 +213,33 @@ class Corpus(object):
         # P(z | d)
         self.document_topic_prob = np.zeros([self.number_of_documents, number_of_topics], dtype=np.float)
         # P(w | z)
-        self.topic_word_prob = np.zeros([number_of_topics, self.vocabulary_size], dtype=np.float)
-
+        self.topic_word_prob = np.zeros([number_of_topics, len(self.vocabulary)], dtype=np.float)
         # P(z | d, w)
-        self.topic_prob = np.zeros([self.number_of_documents, number_of_topics, self.vocabulary_size], dtype=np.float)
+        self.topic_prob = np.zeros([self.number_of_documents, len(self.vocabulary), number_of_topics], dtype=np.float)
 
-        # print("document_topic_prob ", self.document_topic_prob.shape)
-        # print("topic_word_prob ", self.topic_word_prob.shape)
-        # print("topic_prob ", self.topic_prob.shape)
-
-        # P(z | d) P(w | z)
+        # Initialize
         self.initialize(number_of_topics, random=True)
 
         # Run the EM algorithm
         current_likelihood = 0.0
 
+        iteration = 0
         # for iteration in range(max_iter):
-        #     print("Iteration #" + str(iteration + 1) + "...")
         while 1:
+            print("Iteration #" + str(iteration + 1) + "...")
+            iteration += 1
             self.expectation_step(number_of_topics)
             self.maximization_step(number_of_topics)
 
-            new_ll = self.calculate_likelihood(number_of_topics)
-            print("new_ll ", new_ll)
-            z = abs(new_ll - current_likelihood)
-            print("z: ", z)
+            new_likelihood = self.calculate_likelihood(number_of_topics)
+            z = abs(new_likelihood - current_likelihood)
+            print("current_likelihood: ", current_likelihood)
+            print("new_likelihood: ", new_likelihood)
+            print(".. ", z)
+            current_likelihood = new_likelihood
             if z <= epsilon:
-                print("problem Solved!!")
-                break;
+                print("program done.")
+                break
 
 def main():
     documents_path = 'data/test.txt'

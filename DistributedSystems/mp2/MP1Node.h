@@ -14,6 +14,7 @@
 #include "Member.h"
 #include "EmulNet.h"
 #include "Queue.h"
+#include <sstream>
 
 /**
  * Macros
@@ -31,8 +32,7 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
-	HEARBEAT,
-    DUMMYLASTMSGTYPE
+    UPDATEMEMLIST
 };
 
 /**
@@ -40,12 +40,8 @@ enum MsgTypes{
  *
  * DESCRIPTION: Header and content of a message
  */
-// need more members in here;
 typedef struct MessageHdr {
 	enum MsgTypes msgType;
-	Address addr;
-	MemberListEntry *memberList;
-	int memberListCnt;
 }MessageHdr;
 
 /**
@@ -60,6 +56,16 @@ private:
 	Params *par;
 	Member *memberNode;
 	char NULLADDR[6];
+
+    void sendJoinRepMsg(Address toAddress);
+    void sendMemberListToGroup();
+    void updateMemberList(char *data);
+
+    // Helper functions
+    void addOrUpdateMember(Address addr, long heartbeat);
+    void increaseSelfHeartbeat();
+    void deleteFailedNodes();
+    void sendMemberListToMember(Address toAddress, MsgTypes msgType);
 
 public:
 	MP1Node(Member *, Params *, EmulNet *, Log *, Address *);
@@ -81,9 +87,6 @@ public:
 	void initMemberListTable(Member *memberNode);
 	void printAddress(Address *addr);
 	virtual ~MP1Node();
-	void sendJoinResponse();
-	void addMember(MessageHdr *);
-	void sendHeatBeat();
 };
 
 #endif /* _MP1NODE_H_ */

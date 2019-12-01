@@ -37,32 +37,26 @@
 /* Custom message wrapper needed for replicate messages */
 class MyMessage:public Message{
     public:
-    enum MyMessageType{ REPUPDATE,QUERY };
-    MyMessage(string message);
-    MyMessage(MyMessageType mType,string normalMsg);
-    MyMessage(MyMessageType mType,Message normalMsg);
-    string toString();
-    static string stripMyHeader(string message); 
-    MyMessageType msgType;
+		enum MyMessageType { REPUPDATE, QUERY };
+		string toString();
+		static string getMsg(string message); 
+		MyMessage(MyMessageType type, string msg);
+		MyMessageType msgType;
+		MyMessage(MyMessageType type, Message msg);
+		MyMessage(string message);
 };
 
 /* Custom class implementation for storing transaction info that will be used in MP2Node*/
-struct transaction{
+struct transaction {
     public:
-    int gtransID;       //globally unique transaction ID
-    int local_ts;      //local TS at node when transaction was initiated
-    int quorum_count;   //represents the number of nodes need to achieve quorum
-    MessageType trans_type; //type of transaction requested
-    string key;         //the key associated with the transaction
-    pair<int,string> latest_val; //value of the key received with the latest timestamp.
+    int gtransID;
+    int localTimeStamp;
+    int qc;
+    MessageType trans_type;
+    string key;
+    pair<int,string> latest_val;
     transaction(int tid, int lts, int qc, MessageType ttype,string k,string value):
-    gtransID(tid),
-    local_ts(lts),
-    quorum_count(qc),
-    trans_type(ttype),
-    key(k),
-    latest_val(0,value){
-    } 
+			gtransID(tid), localTimeStamp(lts), qc(qc), trans_type(ttype), key(k), latest_val(0,value) { } 
 };
 
 /* Custom class implementations that will be used in MP2Node*/
@@ -85,32 +79,16 @@ private:
 	// Object of Log
 	Log * log;
 
-	// RAJA Changes
+	// RAJA Code ends
     list<transaction> translog;
     map<string, Entry> RLocalHashTable;
-    //first time init
     bool intialInit ;
-
-    /* server side message handlers */
-    // void processKeyCreate(Message message);
-    // void processKeyUpdate(Message message);
-    // void processKeyDelete(Message message);
-    // void processKeyRead(Message message);
-
-    /* client side message handlers */
     void processReadReply(Message message);
     void processReply(Message message);
-
-    /* Util functions for sending messages */
-    // void sendMessage(MyMessage message, vector<Node>& recp);
     void sendMessage(MyMessage message, Address& toaddr);
-    
-    /* for checking for transaction timeouts*/
     void updateTransactionLog();
-
-    /*event handlers for stabilization protocol*/
     void processReplicate(Node toNode, ReplicaType rType);
-    // void processReplicaUpdate(Message msg);
+	//RAJA Code ends
 
 public:
 	MP2Node(Member *memberNode, Params *par, EmulNet *emulNet, Log *log, Address *addressOfMember);

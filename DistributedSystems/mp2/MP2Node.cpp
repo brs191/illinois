@@ -9,25 +9,23 @@ static int counter = 0;
 /*Custom log redirector*/
 #define mylog(fmt,...)  if(debug) log->LOG(&(memberNode->addr),fmt,__VA_ARGS__);
 
-
-/* Definitons of the custom message wrapper */
-string MyMessage::stripMyHeader(string message){ 
-    /*Strip the custom header from the message and return the rest */
-    int pos = message.find('@');
-    return message.substr(pos+1);
+string MyMessage::getMsg(string msg){ 
+    int pos = msg.find('@');
+    return msg.substr(pos + 1);
 }
-MyMessage::MyMessage(string message):Message(MyMessage::stripMyHeader(message)){
+
+MyMessage::MyMessage(string message): Message(MyMessage::getMsg(message)) {
     int  header = stoi(message.substr(0,message.find('@'))); 
     msgType = static_cast<MyMessageType>(header);
 }
-MyMessage::MyMessage(MyMessage::MyMessageType mt, string normalMsg):Message(normalMsg),msgType(mt){
-}
-MyMessage::MyMessage(MyMessage::MyMessageType mt, Message normalMsg):Message(normalMsg),msgType(mt){
-}
-string MyMessage::toString(){
-    return to_string(msgType) + '@' + Message::toString();
-}
 
+MyMessage::MyMessage(MyMessage::MyMessageType mt, string normalMsg):
+                Message(normalMsg),msgType(mt){ }
+
+MyMessage::MyMessage(MyMessage::MyMessageType mt, Message normalMsg): 
+                Message(normalMsg),msgType(mt) { }
+
+string MyMessage::toString(){ return to_string(msgType) + '@' + Message::toString(); }
 
 /**
  * constructor
@@ -39,7 +37,7 @@ MP2Node::MP2Node(Member *memberNode, Params *par, EmulNet * emulNet, Log * log, 
 	this->log = log;
 	ht = new HashTable();
 	this->memberNode->addr = *address;
-    this->intialInit = false;
+	this->intialInit = false;
 }
 
 /**
@@ -69,8 +67,8 @@ void MP2Node::updateRing() {
 	 *  Step 1. Get the current membership list from Membership Protocol / MP1
 	 */
 	curMemList = getMembershipList();
-    counter++;
-    cout << "RAJA in updateRing " << counter << " :: " << curMemList.size() << endl;
+	counter++;
+	cout << "RAJA in updateRing " << counter << " :: " << curMemList.size() << endl;
 
 	/*
 	 * Step 2: Construct the ring
@@ -395,19 +393,27 @@ void MP2Node::updateTransactionLog(){
 
     list<transaction>::iterator it=translog.begin();
     while(it!=translog.end())
-        if((par->getcurrtime()-it->local_ts)>RESPONSE_WAIT_TIME) {
+        if((par->getcurrtime()-it->localTimeStamp)>RESPONSE_WAIT_TIME) {
                 MessageType mtype = it->trans_type;
                 int transid = it->gtransID;
-                mylog("Transaction %d timeout",transid);
                 switch(mtype){
-                    case MessageType::CREATE: log->logCreateFail(&memberNode->addr,true,transid,it->key,it->latest_val.second);break;
-                    case MessageType::UPDATE: log->logUpdateFail(&memberNode->addr,true,transid,it->key,it->latest_val.second);break;
-                    case MessageType::READ: log->logReadFail(&memberNode->addr,true,transid,it->key);break;
-                    case MessageType::DELETE: log->logDeleteFail(&memberNode->addr,true,transid,it->key);break;
+                    case MessageType::CREATE: 
+                        log->logCreateFail(&memberNode->addr, true, transid, it->key, it->latest_val.second);
+                        break;
+                    case MessageType::UPDATE: 
+                        log->logUpdateFail(&memberNode->addr, true, transid,it->key,it->latest_val.second);
+                        break;
+                    case MessageType::READ: 
+                        log->logReadFail(&memberNode->addr,true,transid,it->key);
+                        break;
+                    case MessageType::DELETE: 
+                        log->logDeleteFail(&memberNode->addr,true,transid,it->key);
+                        break;
                 }
                 translog.erase(it++);
-        }else it++;
-    
+        } else {
+            it++;
+        }    
 }
 
 /**
@@ -495,81 +501,24 @@ void MP2Node::dispatchMessages(MyMessage msg){
         createKeyValue(msg.key, msg.value, msg.replica);
     }
 }
-/*Stabilization process message handlers */
+
 void MP2Node::processReplicate(Node toNode, ReplicaType repType){
-    //push out these keys to the node as a replicate message
+
     map<string, Entry>::iterator it;
     for(it=RLocalHashTable.begin();it!=RLocalHashTable.end();++it){
         if(it->second.replica==repType){
-            MyMessage keyupdate(MyMessage::REPUPDATE,Message(-1,(memberNode->addr),MessageType::CREATE,it->first,it->second.value,ReplicaType::TERTIARY));
+            MyMessage keyupdate(MyMessage::REPUPDATE, 
+                               Message(-1,(memberNode->addr), MessageType::CREATE,
+                                     it->first,it->second.value,ReplicaType::TERTIARY)
+            );
             sendMessage(keyupdate, toNode.nodeAddress);
         }
     }
 }
-// void MP2Node::processReplicaUpdate(Message message){
-//     /*Add the key to the map withe desired key type buffer*/
-//     createKeyValue(message.key,message.value,message.replica);
-// }
-/* server side message handlers */
-// void MP2Node::processKeyCreate(Message msg){
-//     MyMessage reply(MyMessage::QUERY, Message(msg.transID, (this->memberNode->addr), MessageType::REPLY,false)); 
-//     if(createKeyValue(msg.key, msg.value, msg.replica)) {
-//         reply.success = true;
-//         log->logCreateSuccess(&memberNode->addr, false, msg.transID, msg.key,msg.value);
-//     } else {
-//         reply.success = false;
-//         log->logCreateFail(&memberNode->addr, false, msg.transID, msg.key, msg.value);
-//     }
-//     sendMessage(reply, msg.fromAddr);
-// }
-// void MP2Node::processKeyUpdate(Message msg) {
-//     MyMessage reply(MyMessage::QUERY, Message(msg.transID, (this->memberNode->addr), MessageType::REPLY,false)); 
-//     if( updateKeyValue(msg.key, msg.value, msg.replica)) {
-//         reply.success = true;
-//         log->logUpdateSuccess(&memberNode->addr, false, msg.transID, msg.key, msg.value);
-//     }else {
-//         reply.success = false;
-//         log->logUpdateFail(&memberNode->addr, false, msg.transID, msg.key, msg.value);
-//     }
-//     sendMessage(reply, msg.fromAddr);
-// }
-// void MP2Node::processKeyDelete(Message msg){
-//     MyMessage reply(MyMessage::QUERY, Message(msg.transID, (this->memberNode->addr), MessageType::REPLY,false)); 
-//     if( deletekey(msg.key)) {
-//         reply.success = true;
-//         log->logDeleteSuccess(&memberNode->addr, false, msg.transID, msg.key);
-//     }
-//     else {
-//         reply.success = false;
-//         log->logDeleteFail(&memberNode->addr, false, msg.transID, msg.key);
-//     }
-//     sendMessage(reply, msg.fromAddr);      
-// }
-// /*The Key read message format does not have a separate flag for success*/
-// void MP2Node::processKeyRead(Message msg){
-//     string keyval = readKey(msg.key);
-//     if(!keyval.empty()) {
-//         log->logReadSuccess(&memberNode->addr, false, msg.transID, msg.key, keyval);
-//     }else {
-//         log->logReadFail(&memberNode->addr, false, msg.transID, msg.key);
-//     }
-//     MyMessage reply(MyMessage::QUERY, Message(msg.transID,(this->memberNode->addr),keyval)); 
-//     sendMessage(reply, msg.fromAddr);
-// }
 
-/* client side message handlers */
-/* Process the reply recieved in response to a read request*/
 void MP2Node::processReadReply(Message msg){
-    /* over here, match the reply with the transaction id , and keep
-    count of the replies received . if quorum is reached then log the reply,
-    else just decrement the quorum counter. 
-    There may be a conflict in the returned values , some may be older.
-    Ideally the reply with the latest global timestamp should be returned
-    */
     string value = msg.value;
-    //If the node did not have the key there's nothing you can do about it
     if(value.empty()) return;
-    //split the value to extract the actual value , timestamp and the replica type
     string delim = ":";
     vector<string> tuple;
     int start = 0;
@@ -591,29 +540,22 @@ void MP2Node::processReadReply(Message msg){
             break;
         else mylog("unmatched transaction transid %d",it->gtransID);
     
-    //now we have for the key, its value and the timestamp
     if(it == translog.end()){
-        //The reply has come in too late and the transaction has been dropped
-        //from the log. ignore the reply.
         mylog("dropping reply for transid: %d",transid);
-    }else if(--(it->quorum_count)==0){
-        //quorum replies received
-        //LOG success with the latest val;
-        mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->quorum_count);
+    } else if(--(it->qc)==0){
+        mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->qc);
         log->logReadSuccess(&memberNode->addr,true,msg.transID,it->key,it->latest_val.second);
-        //delete from translog
         translog.erase(it);
-    }else{
-        //LOG reply
-        mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->quorum_count);
-        if(timestamp>=it->latest_val.first){
+    } else {
+          mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->qc);
+        if(timestamp>=it->latest_val.first) {
             it->latest_val = pair<int,string>(timestamp,keyval);
             mylog("Changing latest val for transid :%d and key: %s",it->gtransID,it->key.c_str());
         }
     }
 
 }
-/* reply received in response to create, read and update queries */
+
 void MP2Node::processReply(Message msg){
     int transid = msg.transID;
     list<transaction>::iterator it;
@@ -621,26 +563,22 @@ void MP2Node::processReply(Message msg){
         if(it->gtransID==transid)
             break;
     if(it==translog.end()) {
-        //The reply has come in too late and the transaction has been dropped
-        //from the log. ignore the reply.
         mylog("dropping reply for transid: %d",transid);
-    }else if(!msg.success){
+    } else if(!msg.success){
         //no luck!
-    }else if(--(it->quorum_count)==0){
-        //quorum replies received
-        //LOG success with the latest val and for type trans_type;
-        mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->quorum_count);
+    } else if(--(it->qc)==0){
         switch(it->trans_type){
-            case MessageType::CREATE: log->logCreateSuccess(&memberNode->addr,true,msg.transID,it->key,it->latest_val.second);break;
-            case MessageType::UPDATE: log->logUpdateSuccess(&memberNode->addr,true,msg.transID,it->key,it->latest_val.second);break;
-            case MessageType::DELETE: log->logDeleteSuccess(&memberNode->addr,true,msg.transID,it->key);break;
+            case MessageType::CREATE: 
+                log->logCreateSuccess(&memberNode->addr,true,msg.transID,it->key,it->latest_val.second);
+                break;
+            case MessageType::UPDATE: 
+                log->logUpdateSuccess(&memberNode->addr,true,msg.transID,it->key,it->latest_val.second);
+                break;
+            case MessageType::DELETE: 
+                log->logDeleteSuccess(&memberNode->addr,true,msg.transID,it->key);
+                break;
         }
-        //delete from translog
         translog.erase(it);
-    }else{
-        mylog("Received reply for op %d for transid: %d,%d replies remaining",it->trans_type,it->gtransID,it->quorum_count);
-        //LOG reply
-        //safety, as the reply must come after the request
     }
 }
 

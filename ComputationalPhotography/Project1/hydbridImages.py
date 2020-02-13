@@ -47,6 +47,7 @@ def hybridImage(im1, im2, cutoff_low, cutoff_high):
     '''
     print("Hybrid the images")
     signal.convolve2d()
+    cv2.split()
 
 
 

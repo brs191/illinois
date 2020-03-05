@@ -1,0 +1,90 @@
+Course Information:
+Week 1
+
+Lesson 1.2
+    Image Formation
+    Image FIltering
+    Types of Filters
+    Seperability
+    Details of Filtering: Padding, Cropping, and Kernel Size
+    Representing Textures
+    Project 1: Hybrid Images
+
+Week 2
+Lesson 2.1: Thinking in Frequency
+Pracitce Quiz:
+
+Lesson 2.2: Templates and Image Pyramids
+    Template Matching
+    Coarse-to-Fine Alignment
+    Denoising, Compression
+    
+
+Week 3 (Pracitce Quiz 2)
+Lesson 3.1 Light and Color
+    How Light is measured
+    How is Light Reflected from a Surface
+    
+Lesson 3.2 Histograms and Color Adjustments
+    Color Spaces
+    Color Balancing
+    Histogram Equalization
+
+Week 4
+Lesson 4.1 Growing: Texture Synthesis and Hole Filling
+    Texture Synthesis
+    Hole Filling
+    Texture Transfer
+
+Lesson 4.2 Cutting: Intelligent Scissors and Graph Cuts
+    Introduction to Region Selection
+    Intelligent Scissors
+    Graph Cut-Based Segmentation
+    Other Applications of Finding Boundaries and Wrap-Up
+
+Week 5
+Lesson 5.1: Pasting: Compositing and Blending
+    Image Compositing- Cut and Paste
+            Featuring -> Near Object boundary pixel values come partly from foreground and partly from background.
+            Alpha Compositing -> {output = foreground * mask + background * (1 - mask)}
+            
+            
+    Image Compositing- Laplacian Pyramid
+    Image Compositing- Poisson Blending
+
+Lesson 5.2: Image Warping(Translaton, Rotation, Scale, etc)
+    Image Warping
+    Image Transformations
+    Matlab Demo - Solving for Correspondences
+
+Week 6
+Lesson 6.1: Image Morphing
+    Image Morphing
+    Morphing- Object Averaging
+    Warping and Triangulation
+
+Lesson 6.2: The Pinhole Camera
+    Pinhole Camera
+    Vanishing Points and Lines
+    Projection: World Coordinates and Image Coordinates
+    Extrinsic Matrix
+
+Graded Activities
+    Project 2: Image Quilting
+
+Week 7
+Lesson 7.1: Single-View Metrology + Camera Model Continued
+    Single-View Metrology and Cameras
+    Camera Calibration and Measuring Sizes of Objects from an Image
+    Beyond the Pinhole: Focus, Aperture, DOF, FOV, etc
+
+Lesson 7.2: Single-View 3D Reconstruction
+    Single-View 3D Reconstruction
+    Focal Length, Aperture, DOF
+    3D Reconstruction
+    Computing Homography
+
+Week 8:
+Project 3: Gradient Domain Fusion (March 12)
+Midterm Exam (March 14)
+

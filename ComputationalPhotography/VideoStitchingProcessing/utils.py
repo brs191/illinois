@@ -99,6 +99,8 @@ def imageFolder2mpeg(input_path, output_path='./output_video.mpeg', fps=30.0):
     file_names = [f.path for f in files_info if f.name.endswith(".jpg")]
     file_names.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 
+    print("file_names ", file_names)
+    
     frame_Height, frame_Width = cv2.imread(file_names[0]).shape[:2]
     resolution = (frame_Width, frame_Height)
 

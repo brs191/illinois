@@ -1,2 +1,2 @@
-Reference Material:
-https://github.com/braindeadpool/cs6476
+CS 445 Computation Photography
+Project 2 and 5 Incomplete.

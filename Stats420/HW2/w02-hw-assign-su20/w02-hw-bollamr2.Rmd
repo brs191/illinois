@@ -3,10 +3,10 @@ title: "Week 2 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
+  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
-  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -27,7 +27,6 @@ For this exercise we will use the `cats` dataset from the `MASS` package. You sh
 
 ``` {r }
 library(MASS, lib.loc = "/usr/lib/R/library")
-?cats
 cat_model = lm(Hwt ~ Bwt, data = cats)
 summary(cat_model)
 ```
@@ -37,22 +36,29 @@ summary(cat_model)
 coef(cat_model)
 ```
 
+beta_0 = -0.3566624 (this is an estimate for a body weight 0)
+beta_1 = 4.0340627
+
 **(c)** Use your model to predict the heart weight of a cat that weights **3.1** kg. Do you feel confident in this prediction? Briefly explain.
 ``` {r }
 predict(cat_model, data.frame(Bwt = 3.1))
-range(cats$Hwt)
+range(cats$Bwt)
 ```
+
+Since the weight of the cat is with-in the range of our dataset, we are confident in our prediction.
 
 **(d)** Use your model to predict the heart weight of a cat that weights **1.5** kg. Do you feel confident in this prediction? Briefly explain.
 
 ```{r }
 predict(cat_model, data.frame(Bwt = 1.5))
-range(cats$Hwt)
+range(cats$Bwt)
 ```
+
+Since the weight of the cat is NOT with-in the range of our dataset, we are NOT confident in our prediction.
 
 **(e)** Create a scatterplot of the data and add the fitted regression line. Make sure your plot is well labeled and is somewhat visually appealing.
 ``` {r }
-plot(Hwt ~ Bwt, data = cats, xlab = "Cats body weight in kg.", ylab = "Cats heart weight in g", pch = 20, cex = 1, col = "orange")
+plot(Hwt ~ Bwt, data = cats, xlab = "Cats body weight in kg.", ylab = "Cats heart weight in grams", pch = 20, cex = 1, col = "orange")
 abline(cat_model, lwd = 2, col = "red")
 ```
 
@@ -61,6 +67,9 @@ abline(cat_model, lwd = 2, col = "red")
 ``` {r }
 summary(cat_model)$r.squared
 ```
+
+R2 value is 0.6466209.
+
 ***
 
 ## Exercise 2 (Writing Functions)
@@ -81,11 +90,11 @@ The function should return a single value:
 ``` {R }
 get_sd_est = function(fitted_vals, actual_vals, mle = FALSE) {
   e = actual_vals - fitted_vals
+  n = length(e)
   if (mle == TRUE) {
-    n = length(e)
-    s2_e = sum(e^2)/(n-2)
+    s2_e = sum(e^2)/(n)
   } else {
-    s2_e = mean(e^2)
+    s2_e = sum(e^2)/(n-2)
   }
   return (s2_e^0.5)
 }
@@ -98,6 +107,8 @@ actual_vals = cats$Hwt
 get_sd_est(fitted_values, actual_vals, FALSE)
 ```
 
+In case of MLE is false, using the lm model we get a value of 1.452373 (Se). This means for a given cat's body weight, the estimated cat's heart weight could be off by about 1.452373 grams.
+
 **(c)** Run the function `get_sd_est` on the residuals from the model in Exercise 1, with `mle` set to `TRUE`. Explain the resulting estimate in the context of the model. Note that we are trying to estimate the same parameter as in part **(b)**.
 ```{r }
 fitted_values = cat_model$fitted.values
@@ -105,10 +116,15 @@ actual_vals = cats$Hwt
 get_sd_est(fitted_values, actual_vals, TRUE)
 ```
 
+In case of MLE is true, using the lm model we get a value of 1.442252. This means for a given cat's body weight, the estimated cat's heart weight could be off by about 1.442252 grams.
+
 **(d)** To check your work, output `summary(cat_model)$sigma`. It should match at least one of **(b)** or **(c)**.
 ``` {r }
 summary(cat_model)$sigma
 ```
+
+We notice that this value matches with **(b)** "Se".
+
 ***
 
 ## Exercise 3 (Simulating SLR)
@@ -130,26 +146,28 @@ where $\beta_0 = 5$ and $\beta_1 = -3$.
 This exercise relies heavily on generating random observations. To make this reproducible we will set a seed for the randomization. Alter the following code to make `birthday` store your birthday in the format: `yyyymmdd`. For example, [William Gosset](https://en.wikipedia.org/wiki/William_Sealy_Gosset), better known as *Student*, was born on June 13, 1876, so he would use:
 
 ```{r}
-birthday = 19830611
+birthday = 18760613 #19830611
 set.seed(birthday)
 ```
 
 **(a)** Use `R` to simulate `n = 25` observations from the above model. For the remainder of this exercise, use the following "known" values of $x$.
 
 ```{r}
+x = runif(n = 25, 0, 10)
+```
+
+You may use [the `sim_slr ` function provided in the text](http://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html#simulating-slr). Store the data frame this function returns in a variable of your choice. Note that this function calls $y$ `response` and $x$ `predictor`.
+
+```{r}
 sim_slr = function(x, beta_0 = 10, beta_1 = 5, sigma = 1) {
-  x = runif(n = 25, 0, 10)
   n = length(x)
   epsilon = rnorm(n, mean = 0, sd = sigma)
   y = beta_0 + beta_1 * x + epsilon
   data.frame(predictor = x, response = y)
 }
-beta_0 = 5
-beta_1 = -3
-sigma = sqrt(10.24)
-sim_data = sim_slr(x, beta_0, beta_1, sigma)
+
+sim_data = sim_slr(x = x, beta_0 = 5, beta_1 = -3, sigma = sqrt(10.24))
 ```
-You may use [the `sim_slr ` function provided in the text](http://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html#simulating-slr). Store the data frame this function returns in a variable of your choice. Note that this function calls $y$ `response` and $x$ `predictor`.
 
 **(b)** Fit a model to your simulated data. Report the estimated coefficients. Are they close to what you would expect? Briefly explain.
 ``` {r }
@@ -160,16 +178,25 @@ coef(sim_fit)
 **(c)** Plot the data you simulated in part **(a)**. Add the regression line from part **(b)** as well as the line for the true model. Hint: Keep all plotting commands in the same chunk.
 
 ``` {r }
-plot(response ~ predictor, data = sim_data, xlab = "Simulated Predictor Varaibe", ylab = "Simulated Response variable", 
+plot(response ~ predictor, data = sim_data, xlab = "Simulated Predictor Variable", ylab = "Simulated Response Variable", 
      main = "Simulated Regression Data", pch = 20, cex = 1, col = "orange")
 abline(sim_fit, lwd = 1, lty = 1, col = "black")
 beta_0 = 5
 beta_1 = -3
 abline(beta_0, beta_1, lwd = 1, lty = 2, col = "blue")
-legend("topright", c("Estimate", "Truth"), lty = c(1,2), lwd = 2, col = c("black", "pink"))
+legend("topright", c("Estimate", "Truth"), lty = c(1,2), lwd = 2, col = c("black", "blue"))
 ```
 
 **(d)** Use `R` to repeat the process of simulating `n = 25` observations from the above model $1500$ times. Each time fit a SLR model to the data and store the value of $\hat{\beta_1}$ in a variable called `beta_hat_1`. Some hints:
+
+``` {r }
+beta_hat_1 = rep(0, 1500)
+for (i in 1:1500) {
+  sim_data = sim_slr(x, beta_0 = 5, beta_1 = -3, sigma = sqrt(10.24))
+  sim_model = lm(response ~ predictor, data = sim_data)
+  beta_hat_1[i] = coef(sim_model)[2]
+}
+```
 
 - Consider a `for` loop.
 - Create `beta_hat_1` before writing the `for` loop. Make it a vector of length $1500$ where each element is `0`.
@@ -179,16 +206,6 @@ legend("topright", c("Estimate", "Truth"), lty = c(1,2), lwd = 2, col = c("black
 - Use `beta_hat_1[i]` to store in elements of `beta_hat_1`.
 - See the notes on [Distribution of a Sample Mean](http://daviddalpiaz.github.io/appliedstats/introduction-to-r.html#distribution-of-a-sample-mean) for some inspiration.
 
-``` {r }
-beta_hat_1 = rep(0, 1500)
-for (i in 1:1500) {
-  x = runif(n = 25, 0, 10)
-  sim_data = sim_slr(beta_0, beta_1, sigma)
-  sim_model = lm(response ~ predictor, data = sim_data)
-  beta_hat_1[i] = coef(sim_model)[2]
-}
-```
-
 You can do this differently if you like. Use of these hints is not required.
 
 **(e)** Report the mean and standard deviation of `beta_hat_1`. Do either of these look familiar?
@@ -197,10 +214,15 @@ mean(beta_hat_1)
 sd(beta_hat_1)
 ```
 
+Value of beta_hat_1 and mean of beta_hat_1 are pretty close at value -3.
+
 **(f)** Plot a histogram of `beta_hat_1`. Comment on the shape of this histogram.
 ``` {r }
-hist(beta_hat_1, breaks = 50, main = "Histogram of beta_hat_1", col = "green")
+hist(beta_hat_1, main = "Histogram of beta_hat_1", xlab = expression(hat(beta)[1]), col = "green")
 ```
+
+Histogram looks like a normal distribution with a mean of -3.
+
 ***
 
 ## Exercise 4 (Be a Skeptic)
@@ -222,11 +244,17 @@ where $\beta_0 = 3$ and $\beta_1 = 0$.
 Before answering the following parts, set a seed value equal to **your** birthday, as was done in the previous exercise.
 
 ```{r}
-birthday = 19830611
+birthday = 18760613
 set.seed(birthday)
 ```
 
 **(a)** Use `R` to repeat the process of simulating `n = 75` observations from the above model $2500$ times. For the remainder of this exercise, use the following "known" values of $x$.
+
+```{r}
+x = runif(n = 75, 0, 10)
+```
+
+Each time fit a SLR model to the data and store the value of $\hat{\beta_1}$ in a variable called `beta_hat_1`. You may use [the `sim_slr ` function provided in the text](http://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html#simulating-slr). Hint: Yes $\beta_1 = 0$.
 
 ```{r}
 beta_0 = 3
@@ -234,32 +262,32 @@ beta_1 = 0
 sigma = sqrt(4)
 beta_hat_1 = rep(0, 2500)
 for (i in 1:2500) {
-  x = runif(n = 75, 0, 10)
-  sim_data = sim_slr(beta_0, beta_1, sigma)
+  sim_data = sim_slr(x, beta_0, beta_1, sigma)
   sim_model = lm(response ~ predictor, data = sim_data)
   beta_hat_1[i] = coef(sim_model)[2]
 }
 ```
 
-Each time fit a SLR model to the data and store the value of $\hat{\beta_1}$ in a variable called `beta_hat_1`. You may use [the `sim_slr ` function provided in the text](http://daviddalpiaz.github.io/appliedstats/simple-linear-regression.html#simulating-slr). Hint: Yes $\beta_1 = 0$.
-
 **(b)** Plot a histogram of `beta_hat_1`. Comment on the shape of this histogram.
 
 ```{r}
-hist(beta_hat_1, breaks = 50, main = "Histogram of beta_hat_1", col = "dodgerblue")
+hist(beta_hat_1, main = "Histogram of beta_hat_1", col = "dodgerblue")
 ```
+
+Histogram looks like a normal distribution with a mean of 0.0
 
 **(c)** Import the data in [`skeptic.csv`](skeptic.csv) and fit a SLR model. The variable names in `skeptic.csv` follow the same convention as those returned by `sim_slr()`. Extract the fitted coefficient for $\beta_1$.
 
 ``` {r }
 skeptic_data = read.csv("skeptic.csv")
 skeptic_model = lm(response ~ predictor, data = skeptic_data)
+coef(skeptic_model)[2]
 ```
 
 **(d)** Re-plot the histogram from **(b)**. Now add a vertical red line at the value of $\hat{\beta_1}$ in part **(c)**. To do so, you'll need to use `abline(v = c, col = "red")` where `c` is your value.
 
 ```{r}
-hist(beta_hat_1, breaks = 50, main = "Histogram of beta_hat_1", col = "dodgerblue")
+hist(beta_hat_1, main = "Histogram of beta_hat_1", col = "dodgerblue")
 abline(v = coef(skeptic_model)[2], col = "red")
 ```
 
@@ -267,12 +295,17 @@ abline(v = coef(skeptic_model)[2], col = "red")
 
 ``` {r}
 mean(beta_hat_1 < coef(skeptic_model)[2])
+mean(beta_hat_1 < coef(skeptic_model)[2]) * 2
 ```
 
 **(f)** Based on your histogram and part **(e)**, do you think the [`skeptic.csv`](skeptic.csv) data could have been generated by the model given above? Briefly explain.
 
-No we cannot generate.
+``` {r}
+range(beta_hat_1)
+```
 ***
+
+The beta_1 value from the skeptic histgram value is -0.2221927. This is well with-in the range of beta_hat_1. It is possible to generate.
 
 ## Exercise 5 (Comparing Models)
 
@@ -322,8 +355,7 @@ ozone_summary = data.frame(predictor = c("Wind", "Humidity", "Temperature") ,
                            r2_ozone = c(r2_wind, r2_humidity, r2_temp))
 
 library(knitr)
-kable(ozone_summary, format.args = list(decimal.mark = "."))
-
+kable(ozone_summary)
 ```
 
 **(b)** Based on the results, which of the three predictors used is most helpful for predicting ozone readings? Briefly explain.

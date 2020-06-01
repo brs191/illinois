@@ -3,10 +3,10 @@ title: "Week 1 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
+  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
-  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -31,10 +31,11 @@ library(ggplot2)
 ```
 **(b)** Note that this dataset is technically a `tibble`, not a data frame. How many observations are in this dataset? How many variables? What are the observations in this dataset?
 ``` {r }
-nrow(msleep)
-ncol(msleep)
+#nrow(msleep)
+#ncol(msleep)
 msleep
 ```
+There are 83 Observations and 11 Variables in Mammals Dataset.
 
 **(c)** What is the mean hours of REM sleep of individuals in this dataset?
 ``` {r }
@@ -48,11 +49,13 @@ sd(msleep$brainwt, na.rm = TRUE)
 **(e)** Which observation (provide the `name`) in this dataset gets the most REM sleep?
 ```{r }
 
-(which.max(msleep$sleep_rem))
+msleep$name[(which.max(msleep$sleep_rem))]
 
 ```
 **(f)** What is the average bodyweight of carnivores in this dataset?
-
+``` {r }
+mean(subset(msleep, vore == "carni")$bodywt, na.rm = TRUE)
+```
 ***
 
 ## Exercise 2 (Plotting)
@@ -62,28 +65,34 @@ For this exercise, we will use the `birthwt` dataset from the `MASS` package.
 **(a)** Note that this dataset is a data frame and all of the variables are numeric. How many observations are in this dataset? How many variables? What are the observations in this dataset?
 ```{r}
 library(MASS)
-nrow(birthwt)
-ncol(birthwt)
+#nrow(birthwt)
+#ncol(birthwt)
 birthwt
 ```
+There are 189 Observations and 10 Variables in "birthwt" dataset.
+
 **(b)** Create a scatter plot of birth weight (y-axis) vs mother's weight before pregnancy (x-axis). Use a non-default color for the points. (Also, be sure to give the plot a title and label the axes appropriately.) Based on the scatter plot, does there seem to be a relationship between the two variables? Briefly explain.
 ``` {r }
 #names(birthwt)
 #?birthwt
-plot(bwt ~ lwt, data = birthwt, xlab = "Mother's weight", ylab = "Birth wight", pch = 20, cex = 1, col = "orange")
+plot(bwt ~ lwt, data = birthwt, xlab = "Mother's weight in pounds", ylab = "Birth weight of child in grams", pch = 20, cex = 1, col = "orange")
 ```
 **(c)** Create a scatter plot of birth weight (y-axis) vs mother's age (x-axis). Use a non-default color for the points. (Also, be sure to give the plot a title and label the axes appropriately.) Based on the scatter plot, does there seem to be a relationship between the two variables? Briefly explain.
 ```{r }
-plot(bwt ~ age, data = birthwt, xlab = "Mother's age", ylab = "Birth wight", pch = 20, cex = 1, col = "blue")
+plot(bwt ~ age, data = birthwt, xlab = "Mother's age in years", ylab = "Birth weight in grams", pch = 20, cex = 1, col = "blue")
 ```
+We see a decreasing trend in the Birth weight with an increase in mother's age. But a increased birth weight at the age of 45 in the dataset looks unusual.
 
 **(d)** Create side-by-side boxplots for birth weight grouped by smoking status. Use non-default colors for the plot. (Also, be sure to give the plot a title and label the axes appropriately.) Based on the boxplot, does there seem to be a difference in birth weight for mothers who smoked? Briefly explain.
 ``` {r }
 boxplot(bwt ~ smoke, data = birthwt, 
-        xlab = "birth weight in grams", 
-        ylab = "Smoke status during pregnancy", main = "birth weight vs smoke status",
+        ylab = "birth weight in grams", 
+        xlab = "Smoke status during pregnancy (0 = non-smoker, 1 = smoker)", main = "birth weight vs smoke status",
         col = "green", border = "blue")
 ```
+
+Average weight of babies born to smokers looks is less than the averge weight of the babies born to non-smokers. At the same time we need to note that there is high variation in the values.
+
 ***
 
 ## Exercise 3 (Importing Data, More Plotting)
@@ -112,17 +121,27 @@ The variables in the dataset are:
 ``` {r }
 nut_data = read.csv("nutrition-2018.csv")
 calories = nut_data$Calories
-hist(calories)
+hist(calories, xlab = "Calories in KCal", ylab = "Frequency")
 ```
+
+Values around 400 and after 800 seems unusual. The distirbution of Calories in right-schewed.
+
 **(b)** Create a scatter plot of calories (y-axis) vs protein (x-axis). Make the plot presentable. Do you notice any trends? Do you think that knowing only the protein content of a food, you could make a good prediction of the calories in the food?
 ``` {r }
-plot(Calories ~ Protein, data = nut_data, xlab = "Protein", ylab = "Calories", pch = 20, cex = 0.1, col = "red")
+plot(Calories ~ Protein, data = nut_data, main = "Calories vs Protein", xlab = "Protein in grams", ylab = "Calories in Kcal", pch = 20, cex = 0.1, col = "red")
 ```
+
+As proteins value increases there seems to be a decrease in Calories count. That looks like a trend.
+Knowing only protein content of a food could help in predicting the calories in the food. But maynot be a good predictor.
+
 **(c)** Create a scatter plot of `Calories` (y-axis) vs `4 * Protein + 4 * Carbs + 9 * Fat` (x-axis). Make the plot presentable. You will either need to add a new variable to the data frame, or use the `I()` function in your formula in the call to `plot()`. If you are at all familiar with nutrition, you may realize that this formula calculates the calorie count based on the protein, carbohydrate, and fat values. You'd expect then that the result here is a straight line. Is it? If not, can you think of any reasons why it is not?
 ``` {r }
-newValue = 4*nut_data$Protein + 4*nut_data$Carbs + 9*nut_data$Fat
-plot(Calories ~ newValue, data = nut_data, xlab = "4*Protein + 4*Carbs + 9*Fat", ylab = "Calories", pch = 20, cex = 0.1, col = "green")
+plot(Calories ~ I(4*Protein + 4*Carbs + 9*Fat), data = nut_data, xlab = "4*Protein + 4*Carbs + 9*Fat", ylab = "Calories in Kcal", pch = 20, cex = 0.1, col = "green")
 ```
+
+Result doesn't look like a straight line. There could be many reasons for not being a straight line.
+Food is made up of many components other than Proteins/Carbs/Fat. There could be a measurement error.
+
 ***
 
 ## Exercise 4 (Writing and Using Functions)
@@ -162,7 +181,7 @@ sum_of_squares(x = c(c, d))
 
 where the $x$ vector is `d`.
 ``` {r }
-sqrt(sum_of_squares(d)/length(d))
+sqrt(sum_of_squares(d - 0)/length(d))
 ```
 **(c)** Using only your function `sum_of_squares()`, `mean()`, `sqrt()`, and basic math operations such as `+` and `-`, calculate
 
@@ -172,7 +191,7 @@ sqrt(sum_of_squares(d)/length(d))
 
 where the $x$ vector is `a` and the $y$ vector is `b`.
 ``` {r}
-sqrt(sum_of_squares(a-b)/length(a))
+sqrt(sum_of_squares(a-b)/length(a-b))
 ```
 ***
 

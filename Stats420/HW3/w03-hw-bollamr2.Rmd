@@ -3,10 +3,10 @@ title: "Week 3 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
+  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
-  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -54,7 +54,7 @@ The value of the test statistic is 16.11939
 
 The p-value of the test is 6.969045e-34
 
-Statistical Decision at alpha =  0.05 is a Reject H0
+Statistical Decision at alpha =  0.05 is Fail to Reject H0
 
 Conclusion in the context of the problem: there exists a linear relationship between heart weight and body weight
 
@@ -100,9 +100,22 @@ We are 90% confident that the new observation for body weights 2.8 and 4.2 KG is
 **(f)** Create a scatterplot of the data. Add the regression line, 95% confidence bands, and 95% prediction bands.
 
 ``` {r}
-plot(Hwt ~ Bwt, data = cats, xlab = "Body Weight in Kilograms", ylab = "Heart Weight in Kilograms", 
+plot(Hwt ~ Bwt, data = cats, xlab = "Body Weight(bwt) in Kilograms", ylab = "Heart Weight(hwt) in Kilograms", 
      main = "Heart Weight vs Body Weights in Cats", pch = 20, cex = 1, col = "orange")
+abline(cat_model, lwd = 2, col = "blue")
+
+bwt_grid = seq(min(cats$Bwt), max(cats$Bwt), by = 0.01)
+hwt_ci_band = predict(cat_model, newdata = data.frame(Bwt = bwt_grid), interval = "confidence", level = 0.95)
+hwt_pi_band = predict(cat_model, newdata = data.frame(Bwt = bwt_grid), interval = "prediction", level = 0.95)
+
+lines(bwt_grid, hwt_ci_band[, "lwr"], col = "brown", lwd = 3, lty = 2)
+lines(bwt_grid, hwt_ci_band[, "upr"], col = "brown", lwd = 3, lty = 2)
+lines(bwt_grid, hwt_pi_band[, "lwr"], col = "brown", lwd = 3, lty = 3)
+lines(bwt_grid, hwt_pi_band[, "upr"], col = "brown", lwd = 3, lty = 3)
+points(mean(cats$Bwt), mean(cats$Hwt), pch = "+", cex = 2)
+
 ```
+
 
 **(g)** Use a $t$ test to test:
 
@@ -116,6 +129,22 @@ Report the following:
 - A statistical decision at $\alpha = 0.05$
 
 When reporting these, you should explicitly state them in your document, not assume that a reader will find and interpret them from a large block of `R` output.
+
+``` {r }
+beta_1 = coefficients(cat_model)[2]
+stand_error = summary(cat_model)$coefficients["Bwt", "Std. Error"]
+beta_1_hat_t = (beta_1 - 4) / stand_error
+beta_1_hat_t
+p_value = 2 * pt(abs(beta_1_hat_t), df = length(resid(cat_model)) - 2, lower.tail = FALSE)
+p_value
+```
+
+The value of the test statistic is 0.1361084
+
+The p-value of the test is 0.8919283.
+
+At statistical decision at $\alpha = 0.05$ is "Fail to reject H0"
+
 
 ***
 
@@ -148,6 +177,25 @@ Store the results in a variable called `ozone_wind_model`. Use a $t$ test to tes
 
 When reporting these, you should explicitly state them in your document, not assume that a reader will find and interpret them from a large block of `R` output.
 
+``` {r }
+ozone_model = lm(ozone ~ wind, data = Ozone)
+summary(ozone_model)$coefficients["wind", "t value"]
+summary(ozone_model)$coefficients["wind", "Pr(>|t|)"]
+```
+
+H0: beta_one = 0
+
+H1: beta_one != 0
+
+The value of the test statistic is -0.2189811
+
+The p-value of the test is 0.8267954
+
+Statistical Decision at alpha = 0.01 is Fail to Reject H0
+
+Conclusion in the context of the problem: there exists a NO linear relationship between ozone and wind speed
+
+
 **(b)** Fit the following simple linear regression model in `R`. Use the ozone measurement as the response and temperature as the predictor. 
 
 \[
@@ -163,6 +211,24 @@ Store the results in a variable called `ozone_temp_model`. Use a $t$ test to tes
 - A conclusion in the context of the problem
 
 When reporting these, you should explicitly state them in your document, not assume that a reader will find and interpret them from a large block of `R` output.
+
+``` {r }
+ozone_model = lm(ozone ~ temp, data = Ozone)
+summary(ozone_model)$coefficients["temp", "t value"]
+summary(ozone_model)$coefficients["temp", "Pr(>|t|)"]
+```
+
+H0: beta_one = 0
+
+H1: beta_one != 0
+
+The value of the test statistic is 22.84896
+
+The p-value of the test is 8.153764e-71
+
+Statistical Decision at alpha = 0.01 is Reject H0
+
+Conclusion in the context of the problem: there exists a linear relationship between ozone and temperature
 
 ***
 
@@ -185,10 +251,27 @@ We will use samples of size $n = 50$.
 **(a)** Simulate this model $2000$ times. Each time use `lm()` to fit a simple linear regression model, then store the value of $\hat{\beta}_0$ and $\hat{\beta}_1$. Set a seed using **your** birthday before performing the simulation. Note, we are simulating the $x$ values once, and then they remain fixed for the remainder of the exercise.
 
 ```{r}
-birthday = 18760613
+birthday = 18760613 #19830611
 set.seed(birthday)
 n = 50
 x = seq(0, 10, length = n)
+
+beta_0 = -5
+beta_1 = 3.25
+sigma = 4
+
+num_samples = 2000
+beta_0_hats = rep(0, num_samples)
+beta_1_hats = rep(0, num_samples)
+
+for(i in 1:num_samples) {
+  eps = rnorm(n, mean = 0, sd = sigma)
+  y = beta_0 + beta_1 * x + eps
+  sim_model = lm(y ~ x)
+  beta_0_hats[i] = coef(sim_model)[1]
+  beta_1_hats[i] = coef(sim_model)[2]
+}
+
 ```
 
 **(b)** Create a table that summarizes the results of the simulations. The table should have two columns, one for $\hat{\beta}_0$ and one for $\hat{\beta}_1$. The table should have four rows:
@@ -198,10 +281,31 @@ x = seq(0, 10, length = n)
 - A row for the true standard deviation given the known values of $x$
 - A row for the standard deviation of the simulated values
 
+``` {r }
+Sxx = sum((x - mean(x)) ^ 2)
+var_beta_1_hat = (sigma ^ 2)/Sxx
+var_beta_0_hat = (sigma ^ 2)*((1/n) + (mean(x)^2/Sxx))
+data_summary = data.frame(value = c("E of known values", "mean of simulated vlaues", "SD of known vlaues", "sd of simulated values"),
+                          beta_0_hat = c(beta_0, mean(beta_0_hats), var_beta_0_hat, sd(beta_0_hats)),
+                          beta_1_hat = c(beta_1, mean(beta_1_hats), var_beta_1_hat, sd(beta_1_hats))
+                          )
+library(knitr)
+kable(data_summary)
+```
+
 **(c)** Plot two histograms side-by-side:
 
 - A histogram of your simulated values for $\hat{\beta}_0$. Add the normal curve for the true sampling distribution of $\hat{\beta}_0$.
 - A histogram of your simulated values for $\hat{\beta}_1$. Add the normal curve for the true sampling distribution of $\hat{\beta}_1$.
+
+``` {r }
+hist(beta_0_hats, prob = TRUE, breaks = 25, col = "grey", border = "brown", xlab = expression(hat(beta)[0]), main = "")
+curve(dnorm(x, mean = beta_0, sd = sqrt(var_beta_0_hat)), col = "darkorange", add = TRUE, lwd = 3)
+
+hist(beta_1_hats, prob = TRUE, breaks = 25, col = "grey", border = "brown", xlab = expression(hat(beta)[1]), main = "")
+curve(dnorm(x, mean = beta_1, sd = sqrt(var_beta_1_hat)), col = "darkorange", add = TRUE, lwd = 3)
+```
+
 
 ***
 
@@ -230,6 +334,22 @@ birthday = 18760613
 set.seed(birthday)
 n = 25
 x = seq(0, 2.5, length = n)
+
+Sxx = sum((x - mean(x)) ^ 2)
+beta_0 = 5
+beta_1 = 2
+sigma = 3 
+
+num_samples = 2500
+beta_hat_1 = rep(0, num_samples)
+s_e = rep(0, num_samples)
+for (i in 1:num_samples) {
+  y = beta_0 + beta_1 * x + rnorm(n, 0, sigma)
+  sim_model = lm(y ~ x)
+  beta_1_hats[i] = coef(sim_model)[2]
+  s_e[i] = summary(sim_model)$sigma
+}
+
 ```
 
 **(b)** For each of the $\hat{\beta}_1$ that you simulated, calculate a 95% confidence interval. Store the lower limits in a vector `lower_95` and the upper limits in a vector `upper_95`. Some hints:
@@ -238,15 +358,44 @@ x = seq(0, 2.5, length = n)
 - Remember that `x` is fixed, so $S_{xx}$ will be the same for each interval.
 - You could, but do not need to write a `for` loop. Remember vectorized operations.
 
-**(c)** What proportion of these intervals contains the true value of $\beta_1$?
+``` {r }
+#confint(sim_model, parm = "(Intercept)", level = 0.95)
+alpha = 0.05
+crit = -qt(alpha / 2, df = n - 2)
+lower_95 = beta_1_hats - crit * s_e / sqrt(Sxx)
+upper_95 = beta_1_hats + crit * s_e / sqrt(Sxx)
+```
 
+**(c)** What proportion of these intervals contains the true value of $\beta_1$?
+``` {r}
+mean(lower_95 < beta_1 & beta_1 < upper_95)
+```
 **(d)** Based on these intervals, what proportion of the simulations would reject the test $H_0: \beta_1 = 0$ vs $H_1: \beta_1 \neq 0$ at $\alpha = 0.05$?
+
+``` {r }
+1 - mean(lower_95 < 0 & 0 < upper_95)
+```
 
 **(e)** For each of the $\hat{\beta}_1$ that you simulated, calculate a 99% confidence interval. Store the lower limits in a vector `lower_99` and the upper limits in a vector `upper_99`.
 
+``` {r }
+alpha = 0.01
+crit = -qt(alpha / 2, df = n - 2)
+lower_99 = beta_1_hats - crit * s_e / sqrt(Sxx)
+upper_99 = beta_1_hats + crit * s_e / sqrt(Sxx)
+```
+
 **(f)** What proportion of these intervals contains the true value of $\beta_1$?
 
+``` {r}
+mean(lower_99 < beta_1 & beta_1 < upper_99)
+```
+
 **(g)** Based on these intervals, what proportion of the simulations would reject the test $H_0: \beta_1 = 0$ vs $H_1: \beta_1 \neq 0$ at $\alpha = 0.01$?
+``` {r }
+1 - mean(lower_99 < 0 & 0 < upper_99)
+```
+
 
 ***
 
@@ -279,6 +428,22 @@ The function should return a named vector with three elements:
 - `lower`, the lower bound of the interval
 - `upper`, the upper bound of the interval
 
+``` {r }
+calc_pred_int = function(model , newdata, level = 0.95) {
+  
+  t_95 = abs(qt(0.05/2, df = length(resid(model)) - 2))
+  interval_95 = predict(model, newdata, interval = "prediction")
+  lwr_95 = interval_95[2]
+  upr_95 = interval_95[3]
+  margin =(upr_95 - lwr_95)/2
+  se = margin/t_95
+
+  alpha = 1 - level
+  t = abs(qt(alpha/2, df = length(resid(model)) - 2))
+  
+  c(est = interval_95[1], lwr = interval_95[1] - t*se , upr = interval_95[1] + t*se)
+}
+```
 **(b)** After writing the function, run this code:
 
 ```{r, eval = FALSE}

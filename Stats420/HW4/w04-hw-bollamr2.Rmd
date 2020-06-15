@@ -3,10 +3,10 @@ title: "Week 4 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
-  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
+  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -71,14 +71,14 @@ nutrition_lm = lm(Calories ~ Fat+Sugar+Sodium, data = nutrition)
 summary(nutrition_lm)
 ```
 
-$Ho: \beta_1 = \beta_2 = \beta_3 = 0, H1: atleast one of \beta_j \neq 0$
+$Ho: \beta_1 = \beta_2 = \beta_3 = 0$ and  $H1:$ atleast one of $\beta_j \neq 0$
 Value of F statistic is 6591
 
-p-value of the test is 0. Very very small value.
+p-value of the test is almost 0. Very very small value (< 2.2e-16).
 
 Satistical decision at $\alpha = 0.01$ is to Reject $Ho$
 
-Conclusion in the context of the problem is that there EXISTS a linear relationship between Calories and atleast some of fat,sugar and sodium.
+Conclusion in the context of the problem is that there EXISTS a linear relationship between Calories and atleast some of fat, sugar and sodium.
 
 **(b)** Output only the estimated regression coefficients. Interpret all $\hat{\beta}_j$ coefficients in the context of the problem.
 
@@ -89,9 +89,9 @@ coef(nutrition_lm)
 
 $\hat{\beta}_0$ = 100.4561 is the estimated calories value of a food when there is 0gm fat, 0gm sugar and 0mg Sodium
 
-$\hat{\beta}_1$ = 848.3289 is the estimated change in mean Calories value of a food when there is an increase of 1gm fat with certain Sugar and Sodium content in the food
+$\hat{\beta}_1$ = 8.483289 is the estimated change in mean Calories value of a food when there is an increase of 1gm fat with certain Sugar and Sodium content in the food
 
-$\hat{\beta}_2$ = 390.0517 is the estimated change in mean Calories value of a food when there is an increase of 1gm sugar with certain fat and Sodium in the food.
+$\hat{\beta}_2$ = 3.900517 is the estimated change in mean Calories value of a food when there is an increase of 1gm sugar with certain fat and Sodium in the food.
 
 $\hat{\beta}_3$ - 0.006165246 is the estimated change in mean Calories value of a food when there is an increase of 1mg of Sodium with certain fat and sugare in the food
 

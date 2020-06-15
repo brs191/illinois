@@ -3,10 +3,10 @@ title: "Week 4 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
+  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
-  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -315,9 +315,7 @@ For this exercise use the `Auto` dataset from the `ISLR` package. Use `?Auto` to
 ```{r}
 # load required package, remove "name" variable
 library(ISLR)
-#Auto = subset(Auto, select = -c(name)) #Error in eval(substitute(select), nl, parent.frame()) : object 'name' not found
-#summary(Auto)
-
+Auto = subset(Auto, select = -c(name)) #Error in eval(substitute(select), nl, parent.frame()) : object 'name' not found
 ```
 
 When evaluating a model for prediction, we often look at RMSE. However, if we both fit the model with all the data as well as evaluate RMSE using all the data, we're essentially cheating. We'd like to use RMSE as a measure of how well the model will predict on *unseen* data. If you haven't already noticed, the way we had been using RMSE resulted in RMSE decreasing as models became larger.
@@ -355,7 +353,6 @@ Fit a total of five models using the training data.
 For each model report the **train** and **test** RMSE. Arrange your results in a well-formatted markdown table. Argue that one of your models is the best for predicting the response.
 
 ``` {r}
-# eval rmse
 rmse = function(actual, predicted) {
   sqrt(mean((actual - predicted)^2)) 
 }
@@ -377,19 +374,19 @@ trn_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_4, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_5, auto_trn)))
 
-#tst_res = c(rmse(auto_tst$mpg, predict(auto_1, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_2, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_3, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_4, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_5, auto_tst)))
+tst_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_2, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_3, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_4, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_5, auto_tst)))
 
-#test_summary = data.frame(Model = c("auto_1", "auto_2", "auto_3", "auto_4", "auto_5"),
-#                          Trained_RMSE =  trn_res, 
-#                          Tested_RMSE = tst_res)
-#colnames(test_summary) = c("Train Model", "Train RMSE", "Test RMSE")
+test_summary = data.frame(Model = c("auto_1", "auto_2", "auto_3", "auto_4", "auto_5"),
+                          Trained_RMSE = trn_res, 
+                          Tested_RMSE = tst_res)
+colnames(test_summary) = c("Train Model", "Train RMSE", "Test RMSE")
 
-#library(knitr)
-#kable(res_summary)
+library(knitr)
+kable(test_summary)
 
 ```
 
@@ -487,7 +484,11 @@ for (i in 1: num_sims) {
 ```
 
 **(d)** Based on the known values of $X$, what is the true distribution of $\hat{\beta}_1$?
-
+The true distribution of $\hat{\beta}_1$ is 
+``` {r}
+(covariance = sigma^2 * C[1+1, 1+1])
+(mean = beta_1)
+```
 
 **(e)** Calculate the mean and variance of `beta_hat_1`. Are they close to what we would expect? Plot a histogram of `beta_hat_1`. Add a curve for the true distribution of $\hat{\beta}_1$. Does the curve seem to match the histogram?
 

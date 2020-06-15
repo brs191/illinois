@@ -676,8 +676,7 @@ sst = sum(t(y-mean(y)) %*% (y-mean(y)))
 <p>For this exercise use the <code>Auto</code> dataset from the <code>ISLR</code> package. Use <code>?Auto</code> to learn about the dataset. The goal of this exercise is to find a model that is useful for <strong>predicting</strong> the response <code>mpg</code>. We remove the <code>name</code> variable as it is not useful for this analysis. (Also, this is an easier to load version of data from the textbook.)</p>
 <pre class="r"><code># load required package, remove &quot;name&quot; variable
 library(ISLR)
-#Auto = subset(Auto, select = -c(name)) #Error in eval(substitute(select), nl, parent.frame()) : object 'name' not found
-#summary(Auto)</code></pre>
+Auto = subset(Auto, select = -c(name)) #Error in eval(substitute(select), nl, parent.frame()) : object 'name' not found</code></pre>
 <p>When evaluating a model for prediction, we often look at RMSE. However, if we both fit the model with all the data as well as evaluate RMSE using all the data, we’re essentially cheating. We’d like to use RMSE as a measure of how well the model will predict on <em>unseen</em> data. If you haven’t already noticed, the way we had been using RMSE resulted in RMSE decreasing as models became larger.</p>
 <p>To correct for this, we will only use a portion of the data to fit the model, and then we will use leftover data to evaluate the model. We will call these datasets <strong>train</strong> (for fitting) and <strong>test</strong> (for evaluating). The definition of RMSE will stay the same</p>
 <p><span class="math display">\[
@@ -704,8 +703,7 @@ names(Auto)</code></pre>
 <li>The remaining three you can pick to be anything you like. One of these should be the <em>best</em> of the five for predicting the response.</li>
 </ul>
 <p>For each model report the <strong>train</strong> and <strong>test</strong> RMSE. Arrange your results in a well-formatted markdown table. Argue that one of your models is the best for predicting the response.</p>
-<pre class="r"><code># eval rmse
-rmse = function(actual, predicted) {
+<pre class="r"><code>rmse = function(actual, predicted) {
   sqrt(mean((actual - predicted)^2)) 
 }
 
@@ -724,22 +722,70 @@ trn_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_2, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_3, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_4, auto_trn)),
-            rmse(auto_trn$mpg, predict(auto_5, auto_trn)))</code></pre>
-<pre><code>## Warning in predict.lm(auto_1, auto_trn): prediction from a rank-deficient fit
-## may be misleading</code></pre>
-<pre class="r"><code>#tst_res = c(rmse(auto_tst$mpg, predict(auto_1, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_2, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_3, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_4, auto_tst)),
-#            rmse(auto_tst$mpg, predict(auto_5, auto_tst)))
+            rmse(auto_trn$mpg, predict(auto_5, auto_trn)))
 
-#test_summary = data.frame(Model = c(&quot;auto_1&quot;, &quot;auto_2&quot;, &quot;auto_3&quot;, &quot;auto_4&quot;, &quot;auto_5&quot;),
-#                          Trained_RMSE =  trn_res, 
-#                          Tested_RMSE = tst_res)
-#colnames(test_summary) = c(&quot;Train Model&quot;, &quot;Train RMSE&quot;, &quot;Test RMSE&quot;)
+tst_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_2, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_3, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_4, auto_tst)),
+            rmse(auto_trn$mpg, predict(auto_5, auto_tst)))</code></pre>
+<pre><code>## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
 
-#library(knitr)
-#kable(res_summary)</code></pre>
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length</code></pre>
+<pre class="r"><code>test_summary = data.frame(Model = c(&quot;auto_1&quot;, &quot;auto_2&quot;, &quot;auto_3&quot;, &quot;auto_4&quot;, &quot;auto_5&quot;),
+                          Trained_RMSE = trn_res, 
+                          Tested_RMSE = tst_res)
+colnames(test_summary) = c(&quot;Train Model&quot;, &quot;Train RMSE&quot;, &quot;Test RMSE&quot;)
+
+library(knitr)
+kable(test_summary)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Train Model</th>
+<th align="right">Train RMSE</th>
+<th align="right">Test RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">auto_1</td>
+<td align="right">3.223650</td>
+<td align="right">10.58236</td>
+</tr>
+<tr class="even">
+<td align="left">auto_2</td>
+<td align="right">4.553319</td>
+<td align="right">10.64192</td>
+</tr>
+<tr class="odd">
+<td align="left">auto_3</td>
+<td align="right">3.245324</td>
+<td align="right">10.54884</td>
+</tr>
+<tr class="even">
+<td align="left">auto_4</td>
+<td align="right">4.539067</td>
+<td align="right">10.59205</td>
+</tr>
+<tr class="odd">
+<td align="left">auto_5</td>
+<td align="right">4.141059</td>
+<td align="right">10.37919</td>
+</tr>
+</tbody>
+</table>
 <p>Based on the above results, auto_4 model is the best model for predicting, since it has lowest Test_RMSE value of 3.566250 with “cylinders + displacement + weight + year + origin” predictors.</p>
 <hr />
 </div>
@@ -820,7 +866,11 @@ for (i in 1: num_sims) {
   beta_3_pval[i] = summary(sim_model)$coefficients[&quot;x3&quot;, &quot;Pr(&gt;|t|)&quot;]
   beta_5_pval[i] = summary(sim_model)$coefficients[&quot;x5&quot;, &quot;Pr(&gt;|t|)&quot;]
 }</code></pre>
-<p><strong>(d)</strong> Based on the known values of <span class="math inline">\(X\)</span>, what is the true distribution of <span class="math inline">\(\hat{\beta}_1\)</span>?</p>
+<p><strong>(d)</strong> Based on the known values of <span class="math inline">\(X\)</span>, what is the true distribution of <span class="math inline">\(\hat{\beta}_1\)</span>? The true distribution of <span class="math inline">\(\hat{\beta}_1\)</span> is</p>
+<pre class="r"><code>(covariance = sigma^2 * C[1+1, 1+1])</code></pre>
+<pre><code>## [1] 0.1892102</code></pre>
+<pre class="r"><code>(mean = beta_1)</code></pre>
+<pre><code>## [1] -0.75</code></pre>
 <p><strong>(e)</strong> Calculate the mean and variance of <code>beta_hat_1</code>. Are they close to what we would expect? Plot a histogram of <code>beta_hat_1</code>. Add a curve for the true distribution of <span class="math inline">\(\hat{\beta}_1\)</span>. Does the curve seem to match the histogram?</p>
 <pre class="r"><code>mean(beta_hat_1)</code></pre>
 <pre><code>## [1] -0.7461209</code></pre>

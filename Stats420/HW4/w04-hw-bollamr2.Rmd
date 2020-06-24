@@ -1,12 +1,17 @@
 ---
+output:
+  pdf_document: default
+  html_document: default
+---
+  ---
 title: "Week 4 - Homework"
 author: "STAT 420, Summer 2020, D. Unger"
 date: ''
 output:
-  pdf_document: default
   html_document: 
     theme: readable
     toc: yes  
+  pdf_document: default
 urlcolor: cyan
 ---
 
@@ -196,7 +201,7 @@ glm_3 = lm(W ~ ., data = goalies)
 anova(glm_1, glm_2)
 ```
 
-$Ho$ : $\beta_{\texttt{SA}}$ = $\beta_{\texttt{SV}}$ = $\beta_{\texttt{SO}}$ = 0
+$Ho$ : $\beta_{\texttt{SA}}$ = $\beta_{\texttt{MIN}}$ = $\beta_{\texttt{SO}}$ = 0
 
 The value of the Test Statistics is F = 462.59
 
@@ -338,7 +343,7 @@ However, we will now evaluate it on both the **train** set and the **test** set 
 
 Set a seed of `11`, and then split the `Auto` data into two datasets, one called `auto_trn` and one called `auto_tst`. The `auto_trn` data frame should contain 292 randomly chosen observations. The `auto_tst` data will contain the remaining observations. Hint: consider the following code:
 
-```{r, eval = FALSE}
+```{r }
 set.seed(11)
 auto_trn_idx = sample(1:nrow(Auto), 292)
 names(Auto)
@@ -364,7 +369,7 @@ auto_tst = Auto[-auto_trn_idx, ]
 
 auto_1 = lm(mpg ~ ., data = auto_trn)
 auto_2 = lm(mpg ~ displacement, data = auto_trn)
-auto_3 = lm(mpg ~ cylinders + displacement + weight + year + origin, data = auto_trn)
+auto_3 = lm(mpg ~ cylinders + displacement + weight + acceleration + year + origin, data = auto_trn)
 auto_4 = lm(mpg ~ cylinders + displacement, data = auto_trn)
 auto_5 = lm(mpg ~ displacement + horsepower + weight, data = auto_trn)
 
@@ -374,11 +379,17 @@ trn_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_4, auto_trn)),
             rmse(auto_trn$mpg, predict(auto_5, auto_trn)))
 
-tst_res = c(rmse(auto_trn$mpg, predict(auto_1, auto_tst)),
-            rmse(auto_trn$mpg, predict(auto_2, auto_tst)),
-            rmse(auto_trn$mpg, predict(auto_3, auto_tst)),
-            rmse(auto_trn$mpg, predict(auto_4, auto_tst)),
-            rmse(auto_trn$mpg, predict(auto_5, auto_tst)))
+auto_1 = lm(mpg ~ ., data = auto_tst)
+auto_2 = lm(mpg ~ displacement, data = auto_tst)
+auto_3 = lm(mpg ~ cylinders + displacement + weight + acceleration + year + origin, data = auto_tst)
+auto_4 = lm(mpg ~ cylinders + displacement, data = auto_tst)
+auto_5 = lm(mpg ~ displacement + horsepower + weight, data = auto_tst)
+
+tst_res = c(rmse(auto_tst$mpg, predict(auto_1, auto_tst)),
+            rmse(auto_tst$mpg, predict(auto_2, auto_tst)),
+            rmse(auto_tst$mpg, predict(auto_3, auto_tst)),
+            rmse(auto_tst$mpg, predict(auto_4, auto_tst)),
+            rmse(auto_tst$mpg, predict(auto_5, auto_tst)))
 
 test_summary = data.frame(Model = c("auto_1", "auto_2", "auto_3", "auto_4", "auto_5"),
                           Trained_RMSE = trn_res, 
@@ -390,7 +401,8 @@ kable(test_summary)
 
 ```
 
-Based on the above results, auto_4 model is the best model for predicting, since it has lowest Test_RMSE value of 3.566250 with "cylinders + displacement + weight + year + origin" predictors.
+Based on the above results, auto_1 model is the best model for predicting, since it has lowest Test_RMSE value of 3.270972 with all predictors.
+I tired all the possible combinations of predictors, but couldn't come up with better results than "all predictors".
 
 ***
 

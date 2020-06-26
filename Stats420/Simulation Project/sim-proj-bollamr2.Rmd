@@ -117,6 +117,93 @@ Additional things to consider:
 
 - Organize the plots in a grid for easy comparison.
 
+```{r}
+library(broom)
+
+#Significance Test
+# sigma = 1, 5, 10
+# Calculate F Statistic, p-value and R2
+
+beta_0 = 3
+beta_1 = 1
+beta_2 = 1
+beta_3 = 1
+n = 25
+sig = 1
+p = 4 # number of beta parameters
+
+study1 = read.csv("study_1.csv")
+x1 = study1$x1
+x2 = study1$x2
+x3 = study1$x3
+x0 = rep(1, n)
+
+X = cbind(x0, x1, x2, x3)
+C = solve(t(X) %*% X)
+y = rep(0, n)
+
+eps = rnorm(25, mean = 0, sd = sig)
+y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+sim_data = data.frame(y, x1, x2, x3)
+
+sim_data_lm_0 = lm(y ~ x1 + x2 + x3, data = sim_data)
+#summary(sim_data_lm_0)
+# glance(sim_data_lm_0)$statistic
+# glance(sim_data_lm_0)$p.value
+# glance(sim_data_lm_0)$r.squared
+
+#simulation results
+num_sims = 2000
+f_stat = rep(0, num_sims)
+p_val = rep(0, num_sims)
+r2 = rep(0, num_sims)
+for (i in 1:num_sims) {
+  eps = rnorm(25, mean = 0, sd = sig)
+  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+  
+  f_stat[i] = glance(sim_data_lm)$statistic
+  p_val[i] = glance(sim_data_lm)$p.value
+  r2[i] = glance(sim_data_lm)$r.squared
+}
+hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+
+sig = 5
+for (i in 1:num_sims) {
+  eps = rnorm(25, mean = 0, sd = sig)
+  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+  
+  f_stat[i] = glance(sim_data_lm)$statistic
+  p_val[i] = glance(sim_data_lm)$p.value
+  r2[i] = glance(sim_data_lm)$r.squared
+}
+hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+
+sig = 10
+for (i in 1:num_sims) {
+  eps = rnorm(25, mean = 0, sd = sig)
+  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+  
+  f_stat[i] = glance(sim_data_lm)$statistic
+  p_val[i] = glance(sim_data_lm)$p.value
+  r2[i] = glance(sim_data_lm)$r.squared
+}
+hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+```
+
+```{r}
+#Non-Significance Test
+
+
+```
 
 # Simulation Study 2: Using RMSE for Selection?
 

@@ -117,7 +117,7 @@ Additional things to consider:
 
 - Organize the plots in a grid for easy comparison.
 
-```{r}
+```{r, message=FALSE}
 library(broom)
 
 #Significance Test
@@ -147,56 +147,65 @@ y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
 sim_data = data.frame(y, x1, x2, x3)
 
 sim_data_lm_0 = lm(y ~ x1 + x2 + x3, data = sim_data)
-#summary(sim_data_lm_0)
+summary(sim_data_lm_0)
 # glance(sim_data_lm_0)$statistic
 # glance(sim_data_lm_0)$p.value
 # glance(sim_data_lm_0)$r.squared
+names(glance(sim_data_lm_0))
+glance(sim_data_lm_0)$df
+summary(sim_data_lm_0)$fstatistic[2]
+glance(sim_data_lm_0)$df.residual
+summary(sim_data_lm_0)$fstatistic[3]
 
 #simulation results
 num_sims = 2000
 f_stat = rep(0, num_sims)
 p_val = rep(0, num_sims)
 r2 = rep(0, num_sims)
-for (i in 1:num_sims) {
-  eps = rnorm(25, mean = 0, sd = sig)
-  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
-  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
-  
-  f_stat[i] = glance(sim_data_lm)$statistic
-  p_val[i] = glance(sim_data_lm)$p.value
-  r2[i] = glance(sim_data_lm)$r.squared
-}
-hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
-hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
-hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
 
-sig = 5
-for (i in 1:num_sims) {
-  eps = rnorm(25, mean = 0, sd = sig)
-  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
-  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
-  
-  f_stat[i] = glance(sim_data_lm)$statistic
-  p_val[i] = glance(sim_data_lm)$p.value
-  r2[i] = glance(sim_data_lm)$r.squared
-}
-hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
-hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
-hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+# sig = 1
+# for (i in 1:num_sims) {
+#   eps = rnorm(25, mean = 0, sd = sig)
+#   sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+#   sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+#   
+#   f_stat[i] = glance(sim_data_lm)$statistic
+#   p_val[i] = glance(sim_data_lm)$p.value
+#   r2[i] = glance(sim_data_lm)$r.squared
+# }
+# hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+# curve(df(x, df1 = summary(sim_data_lm_0)$fstatistic[2], df2 = summary(sim_data_lm_0)$fstatistic[3]), col = "red", add = TRUE, lwd = 3)
 
-sig = 10
-for (i in 1:num_sims) {
-  eps = rnorm(25, mean = 0, sd = sig)
-  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
-  sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
-  
-  f_stat[i] = glance(sim_data_lm)$statistic
-  p_val[i] = glance(sim_data_lm)$p.value
-  r2[i] = glance(sim_data_lm)$r.squared
-}
-hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
-hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
-hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+# hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+# hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+# 
+# sig = 5
+# for (i in 1:num_sims) {
+#   eps = rnorm(25, mean = 0, sd = sig)
+#   sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+#   sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+#   
+#   f_stat[i] = glance(sim_data_lm)$statistic
+#   p_val[i] = glance(sim_data_lm)$p.value
+#   r2[i] = glance(sim_data_lm)$r.squared
+# }
+# hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+# hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+# hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
+# 
+# sig = 10
+# for (i in 1:num_sims) {
+#   eps = rnorm(25, mean = 0, sd = sig)
+#   sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
+#   sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+#   
+#   f_stat[i] = glance(sim_data_lm)$statistic
+#   p_val[i] = glance(sim_data_lm)$p.value
+#   r2[i] = glance(sim_data_lm)$r.squared
+# }
+# hist(f_stat, prob = TRUE, breaks = 20, xlab = "f-statistics", ylab = "value", main = "", border = "dodgerblue")
+# hist(p_val, prob = TRUE, breaks = 20, xlab = "p-value", ylab = "value", main = "", border = "dodgerblue")
+# hist(r2, prob = TRUE, breaks = 20, xlab = "r squared", ylab = "value", main = "", border = "dodgerblue")
 ```
 
 ```{r}
@@ -261,6 +270,81 @@ Potential discussions:
 - Does the method **always** select the correct model? On average, does is select the correct model?
 - How does the level of noise affect the results?
 
+``` {r}
+library(broom)
+birthday = 18760613
+set.seed(birthday)
+
+rmse = function(acutual, predicted) {
+  sqrt(mean((acutual - predicted)^2))
+}
+
+beta0 = 0
+beta1 = 3
+beta2 = -4
+beta3 = 1.6
+beta4 = -1.1
+beta5 = 0.7
+beta6 = 0.5
+
+n = 500
+study2 = read.csv("study_2.csv")
+x0 = rep(1, n)
+x1 = study2$x1
+x2 = study2$x2
+x3 = study2$x3
+x4 = study2$x4
+x5 = study2$x5
+x6 = study2$x6
+x7 = study2$x7
+x8 = study2$x8
+x9 = study2$x9
+C = cbind(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9)
+
+sig = 1
+eps = rnorm(n, mean = 0, sd = sig)
+study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
+
+num_sims = 2000
+train_idx = sample(1:nrow(study2), 250)
+train_study2 = study2[train_idx, ]
+test_study2 = study2[-train_idx, ]
+
+model1 = lm(y ~ x1, data = train_study2)
+model2 = lm(y ~ x1 + x2, data = train_study2)
+model3 = lm(y ~ x1 + x2 + x3, data = train_study2)
+model4 = lm(y ~ x1 + x2 + x3 + x4, data = train_study2)
+model5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train_study2)
+model6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train_study2)
+model7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train_study2)
+model8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train_study2)
+model9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train_study2)
+
+train_error_sig1 = c(rmse(train_study2$y, predict(model1, train_study2)),
+  rmse(train_study2$y, predict(model2, train_study2)),
+  rmse(train_study2$y, predict(model3, train_study2)),
+  rmse(train_study2$y, predict(model4, train_study2)),
+  rmse(train_study2$y, predict(model5, train_study2)),
+  rmse(train_study2$y, predict(model6, train_study2)),
+  rmse(train_study2$y, predict(model7, train_study2)),
+  rmse(train_study2$y, predict(model8, train_study2)),
+  rmse(train_study2$y, predict(model9, train_study2)))
+
+test_error_sig1 = c(rmse(test_study2$y, predict(model1, test_study2)),
+  rmse(test_study2$y, predict(model2, test_study2)),
+  rmse(test_study2$y, predict(model3, test_study2)),
+  rmse(test_study2$y, predict(model4, test_study2)),
+  rmse(test_study2$y, predict(model5, test_study2)),
+  rmse(test_study2$y, predict(model6, test_study2)),
+  rmse(test_study2$y, predict(model7, test_study2)),
+  rmse(test_study2$y, predict(model8, test_study2)),
+  rmse(test_study2$y, predict(model9, test_study2)))
+
+study2_models = c("model1", "model2", "model3", "model4", "model5", "model6", "model7", "model8", "model9")
+study2_results = data.frame(study2_models, train_error_sig1, test_error_sig1)
+colnames(study2_results) = c("Model", "Train RMSE", "Test RMSE")
+knitr::kable(study2_results)
+```
 
 # Simulation Study 3: Power
 

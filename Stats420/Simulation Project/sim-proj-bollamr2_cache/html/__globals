@@ -1,0 +1,5 @@
+unnamed-chunk-1	set.seed
+unnamed-chunk-2	~	$	cbind	data.frame	glance	library	lm	names	read.csv	rep	rnorm	solve	summary	t
+unnamed-chunk-3	
+unnamed-chunk-4	^	~	$	$<-	c	cbind	library	lm	mean	nrow	predict	read.csv	rep	rnorm	sample	set.seed	sqrt
+unnamed-chunk-5	n	seq

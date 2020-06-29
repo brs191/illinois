@@ -1,0 +1,9 @@
+unnamed-chunk-1	birthday	.Random.seed
+unnamed-chunk-2	beta_0	beta_1	beta_2	beta_3	C	eps	f_stat_1	f_stat_10	f_stat_5	i	n	num_sims	p_val_1	p_val_10	p_val_5	r2_1	r2_10	r2_5	sig	sim_data	sim_data_lm	study1	X	x0	x1	x2	x3	y
+unnamed-chunk-3	beta_0	beta_1	beta_2	beta_3	C	eps	f_stat_ns_1	f_stat_ns_10	f_stat_ns_5	i	n	p_val_ns_1	p_val_ns_10	p_val_ns_5	r2_ns_1	r2_ns_10	r2_ns_5	sig	sim_data	sim_data_lm	study1	X	x0	x1	x2	x3	y
+unnamed-chunk-4	
+unnamed-chunk-5	
+unnamed-chunk-6	avg_rmse_train	avg_rmse_tst	beta0	beta1	beta2	beta3	beta4	beta5	beta6	birthday	C	eps	i	model1	model2	model3	model4	model5	model6	model7	model8	model9	n	num_sims	rmse	rmse_train_1	rmse_train_2	rmse_train_3	rmse_train_4	rmse_train_5	rmse_train_6	rmse_train_7	rmse_train_8	rmse_train_9	rmse_tst_1	rmse_tst_2	rmse_tst_3	rmse_tst_4	rmse_tst_5	rmse_tst_6	rmse_tst_7	rmse_tst_8	rmse_tst_9	s	sig	sigmas	study2	test_study2	train_idx	train_study2	x0	x1	x2	x3	x4	x5	x6	x7	x8	x9
+unnamed-chunk-7	study2_models	study2_results
+unnamed-chunk-8	
+unnamed-chunk-9	beta_pvalue	beta0	beta1	birthday	eps	i	n	noOfSims	num_sims	p_value	sig	x_values	y_values

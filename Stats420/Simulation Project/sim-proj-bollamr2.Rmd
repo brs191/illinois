@@ -247,7 +247,7 @@ r2_ns_1 = rep(0, num_sims)
 for (i in 1:num_sims) {
  eps = rnorm(25, mean = 0, sd = sig)
  sim_data$y = beta_0 * x0 + beta_1 * x1 + beta_2 * x2 + beta_3 * x3 + eps
- sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
+   sim_data_lm = lm(y ~ x1 + x2 + x3, data = sim_data)
 
  f_stat_ns_1[i] = glance(sim_data_lm)$statistic
  p_val_ns_1[i] = glance(sim_data_lm)$p.value
@@ -306,12 +306,18 @@ hist(f_stat_1, prob = TRUE, breaks = 20, xlab = "Significance f-statistics for s
 hist(p_val_1, prob = TRUE, breaks = 20, xlab = "Significance p-value for sigma 1", ylab = "value", main = "", border = "dodgerblue")
 hist(r2_1, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 1", ylab = "value", main = "", border = "dodgerblue")
 
+
 hist(f_stat_5, prob = TRUE, breaks = 20, xlab = "Significance f-statistics for sigma 5", ylab = "value", main = "", border = "dodgerblue")
+
 hist(p_val_5, prob = TRUE, breaks = 20, xlab = "Significance p-value for sigma 5", ylab = "value", main = "", border = "dodgerblue")
+
 hist(r2_5, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 5", ylab = "value", main = "", border = "dodgerblue")
 
+
 hist(f_stat_10, prob = TRUE, breaks = 20, xlab = "Significance f-statistics for sigma 10", ylab = "value", main = "", border = "dodgerblue")
+
 hist(p_val_10, prob = TRUE, breaks = 20, xlab = "Significance p-value for sigma 10", ylab = "value", main = "", border = "dodgerblue")
+
 hist(r2_10, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 10", ylab = "value", main = "", border = "dodgerblue")
 
 ```
@@ -321,17 +327,25 @@ hist(r2_10, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 1
 par(mfrow=c(3,3))
 
 hist(f_stat_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 1", ylab = "value", main = "", border = "dodgerblue")
+curve(df(x, df1 = 4 - 1, df2 = 25 - 4), col = "red", add = TRUE, lwd = 2)
 hist(p_val_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 1", ylab = "value", main = "", border = "dodgerblue")
+curve(dunif(x), col = "red", add = TRUE, lwd = 2)
 hist(r2_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 1", ylab = "value", main = "", border = "dodgerblue")
+curve(dbeta(x, 4/2, (n-4-1)/2),  col = "red", add = TRUE, lwd = 2) # n = 25, p = 4
 
 hist(f_stat_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 5", ylab = "value", main = "", border = "dodgerblue")
+curve(df(x, df1 = 4 - 1, df2 = 25 - 4), col = "red", add = TRUE, lwd = 2)
 hist(p_val_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 5", ylab = "value", main = "", border = "dodgerblue")
+curve(dunif(x), col = "red", add = TRUE, lwd = 2)
 hist(r2_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 5", ylab = "value", main = "", border = "dodgerblue")
+curve(dbeta(x, 4/2, (n-4-1)/2),  col = "red", add = TRUE, lwd = 2) # n = 25, p = 4
 
 hist(f_stat_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 10", ylab = "value", main = "", border = "dodgerblue")
+curve(df(x, df1 = 4 - 1, df2 = 25 - 4), col = "red", add = TRUE, lwd = 2)
 hist(p_val_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 10", ylab = "value", main = "", border = "dodgerblue")
+curve(dunif(x), col = "red", add = TRUE, lwd = 2)
 hist(r2_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
+curve(dbeta(x, 4/2, (n-4-1)/2),  col = "red", add = TRUE, lwd = 2) # n = 25, p = 4
 ```
 
 $Discussion$
@@ -435,128 +449,94 @@ x9 = study2$x9
 C = cbind(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9)
 
 sig = 1
-eps = rnorm(n, mean = 0, sd = sig)
-study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
 
-num_sims = 1000
-train_idx = sample(1:nrow(study2), 250)
-train_study2 = study2[train_idx, ]
-test_study2 = study2[-train_idx, ]
+sigmas = c(1,2,4)
 
-model1 = lm(y ~ x1, data = train_study2)
-model2 = lm(y ~ x1 + x2, data = train_study2)
-model3 = lm(y ~ x1 + x2 + x3, data = train_study2)
-model4 = lm(y ~ x1 + x2 + x3 + x4, data = train_study2)
-model5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train_study2)
-model6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train_study2)
-model7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train_study2)
-model8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train_study2)
-model9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train_study2)
+avg_rmse_train = matrix(0, nrow=3, ncol=9)
+avg_rmse_tst = matrix(1, nrow=3, ncol=9)
 
-train_error_sig1 = c(rmse(train_study2$y, predict(model1, train_study2)),
-  rmse(train_study2$y, predict(model2, train_study2)),
-  rmse(train_study2$y, predict(model3, train_study2)),
-  rmse(train_study2$y, predict(model4, train_study2)),
-  rmse(train_study2$y, predict(model5, train_study2)),
-  rmse(train_study2$y, predict(model6, train_study2)),
-  rmse(train_study2$y, predict(model7, train_study2)),
-  rmse(train_study2$y, predict(model8, train_study2)),
-  rmse(train_study2$y, predict(model9, train_study2)))
+for (s in 1:length(sigmas)) {
+  
+  eps = rnorm(n, mean = 0, sd = sigmas[s])
+  study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
+  
+  num_sims = 3 #1000
+  
+  rmse_train_1 = rep(0, num_sims)
+  rmse_train_2 = rep(0, num_sims)
+  rmse_train_3 = rep(0, num_sims)
+  rmse_train_4 = rep(0, num_sims)
+  rmse_train_5 = rep(0, num_sims)
+  rmse_train_6 = rep(0, num_sims)
+  rmse_train_7 = rep(0, num_sims)
+  rmse_train_8 = rep(0, num_sims)
+  rmse_train_9 = rep(0, num_sims)
+  rmse_tst_1 = rep(0, num_sims)
+  rmse_tst_2 = rep(0, num_sims)
+  rmse_tst_3 = rep(0, num_sims)
+  rmse_tst_4 = rep(0, num_sims)
+  rmse_tst_5 = rep(0, num_sims)
+  rmse_tst_6 = rep(0, num_sims)
+  rmse_tst_7 = rep(0, num_sims)
+  rmse_tst_8 = rep(0, num_sims)
+  rmse_tst_9 = rep(0, num_sims)
 
-test_error_sig1 = c(rmse(test_study2$y, predict(model1, test_study2)),
-  rmse(test_study2$y, predict(model2, test_study2)),
-  rmse(test_study2$y, predict(model3, test_study2)),
-  rmse(test_study2$y, predict(model4, test_study2)),
-  rmse(test_study2$y, predict(model5, test_study2)),
-  rmse(test_study2$y, predict(model6, test_study2)),
-  rmse(test_study2$y, predict(model7, test_study2)),
-  rmse(test_study2$y, predict(model8, test_study2)),
-  rmse(test_study2$y, predict(model9, test_study2)))
-
-# study2_models = c("model1", "model2", "model3", "model4", "model5", "model6", "model7", "model8", "model9")
-# study2_results = data.frame(study2_models, train_error_sig1, test_error_sig1)
-# colnames(study2_results) = c("Model", "Train RMSE", "Test RMSE")
-# knitr::kable(study2_results)
-
-sig = 2
-eps = rnorm(n, mean = 0, sd = sig)
-study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
-
-num_sims = 1000
-train_idx = sample(1:nrow(study2), 250)
-train_study2 = study2[train_idx, ]
-test_study2 = study2[-train_idx, ]
-
-model1 = lm(y ~ x1, data = train_study2)
-model2 = lm(y ~ x1 + x2, data = train_study2)
-model3 = lm(y ~ x1 + x2 + x3, data = train_study2)
-model4 = lm(y ~ x1 + x2 + x3 + x4, data = train_study2)
-model5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train_study2)
-model6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train_study2)
-model7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train_study2)
-model8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train_study2)
-model9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train_study2)
-
-train_error_sig2 = c(rmse(train_study2$y, predict(model1, train_study2)),
-  rmse(train_study2$y, predict(model2, train_study2)),
-  rmse(train_study2$y, predict(model3, train_study2)),
-  rmse(train_study2$y, predict(model4, train_study2)),
-  rmse(train_study2$y, predict(model5, train_study2)),
-  rmse(train_study2$y, predict(model6, train_study2)),
-  rmse(train_study2$y, predict(model7, train_study2)),
-  rmse(train_study2$y, predict(model8, train_study2)),
-  rmse(train_study2$y, predict(model9, train_study2)))
-
-test_error_sig2 = c(rmse(test_study2$y, predict(model1, test_study2)),
-  rmse(test_study2$y, predict(model2, test_study2)),
-  rmse(test_study2$y, predict(model3, test_study2)),
-  rmse(test_study2$y, predict(model4, test_study2)),
-  rmse(test_study2$y, predict(model5, test_study2)),
-  rmse(test_study2$y, predict(model6, test_study2)),
-  rmse(test_study2$y, predict(model7, test_study2)),
-  rmse(test_study2$y, predict(model8, test_study2)),
-  rmse(test_study2$y, predict(model9, test_study2)))
-
-
-sig = 4
-eps = rnorm(n, mean = 0, sd = sig)
-study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
-
-num_sims = 1000
-train_idx = sample(1:nrow(study2), 250)
-train_study2 = study2[train_idx, ]
-test_study2 = study2[-train_idx, ]
-
-model1 = lm(y ~ x1, data = train_study2)
-model2 = lm(y ~ x1 + x2, data = train_study2)
-model3 = lm(y ~ x1 + x2 + x3, data = train_study2)
-model4 = lm(y ~ x1 + x2 + x3 + x4, data = train_study2)
-model5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train_study2)
-model6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train_study2)
-model7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train_study2)
-model8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train_study2)
-model9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train_study2)
-
-train_error_sig4 = c(rmse(train_study2$y, predict(model1, train_study2)),
-  rmse(train_study2$y, predict(model2, train_study2)),
-  rmse(train_study2$y, predict(model3, train_study2)),
-  rmse(train_study2$y, predict(model4, train_study2)),
-  rmse(train_study2$y, predict(model5, train_study2)),
-  rmse(train_study2$y, predict(model6, train_study2)),
-  rmse(train_study2$y, predict(model7, train_study2)),
-  rmse(train_study2$y, predict(model8, train_study2)),
-  rmse(train_study2$y, predict(model9, train_study2)))
-
-test_error_sig4 = c(rmse(test_study2$y, predict(model1, test_study2)),
-  rmse(test_study2$y, predict(model2, test_study2)),
-  rmse(test_study2$y, predict(model3, test_study2)),
-  rmse(test_study2$y, predict(model4, test_study2)),
-  rmse(test_study2$y, predict(model5, test_study2)),
-  rmse(test_study2$y, predict(model6, test_study2)),
-  rmse(test_study2$y, predict(model7, test_study2)),
-  rmse(test_study2$y, predict(model8, test_study2)),
-  rmse(test_study2$y, predict(model9, test_study2)))
-
+  for (i in 1:num_sims) {
+    train_idx = sample(1:nrow(study2), 250)
+    train_study2 = study2[train_idx, ]
+    test_study2 = study2[-train_idx, ]
+    
+    model1 = lm(y ~ x1, data = train_study2)
+    model2 = lm(y ~ x1 + x2, data = train_study2)
+    model3 = lm(y ~ x1 + x2 + x3, data = train_study2)
+    model4 = lm(y ~ x1 + x2 + x3 + x4, data = train_study2)
+    model5 = lm(y ~ x1 + x2 + x3 + x4 + x5, data = train_study2)
+    model6 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6, data = train_study2)
+    model7 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7, data = train_study2)
+    model8 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8, data = train_study2)
+    model9 = lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9, data = train_study2)
+    
+    rmse_train_1[i] = rmse(train_study2$y, predict(model1, train_study2))
+    rmse_train_2[i] = rmse(train_study2$y, predict(model2, train_study2))
+    rmse_train_3[i] = rmse(train_study2$y, predict(model3, train_study2))
+    rmse_train_4[i] = rmse(train_study2$y, predict(model4, train_study2))
+    rmse_train_5[i] = rmse(train_study2$y, predict(model5, train_study2))
+    rmse_train_6[i] = rmse(train_study2$y, predict(model6, train_study2))
+    rmse_train_7[i] = rmse(train_study2$y, predict(model7, train_study2))
+    rmse_train_8[i] = rmse(train_study2$y, predict(model8, train_study2))
+    rmse_train_9[i] = rmse(train_study2$y, predict(model9, train_study2))
+    
+    rmse_tst_1[i] = rmse(test_study2$y, predict(model1, test_study2))
+    rmse_tst_2[i] = rmse(test_study2$y, predict(model2, test_study2))
+    rmse_tst_3[i] = rmse(test_study2$y, predict(model3, test_study2))
+    rmse_tst_4[i] = rmse(test_study2$y, predict(model4, test_study2))
+    rmse_tst_5[i] = rmse(test_study2$y, predict(model5, test_study2))
+    rmse_tst_6[i] = rmse(test_study2$y, predict(model6, test_study2))
+    rmse_tst_7[i] = rmse(test_study2$y, predict(model7, test_study2))
+    rmse_tst_8[i] = rmse(test_study2$y, predict(model8, test_study2))
+    rmse_tst_9[i] = rmse(test_study2$y, predict(model9, test_study2))
+  }
+  
+  avg_rmse_train[s, 1] = mean(rmse_train_1)
+  avg_rmse_train[s, 2] = mean(rmse_train_2)
+  avg_rmse_train[s, 3] = mean(rmse_train_3)
+  avg_rmse_train[s, 4] = mean(rmse_train_4)
+  avg_rmse_train[s, 5] = mean(rmse_train_5)
+  avg_rmse_train[s, 6] = mean(rmse_train_6)
+  avg_rmse_train[s, 7] = mean(rmse_train_7)
+  avg_rmse_train[s, 8] = mean(rmse_train_8)
+  avg_rmse_train[s, 9] = mean(rmse_train_9)
+  
+  avg_rmse_tst[s, 1] = mean(rmse_tst_1)
+  avg_rmse_tst[s, 2] = mean(rmse_tst_2)
+  avg_rmse_tst[s, 3] = mean(rmse_tst_3)
+  avg_rmse_tst[s, 4] = mean(rmse_tst_4)
+  avg_rmse_tst[s, 5] = mean(rmse_tst_5)
+  avg_rmse_tst[s, 6] = mean(rmse_tst_6)
+  avg_rmse_tst[s, 7] = mean(rmse_tst_7)
+  avg_rmse_tst[s, 8] = mean(rmse_tst_8)
+  avg_rmse_tst[s, 9] = mean(rmse_tst_9)
+}
 ```
 
 
@@ -567,10 +547,9 @@ Results need to plotted here. Model 6 should be good ideally.
 ``` {r }
 
 study2_models = c("Model1", "Model2", "Model3", "Model4", "Model5", "Model6", "Model7", "Model8", "Model9")
-study2_results = data.frame(study2_models, train_error_sig1, test_error_sig1, train_error_sig2, test_error_sig2, train_error_sig4, test_error_sig4)
+study2_results = data.frame(study2_models, avg_rmse_train[1, ], avg_rmse_tst[1, ], avg_rmse_train[2, ], avg_rmse_tst[2, ], avg_rmse_train[3, ], avg_rmse_tst[3, ])
 colnames(study2_results) = c("Model", "Train RMSE Sigma(1)", "Test RMSE Sigma(1)", "Train RMSE Sigma(2)", "Test RMSE Sigma(2)", "Train RMSE Sigma(4)", "Test RMSE Sigma(4)")
 knitr::kable(study2_results)
-
 
 ```
 
@@ -653,8 +632,13 @@ Potential discussions:
 - How do $n$, $\beta_1$, and $\sigma$ affect power? Consider additional plots to demonstrate these effects.
 - Are $1000$ simulations sufficient?
 
+**Introduction**
+
+Write Introduction
+
+**Methods**
+
 ``` {r}
-library(dplyr)
 birthday = 18760613
 set.seed(birthday)
 
@@ -662,23 +646,60 @@ beta0 = 0
 beta1 = seq(-2.0, 2, by=0.1) #41 in size
 sig = 1 #1, 2, 3
 n = 10 #10, 20, 30
-x_values = seq(0, 5, length = n) #n in size
+alpha = 0.05
 
-p_value = rep(0, 1000) #1000 reps
-
-#every beta1 has a p_value
-beta_pvalue = list(beta1, p_value)
-
+num_sims = 10
 # for every beta1 value
 #  for every simulations num_sims
-eps = rnorm(n, mean = 0, sd = sig)
-y_values = beta0 + beta1 * x_values + eps #41 in size
-n
-length(eps)
-length(x_values)
-length(y_values)
+calc_power = function(sig = 1, n = 10) {
+  power = rep(0, length(beta1))
+  for (i in 1: length(beta1)) {
+    p_value = rep(0, num_sims) #1000 reps
+    for (noOfSims in 1:num_sims) {
+      eps = rnorm(n, mean = 0, sd = sig)
+      y = beta0 + beta1[i] * x_values + eps #41 in size
+      m_lm = lm(y ~ x_values, data = data.frame(y, x=x_values))
+      p_values[noOfSims] = glance(m_lm)$p.value
+    }
+    power[i] = mean(p_values < alpha)
+  }
+  return(power)
+}
 
+
+#power_sigma_n
+n = 10
+x_values = seq(0, 5, length = n) #n in size
+power_1_10 = calc_power(1, n)
+power_2_10 = calc_power(2, n)
+power_4_10 = calc_power(4, n)
+
+n = 20
+x_values = seq(0, 5, length = n) #n in size
+power_1_20 = calc_power(1, n)
+power_2_20 = calc_power(2, n)
+power_4_20 = calc_power(4, n)
+
+n = 30
+x_values = seq(0, 5, length = n) #n in size
+power_1_30 = calc_power(1, n)
+power_2_30 = calc_power(2, n)
+power_4_30 = calc_power(4, n)
 
 ```
+
+**Results**
+
+``` {r}
+
+plot(power ~ beta, data = data.frame(power = power_1_10, beta = beta1), xlab = "beta values", ylab = "power", pch = 20, cex = 2)
+
+
+# library(ggplot2)
+# ggplot(data = data.frame(power = power_1_10, beta = beta1), aes(x = beta, y = power)) +
+#   stat_smooth(method = "lm", se = FALSE, color = "green", fomulate = power ~ beta)  
+```
+
+**Discussions**
 
 

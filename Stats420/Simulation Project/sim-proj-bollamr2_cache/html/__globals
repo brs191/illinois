@@ -1,9 +1,12 @@
 unnamed-chunk-1	set.seed
-unnamed-chunk-2	[<-	~	$	$<-	cbind	data.frame	for	glance	library	lm	read.csv	rep	rnorm	solve	t
-unnamed-chunk-3	[<-	~	$	$<-	cbind	for	glance	lm	num_sims	read.csv	rep	rnorm	solve	t
+unnamed-chunk-2	$	$<-	[<-	~	cbind	data.frame	for	glance	library	lm	read.csv	rep	rnorm	solve	t
+unnamed-chunk-3	$	$<-	[<-	~	cbind	for	glance	lm	num_sims	read.csv	rep	rnorm	solve	t
 unnamed-chunk-4	c	f_stat_1	f_stat_10	f_stat_5	hist	p_val_1	p_val_10	p_val_5	par	r2_1	r2_10	r2_5
 unnamed-chunk-5	c	curve	dbeta	df	dunif	f_stat_ns_1	f_stat_ns_10	f_stat_ns_5	hist	n	p_val_ns_1	p_val_ns_10	p_val_ns_5	par	r2_ns_1	r2_ns_10	r2_ns_5	x
-unnamed-chunk-6	[<-	^	~	$	$<-	c	cbind	for	length	library	lm	matrix	mean	nrow	predict	read.csv	rep	rnorm	sample	set.seed	sqrt
-unnamed-chunk-7	::	avg_rmse_train	avg_rmse_tst	c	colnames<-	data.frame
-unnamed-chunk-8	n	seq
-unnamed-chunk-9	for	length	library	list	rep	rnorm	seq	set.seed
+unnamed-chunk-6	$	$<-	[<-	^	~	c	cbind	for	length	library	lm	matrix	mean	nrow	predict	read.csv	rep	rnorm	sample	set.seed	sqrt
+unnamed-chunk-7	~	avg_rmse_train	avg_rmse_tst	c	max	par	plot	round	text
+unnamed-chunk-8	~	avg_rmse_train	avg_rmse_tst	c	max	par	plot	round	text
+unnamed-chunk-9	~	avg_rmse_train	avg_rmse_tst	c	max	par	plot	round	text
+unnamed-chunk-10	n	seq
+unnamed-chunk-11	$	[<-	~	<	data.frame	for	glance	length	lm	mean	rep	return	rnorm	seq	set.seed
+unnamed-chunk-12	~	beta1	c	data.frame	legend	lines	par	plot	power_1_10	power_1_20	power_1_30	power_2_10	power_2_20	power_2_30	power_4_10	power_4_20	power_4_30	title

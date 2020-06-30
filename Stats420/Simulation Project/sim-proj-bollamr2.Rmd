@@ -117,7 +117,7 @@ Additional things to consider:
 
 - Organize the plots in a grid for easy comparison.
 
-$Introduction$
+$\underline{Introduction}$
 
 This is the part i explain what i did.
 We need to consider two models, "significant" model and "non-significant model". 
@@ -138,10 +138,12 @@ apply linear model and calculate the **"F-Statistics"**, **"P-Value"** and **"R2
 We do the above calculations with our **2000** simulations with **3** different sigma
 values **"1, 5, 10"** with a sample size of **25(n)**
 
-$Method$
+$\underline{Method}$
 
+Below we calculate the F-statistic, P-Value and R2 for **Significant model** with the
+help of broom library.
 
-```{r, message=FALSE, eval = TRUE}
+```{r, message=FALSE, eval = TRUE, warning=FALSE}
 library(broom)
 
 #Significance Test
@@ -166,7 +168,7 @@ C = solve(t(X) %*% X)
 y = rep(0, n)
 
 sig = 1
-num_sims = 2000
+num_sims = 2000 # RAJA FIXME
 sim_data = data.frame(y, x1, x2, x3)
 f_stat_1 = rep(0, num_sims)
 p_val_1 = rep(0, num_sims)
@@ -180,9 +182,6 @@ for (i in 1:num_sims) {
  p_val_1[i] = glance(sim_data_lm)$p.value
  r2_1[i] = glance(sim_data_lm)$r.squared
 }
-# hist(f_stat_1, prob = TRUE, breaks = 20, xlab = "f-statistics for sigma 1", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_1, prob = TRUE, breaks = 20, xlab = "p-value for sigma 1", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_1, prob = TRUE, breaks = 20, xlab = "r squared for sigma 1", ylab = "value", main = "", border = "dodgerblue")
 
 sig = 5
 f_stat_5 = rep(0, num_sims)
@@ -198,10 +197,6 @@ for (i in 1:num_sims) {
  r2_5[i] = glance(sim_data_lm)$r.squared
 }
 
-# hist(f_stat_5, prob = TRUE, breaks = 20, xlab = "f-statistics for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_5, prob = TRUE, breaks = 20, xlab = "p-value for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_5, prob = TRUE, breaks = 20, xlab = "r squared for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-
 sig = 10
 f_stat_10 = rep(0, num_sims)
 p_val_10 = rep(0, num_sims)
@@ -215,13 +210,12 @@ for (i in 1:num_sims) {
  p_val_10[i] = glance(sim_data_lm)$p.value
  r2_10[i] = glance(sim_data_lm)$r.squared
 }
-# hist(f_stat_10, prob = TRUE, breaks = 20, xlab = "f-statistics for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_10, prob = TRUE, breaks = 20, xlab = "p-value for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_10, prob = TRUE, breaks = 20, xlab = "r squared for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
 ```
 
-```{r, eval = TRUE}
+Below we calculate the F-statistic, P-Value and R2 for **Non-Significant model** with the
+help of broom library.
+
+```{r, eval = TRUE, warning=FALSE}
 #Non-Significance Test
 beta_0 = 3
 beta_1 = 0
@@ -253,9 +247,6 @@ for (i in 1:num_sims) {
  p_val_ns_1[i] = glance(sim_data_lm)$p.value
  r2_ns_1[i] = glance(sim_data_lm)$r.squared
 }
-# hist(f_stat_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 1", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 1", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_ns_1, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 1", ylab = "value", main = "", border = "dodgerblue")
 
 sig = 5
 f_stat_ns_5 = rep(0, num_sims)
@@ -271,10 +262,6 @@ for (i in 1:num_sims) {
  r2_ns_5[i] = glance(sim_data_lm)$r.squared
 }
 
-# hist(f_stat_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_ns_5, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-
 sig = 10
 f_stat_ns_10 = rep(0, num_sims)
 p_val_ns_10 = rep(0, num_sims)
@@ -288,16 +275,13 @@ for (i in 1:num_sims) {
  p_val_ns_10[i] = glance(sim_data_lm)$p.value
  r2_ns_10[i] = glance(sim_data_lm)$r.squared
 }
-# hist(f_stat_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance f-statistics for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-# hist(p_val_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance p-value for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-# hist(r2_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
 ```
 
 
-$Results$
+$\underline{Results}$
 
-Results need to be plotted here.
+We plot the histograms of f-statistic, p-value and R2 for Significant Model below.
+
 ``` {r}
 #Plotting significance Model
 par(mfrow=c(3,3))
@@ -308,19 +292,17 @@ hist(r2_1, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 1"
 
 
 hist(f_stat_5, prob = TRUE, breaks = 20, xlab = "Significance f-statistics for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-
 hist(p_val_5, prob = TRUE, breaks = 20, xlab = "Significance p-value for sigma 5", ylab = "value", main = "", border = "dodgerblue")
-
 hist(r2_5, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 5", ylab = "value", main = "", border = "dodgerblue")
 
 
 hist(f_stat_10, prob = TRUE, breaks = 20, xlab = "Significance f-statistics for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
 hist(p_val_10, prob = TRUE, breaks = 20, xlab = "Significance p-value for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
 hist(r2_10, prob = TRUE, breaks = 20, xlab = "Significance r squared for sigma 10", ylab = "value", main = "", border = "dodgerblue")
-
 ```
+
+We plot the histograms of f-statistic, p-value and R2 for Non-Significant Model below along with the curves for the distributions for comparison.
+
 
 ``` {r }
 #Plotting Non-significance Model
@@ -348,9 +330,47 @@ hist(r2_ns_10, prob = TRUE, breaks = 20, xlab = "Non-Significance r squared for 
 curve(dbeta(x, 4/2, (n-4-1)/2),  col = "red", add = TRUE, lwd = 2) # n = 25, p = 4
 ```
 
-$Discussion$
+$\underline{Discussion}$
 
-Let me discuss something here
+**F-Statistic**
+Significant model
+a. We notice that F-Statistics follows a right skewed distribution.
+b. We don't need to add a curve for the true distribution but the empirical 
+distributions from the simulations ranges from 0 to 0.03.
+c.The F-Statistics value increases with the increase in the sigma value.
+This is an expected behavior as we are increase the Noise factor in the model.
+
+Non-Significant model
+a. F-Statistics empirical calculations pretty much follow the true distribution values.
+b. We can notice from the equation that the factors that are influencing the f-stats
+value is in the form of p-1 and n-p
+c. We notice that with the increase of sigma value the histogram squeezes itself
+closer to the mean value of the distribution.
+
+**P-Value**
+Significant model
+a. P-Value follows a right skew distribution wit the increase of noise in the model.
+With a sigma value of 1, the p-value distribution is close to the mean value.
+b. We don't need to add true distribution curve.
+c. we notice that the p-value increases with the increase in the sigma value. Meaning
+that it values are getting distributed away from the mean, resulting is not so reliable
+estimations.
+
+Non-Significant Model
+a. P-Value remains pretty much a constant value.
+b. We also notice that p-value follows a uniform distribution (x).
+c. Irrespective of the Sigma value as it is meant to be since the beta1 value is zero.
+
+**R Squared**
+Significant model
+We notice that R2 increases with the increase in the Sigma Values. With an increase
+in the sigma value, the R2 values also increase resulting a bigger range of variance for 
+the esitmated values.
+
+Non-Significant model
+R2 follows a beta distribution with the parameters (p/2) and (n-p-1)/2.
+As expected the R2 value increase with an increase in the sigma value because of 
+the extra noise that is added in to the model.
 
 
 
@@ -410,12 +430,20 @@ Potential discussions:
 - Does the method **always** select the correct model? On average, does is select the correct model?
 - How does the level of noise affect the results?
 
-$Introduction$
+$\underline{Introduction}$
 
-Need to introduce something here
+In this simulation study we look at the RSME calculations based on 
+\[
+\text{RMSE}(\text{model, data}) = \sqrt{\frac{1}{n} \sum_{i = 1}^{n}(y_i - \hat{y}_i)^2}
+\]
+for a Train dataset and Test dataset extracted from the given dataset.
 
+We created 9 models for the evaluating the datasets and come up with the results for each model
+with a varying sigma value in the range of (1,2,4) and a sample data set of size 500 and 1000 simulations.
 
-$Method$
+$\underline{Method}$
+
+We use broom library to create the summary details of the a LM model.
 
 ``` {r}
 library(broom)
@@ -460,7 +488,7 @@ for (s in 1:length(sigmas)) {
   eps = rnorm(n, mean = 0, sd = sigmas[s])
   study2$y = beta0 * x0 + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4 + beta5 * x5 + beta6 * x6 + eps
   
-  num_sims = 3 #1000
+  num_sims = 1000 #1000 RAJA FIXME
   
   rmse_train_1 = rep(0, num_sims)
   rmse_train_2 = rep(0, num_sims)
@@ -540,23 +568,75 @@ for (s in 1:length(sigmas)) {
 ```
 
 
-$Results$
+$\underline{Results}$
 
-Results need to plotted here. Model 6 should be good ideally.
+Following is a resultant plot of average rmse train vs average rmse test per model 
+with sigma value of 1
 
 ``` {r }
+train_max = max(avg_rmse_train)
+test_max = max(avg_rmse_tst)
 
-study2_models = c("Model1", "Model2", "Model3", "Model4", "Model5", "Model6", "Model7", "Model8", "Model9")
-study2_results = data.frame(study2_models, avg_rmse_train[1, ], avg_rmse_tst[1, ], avg_rmse_train[2, ], avg_rmse_tst[2, ], avg_rmse_train[3, ], avg_rmse_tst[3, ])
-colnames(study2_results) = c("Model", "Train RMSE Sigma(1)", "Test RMSE Sigma(1)", "Train RMSE Sigma(2)", "Test RMSE Sigma(2)", "Train RMSE Sigma(4)", "Test RMSE Sigma(4)")
-knitr::kable(study2_results)
+par(mfrow=c(2,1))
+model_num = c(1:9)
+plot(avg_rmse_train[1, ] ~ model_num, xlim = c(1,9), ylim = c(0, train_max), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 1", ylab = "Avg Train RSME")
+text(avg_rmse_train[1, ] ~ model_num, labels = round(avg_rmse_train[1, ], 3), pos = 3, cex = .8, col="blue")
+
+plot(avg_rmse_tst[1, ] ~ model_num, xlim = c(1,9), ylim = c(0, test_max), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 1", ylab = "Avg Test RSME")
+text(avg_rmse_tst[1, ] ~ model_num, labels = round(avg_rmse_tst[1, ], 3), pos = 3, cex = .8, col="green")
+
+```
+Following is a resultant plot of average rmse train vs average rmse test per model 
+with sigma value of 2
+
+
+``` {r }
+train_max = max(avg_rmse_train)
+test_max = max(avg_rmse_tst)
+
+par(mfrow=c(2,1))
+model_num = c(1:9)
+plot(avg_rmse_train[2, ] ~ model_num, xlim = c(1,9), ylim = c(0, train_max), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 2", ylab = "Avg Train RSME")
+text(avg_rmse_train[2, ] ~ model_num, labels = round(avg_rmse_train[2, ], 3), pos = 3, cex = .8, col="blue")
+
+plot(avg_rmse_tst[2, ] ~ model_num, xlim = c(1,9), ylim = c(0, test_max), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 2", ylab = "Avg Test RSME")
+text(avg_rmse_tst[2, ] ~ model_num, labels = round(avg_rmse_tst[2, ], 3), pos = 3, cex = .8, col="green")
+
+```
+
+Following is a resultant plot of average rmse train vs average rmse test per model 
+with sigma value of 4
+
+``` {r }
+train_max = max(avg_rmse_train)
+test_max = max(avg_rmse_tst)
+
+par(mfrow=c(2,1))
+model_num = c(1:9)
+plot(avg_rmse_train[3, ] ~ model_num, xlim = c(1,9), ylim = c(0, train_max+1), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 4", ylab = "Avg Train RSME")
+text(avg_rmse_train[3, ] ~ model_num, labels = round(avg_rmse_train[3, ], 3), pos = 1, cex = .8, col="blue")
+
+plot(avg_rmse_tst[3, ] ~ model_num, xlim = c(1,9), ylim = c(0, test_max+1), pch = 20, cex = 2, col="red", xlab = "Model Numbers with sigma 4", ylab = "Avg Test RSME")
+text(avg_rmse_tst[3, ] ~ model_num, labels = round(avg_rmse_tst[3, ], 3), pos = 1, cex = .8, col="green")
 
 ```
 
 
-$Discussion$
+$\underline{Discussion}$
 
-Something i need to discuss
+RMSE computes the root mean squared error between two numeric vectors. In our we 
+we are calculating RMSE between 9 difference models that uses x1 to x9 predictors
+and beta 1 to beta 5 parameters.
+
+We have noticed that with the increase in the Sigma values the RSME values decreases,
+explaining the influence of Noise/Sigma on the estimations calculations.
+
+We also notice that Model 6 seems to be holding a minimum value in comparison with
+models 7, 8 and 9, even though we use more predictors in the LR for Model7, Model8
+and Model9.
+
+This suggests that it is sometimes possible to get better results with less predictors than
+more predictors in the LR model.
 
 
 
@@ -632,12 +712,34 @@ Potential discussions:
 - How do $n$, $\beta_1$, and $\sigma$ affect power? Consider additional plots to demonstrate these effects.
 - Are $1000$ simulations sufficient?
 
-**Introduction**
+**\underline{Introduction}**
 
-Write Introduction
+In this simulation we investigate the power of significance of regression test for SLR \[
+H_0: \beta_{1} = 0 \ \text{vs} \ H_1: \beta_{1} \neq 0
+\]
 
-**Methods**
+We use the following Linear Equation for modelling
+\[
+Y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\]
 
+where $\epsilon_i \sim N(0, \sigma^2)$.
+
+where $\beta_0 = 0$, and so only $\beta_1$ is controlling the amount of "signal." 
+
+Following different signals, noises, and sample sizes are used for simulation study:
+
+- $\beta_1 \in (-2, -1.9, -1.8, \ldots, -0.1, 0, 0.1, 0.2, 0.3, \ldots 1.9, 2)$
+- $\sigma \in (1, 2, 4)$
+- $n \in (10, 20, 30)$
+
+Also alpha value is fixed at $\alpha = 0.05$.
+
+
+**\underline{Methods}**
+
+We create a function calc_power to calculate the power estimated for a particular
+sigma and sample_size values for all the beta1 ranges.
 ``` {r}
 birthday = 18760613
 set.seed(birthday)
@@ -648,13 +750,13 @@ sig = 1 #1, 2, 3
 n = 10 #10, 20, 30
 alpha = 0.05
 
-num_sims = 10
+num_sims = 1000 #RAJA FIXME
 # for every beta1 value
 #  for every simulations num_sims
 calc_power = function(sig = 1, n = 10) {
   power = rep(0, length(beta1))
   for (i in 1: length(beta1)) {
-    p_value = rep(0, num_sims) #1000 reps
+    p_values = rep(0, num_sims) #1000 reps
     for (noOfSims in 1:num_sims) {
       eps = rnorm(n, mean = 0, sd = sig)
       y = beta0 + beta1[i] * x_values + eps #41 in size
@@ -688,18 +790,48 @@ power_4_30 = calc_power(4, n)
 
 ```
 
-**Results**
+**\underline{Results}**
+
+The results are plotted as shown below where red is for sample size 10, green for 
+sample sizes 20 and blue for sample sizes 30 with varying sigma values.
+
 
 ``` {r}
+par(mfrow=c(1,3))
+plot(power ~ beta, data = data.frame(power = power_1_10, beta = beta1), xlab = "beta1 values", ylab = "power", pch = 20, cex = 2, type="l", col="red")
+# lines(beta1, power_1_10, col = "red", lwd=2, type="b")
+lines(beta1, power_1_20, col = "green", lwd=2, type="b")
+lines(beta1, power_1_30, col = "blue", lwd=2, type="b")
+title("n, beta1 and sigma(1) impact on Power ")
+legend("bottomright", c("Sigma=1, N=10", "sigma=1, N=20", "sigma=1, N=30"), lwd = 2, col=c("red","green", "blue"))
 
-plot(power ~ beta, data = data.frame(power = power_1_10, beta = beta1), xlab = "beta values", ylab = "power", pch = 20, cex = 2)
+plot(power ~ beta, data = data.frame(power = power_2_10, beta = beta1), xlab = "beta1 values", ylab = "power", pch = 20, cex = 2, type="l", col="red")
+# lines(beta1, power_2_10, col = "red", lwd=2, type="b")
+lines(beta1, power_2_20, col = "green", lwd=2, type="b")
+lines(beta1, power_2_30, col = "blue", lwd=2, type="b")
+title("n, beta1 and sigma(2) impact on Power ")
+legend("bottomright", c("Sigma=2, N=10", "sigma=2, N=20", "sigma=2, N=30"), lwd = 2, col=c("red","green", "blue"))
 
+plot(power ~ beta, data = data.frame(power = power_4_10, beta = beta1), xlab = "beta1 values", ylab = "power", pch = 20, cex = 2, type="l", col="red")
+#lines(beta1, power_4_10, col = "red", lwd=2, type="b")
+lines(beta1, power_4_20, col = "green", lwd=2, type="b")
+lines(beta1, power_4_30, col = "blue", lwd=2, type="b")
+title("n, beta1 and sigma(1) impact on Power ")
+legend("bottomright", c("Sigma=4, N=10", "sigma=4, N=20", "sigma=4, N=30"), lwd = 2, col=c("red","green", "blue"))
 
-# library(ggplot2)
-# ggplot(data = data.frame(power = power_1_10, beta = beta1), aes(x = beta, y = power)) +
-#   stat_smooth(method = "lm", se = FALSE, color = "green", fomulate = power ~ beta)  
 ```
 
 **Discussions**
 
+Power is defined as the Probability that test will reject a null hypothesis correctly 
+when the alternative is true.
+
+We notice that with an increase in the sigma value the R,G,B lines part apart.
+But with an increase in the number of simulations they come closer.
+The beta1 values play a significant role in relating the R,G,B lines as at a value of
+zero the power comes down to 0.
+
+Is 1000 Simulations enough for the evalutions. Yes, i beliver so since we are getting
+good results (R,G,B lines coming closer). Although more number of simulations yields
+more better results.
 

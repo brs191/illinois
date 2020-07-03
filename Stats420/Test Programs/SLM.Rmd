@@ -1,0 +1,8 @@
+**Welcome To Simple Linear Regression**
+
+``` {r}
+library(ggplot2)
+names(mpg)
+
+mpg_lm = lm(mpg ~ displ, data = mpg)
+```

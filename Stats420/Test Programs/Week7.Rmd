@@ -1,0 +1,32 @@
+
+# A factor variable is a list of intergers with labels. 
+# They levels which corresponds to those integer values.
+
+``` {r}
+library(ggplot2)
+names(mtcars)
+summary(mtcars)
+
+plot(mpg ~ hp, data = mtcars, col = am + 1, pch = am + 1, cex = 2)
+legend("topright", c("Automatic", "Manual"), col = c(1, 2), pch = c(1,2))
+```
+
+``` {r}
+
+mpg_hp_slr = lm(mpg ~ hp, data = mtcars)
+plot(mpg ~ hp, data = mtcars, col = am + 1, pch = am + 1, cex = 2)
+abline(mpg_hp_slr, lwd = 3, col = "orange")
+legend("topright", c("Automatic", "Manual"), col = c(1, 2), pch = c(1,2))
+
+summary(mpg_hp_slr)
+```
+
+``` {r}
+
+mpg_hp_am = lm(mpg ~ hp + am, data = mtcars)
+plot(mpg ~ hp, data = mtcars, col = am + 1, pch = am + 1, cex = 2)
+
+abline(mpg_hp_am, lwd = 3, col = "blue")
+legend("topright", c("Automatic", "Manual"), col = c(1, 2), pch = c(1,2))
+summary(mpg_hp_am)
+```

@@ -370,8 +370,10 @@ summary {
 </div>
 <div id="they-levels-which-corresponds-to-those-integer-values." class="section level1">
 <h1>They levels which corresponds to those integer values.</h1>
-<pre class="r"><code>library(ggplot2)
-names(mtcars)</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Use suppressPackageStartupMessages() to eliminate package startup
+## messages</code></pre>
+<pre class="r"><code>names(mtcars)</code></pre>
 <pre><code>##  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot;
 ## [11] &quot;carb&quot;</code></pre>
 <pre class="r"><code>summary(mtcars)</code></pre>
@@ -425,6 +427,7 @@ legend(&quot;topright&quot;, c(&quot;Automatic&quot;, &quot;Manual&quot;), col =
 ## F-statistic: 45.46 on 1 and 30 DF,  p-value: 1.788e-07</code></pre>
 <pre class="r"><code>mpg_hp_am = lm(mpg ~ hp + am, data = mtcars)
 plot(mpg ~ hp, data = mtcars, col = am + 1, pch = am + 1, cex = 2)
+
 abline(mpg_hp_am, lwd = 3, col = &quot;blue&quot;)</code></pre>
 <pre><code>## Warning in abline(mpg_hp_am, lwd = 3, col = &quot;blue&quot;): only using the first two of
 ## 3 regression coefficients</code></pre>

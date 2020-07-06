@@ -1,0 +1,11 @@
+?cars
+
+``` {r}
+summary(cars)
+stop_dist_model =lm(dist ~ speed, data = cars)
+summary(stop_dist_model)
+````
+
+``` {r}
+confint(stop_dist_model, parm = "speed", level = 0.99)
+```

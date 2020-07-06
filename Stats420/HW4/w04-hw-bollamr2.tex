@@ -1,0 +1,1245 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Week 4 - Homework},
+  pdfauthor={STAT 420, Summer 2020, D. Unger},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=cyan,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Week 4 - Homework}
+\author{STAT 420, Summer 2020, D. Unger}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{directions}{%
+\section{Directions}\label{directions}}
+
+Students are encouraged to work together on homework. However, sharing,
+copying or providing any part of a homework solution or code is an
+infraction of the University's rules on Academic Integrity. Any
+violation will be punished as severely as possible.
+
+\begin{itemize}
+\tightlist
+\item
+  Be sure to remove this section if you use this \texttt{.Rmd} file as a
+  template.
+\item
+  You may leave the questions in your final document.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-1-using-lm}{%
+\subsection{\texorpdfstring{Exercise 1 (Using
+\texttt{lm})}{Exercise 1 (Using lm)}}\label{exercise-1-using-lm}}
+
+For this exercise we will use the data stored in
+\href{nutrition-2018.csv}{\texttt{nutrition-2018.csv}}. It contains the
+nutritional values per serving size for a large variety of foods as
+calculated by the USDA in 2018. It is a cleaned version totaling 5956
+observations and is current as of April 2018.
+
+The variables in the dataset are:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{ID}
+\item
+  \texttt{Desc} - short description of food
+\item
+  \texttt{Water} - in grams
+\item
+  \texttt{Calories}
+\item
+  \texttt{Protein} - in grams
+\item
+  \texttt{Fat} - in grams
+\item
+  \texttt{Carbs} - carbohydrates, in grams
+\item
+  \texttt{Fiber} - in grams
+\item
+  \texttt{Sugar} - in grams
+\item
+  \texttt{Calcium} - in milligrams
+\item
+  \texttt{Potassium} - in milligrams
+\item
+  \texttt{Sodium} - in milligrams
+\item
+  \texttt{VitaminC} - vitamin C, in milligrams
+\item
+  \texttt{Chol} - cholesterol, in milligrams
+\item
+  \texttt{Portion} - description of standard serving size used in
+  analysis
+\end{itemize}
+
+\textbf{(a)} Fit the following multiple linear regression model in
+\texttt{R}. Use \texttt{Calories} as the response and \texttt{Fat},
+\texttt{Sugar}, and \texttt{Sodium} as predictors.
+
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \epsilon_i.
+\]
+
+Here,
+
+\begin{itemize}
+\tightlist
+\item
+  \(Y_i\) is \texttt{Calories}.
+\item
+  \(x_{i1}\) is \texttt{Fat}.
+\item
+  \(x_{i2}\) is \texttt{Sugar}.
+\item
+  \(x_{i3}\) is \texttt{Sodium}.
+\end{itemize}
+
+Use an \(F\)-test to test the significance of the regression. Report the
+following:
+
+\begin{itemize}
+\tightlist
+\item
+  The null and alternative hypotheses
+\item
+  The value of the test statistic
+\item
+  The p-value of the test
+\item
+  A statistical decision at \(\alpha = 0.01\)
+\item
+  A conclusion in the context of the problem
+\end{itemize}
+
+When reporting these, you should explicitly state them in your document,
+not assume that a reader will find and interpret them from a large block
+of \texttt{R} output.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nutrition =}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"nutrition-2018.csv"}\NormalTok{)}
+\NormalTok{nutrition_lm =}\StringTok{ }\KeywordTok{lm}\NormalTok{(Calories }\OperatorTok{~}\StringTok{ }\NormalTok{Fat}\OperatorTok{+}\NormalTok{Sugar}\OperatorTok{+}\NormalTok{Sodium, }\DataTypeTok{data =}\NormalTok{ nutrition)}
+\KeywordTok{summary}\NormalTok{(nutrition_lm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Calories ~ Fat + Sugar + Sodium, data = nutrition)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -339.41  -64.82   -9.42   28.12  293.54 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 1.005e+02  1.409e+00  71.310  < 2e-16 ***
+## Fat         8.483e+00  6.456e-02 131.394  < 2e-16 ***
+## Sugar       3.901e+00  7.140e-02  54.627  < 2e-16 ***
+## Sodium      6.165e-03  1.030e-03   5.983 2.31e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 80.85 on 5952 degrees of freedom
+## Multiple R-squared:  0.7686, Adjusted R-squared:  0.7685 
+## F-statistic:  6591 on 3 and 5952 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\(Ho: \beta_1 = \beta_2 = \beta_3 = 0\) and \(H1:\) atleast one of
+\(\beta_j \neq 0\) Value of F statistic is 6591
+
+p-value of the test is almost 0. Very very small value (\textless{}
+2.2e-16).
+
+Satistical decision at \(\alpha = 0.01\) is to Reject \(Ho\)
+
+Conclusion in the context of the problem is that there EXISTS a linear
+relationship between Calories and atleast some of fat, sugar and sodium.
+
+\textbf{(b)} Output only the estimated regression coefficients.
+Interpret all \(\hat{\beta}_j\) coefficients in the context of the
+problem.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{coef}\NormalTok{(nutrition_lm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  (Intercept)          Fat        Sugar       Sodium 
+## 1.004561e+02 8.483289e+00 3.900517e+00 6.165246e-03
+\end{verbatim}
+
+\(\hat{\beta}_0\) = 100.4561 is the estimated calories value of a food
+when there is 0gm fat, 0gm sugar and 0mg Sodium
+
+\(\hat{\beta}_1\) = 8.483289 is the estimated change in mean Calories
+value of a food when there is an increase of 1gm fat with certain Sugar
+and Sodium content in the food
+
+\(\hat{\beta}_2\) = 3.900517 is the estimated change in mean Calories
+value of a food when there is an increase of 1gm sugar with certain fat
+and Sodium in the food.
+
+\(\hat{\beta}_3\) - 0.006165246 is the estimated change in mean Calories
+value of a food when there is an increase of 1mg of Sodium with certain
+fat and sugare in the food
+
+\textbf{(c)} Use your model to predict the number of \texttt{Calories}
+in a Big Mac. According to
+\href{https://www.mcdonalds.com/us/en-us/about-our-food/nutrition-calculator.html}{McDonald's
+publicized nutrition facts}, the Big Mac contains 30g of fat, 9g of
+sugar, and 1010mg of sodium.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big_mac_query =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Fat =} \DecValTok{30}\NormalTok{, }\DataTypeTok{Sugar =} \DecValTok{9}\NormalTok{, }\DataTypeTok{Sodium =} \DecValTok{1010}\NormalTok{)}
+\KeywordTok{predict}\NormalTok{(nutrition_lm, }\DataTypeTok{newdata =}\NormalTok{ big_mac_query)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 396.2863
+\end{verbatim}
+
+Nuber of Calories is 396.2863
+
+\textbf{(d)} Calculate the standard deviation, \(s_y\), for the observed
+values in the Calories variable. Report the value of \(s_e\) from your
+multiple regression model. Interpret both estimates in the context of
+this problem.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\DataTypeTok{s_y =} \KeywordTok{sd}\NormalTok{(nutrition}\OperatorTok{$}\NormalTok{Calories))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 168.05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\DataTypeTok{s_e =} \KeywordTok{summary}\NormalTok{(nutrition_lm)}\OperatorTok{$}\NormalTok{sigma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 80.8543
+\end{verbatim}
+
+\(s_y\) = 168.05 gives us an estimate of the variations in the Calories
+value around its Mean Value.
+
+\(s_e\) = 80.8543 gives us an estimate of the variations in the
+residuals of the model, especially how the observed Calorie value vares
+from it's fitted value by considering the predictors value.
+
+\textbf{(e)} Report the value of \(R^2\) for the model. Interpret its
+meaning in the context of the problem.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#names(summary(nutrition_lm))}
+\KeywordTok{summary}\NormalTok{(nutrition_lm)}\OperatorTok{$}\NormalTok{r.squared}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7686281
+\end{verbatim}
+
+\(R^2\) = 0.7686281 explains that 76.8\% of the observed variations in
+Calories can be explained by a linear relationsip with fat, sugar and
+sodium in the food.
+
+\textbf{(f)} Calculate a 90\% confidence interval for \(\beta_2\). Give
+an interpretation of the interval in the context of the problem.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(nutrition_lm, }\DataTypeTok{level =} \FloatTok{0.90}\NormalTok{)[}\DecValTok{3}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      5 %     95 % 
+## 3.783051 4.017983
+\end{verbatim}
+
+We are 90\% confident that the mean Calorie for an increase of 1 gm of
+Sugar is in the range of 3.783051 and 4.01798 for certain values of fat
+and sodium
+
+\textbf{(g)} Calculate a 95\% confidence interval for \(\beta_0\). Give
+an interpretation of the interval in the context of the problem.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(nutrition_lm, }\DataTypeTok{level =} \FloatTok{0.95}\NormalTok{)[}\DecValTok{1}\NormalTok{,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     2.5 %    97.5 % 
+##  97.69443 103.21768
+\end{verbatim}
+
+We are 95\% confidence that the true mean Calorie for food with 0gm of
+fat, 0gm of sugar and 0mg of Sodium is in the range of 97.69443 and
+103.21768
+
+\textbf{(h)} Use a 99\% confidence interval to estimate the mean Calorie
+content of a food with 23g of fat, 0g of sugar, and 400mg of sodium,
+which is true of a large order of McDonald's french fries. Interpret the
+interval in context.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{large_fries_query =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Fat =} \DecValTok{23}\NormalTok{, }\DataTypeTok{Sugar =} \DecValTok{0}\NormalTok{, }\DataTypeTok{Sodium =} \DecValTok{400}\NormalTok{)}
+\KeywordTok{predict}\NormalTok{(nutrition_lm, }\DataTypeTok{newdata =}\NormalTok{ large_fries_query, }\DataTypeTok{interval =} \StringTok{"confidence"}\NormalTok{, }\DataTypeTok{level =} \FloatTok{0.99}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 298.0378 294.3532 301.7224
+\end{verbatim}
+
+We are 99\% confident that the true mean calorie value for food with 23g
+of fat, 0g of sugare and 400mg of Sodium is in the range of 294.3532 and
+301.7224
+
+\textbf{(i)} Use a 99\% prediction interval to predict the Calorie
+content of a Crunchwrap Supreme, which has 21g of fat, 6g of sugar, and
+1200mg of sodium according to
+\href{https://www.tacobell.com/nutrition/info}{Taco Bell's publicized
+nutrition information}. Interpret the interval in context.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{crunchwrapsupreme_query =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Fat =} \DecValTok{21}\NormalTok{, }\DataTypeTok{Sugar =} \DecValTok{6}\NormalTok{, }\DataTypeTok{Sodium =} \DecValTok{1200}\NormalTok{)}
+\KeywordTok{predict}\NormalTok{(nutrition_lm, }\DataTypeTok{newdata =}\NormalTok{ crunchwrapsupreme_query, }\DataTypeTok{interval =} \StringTok{"prediction"}\NormalTok{, }\DataTypeTok{level =} \FloatTok{.99}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 309.4065 101.0345 517.7786
+\end{verbatim}
+
+We are 99\% confident that the true mean calorie value for food with 21g
+of fat, 6g of sugar and 1200mg of sodium is in the range of 101.0345 and
+517.7786
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-2-more-lm-for-multiple-regression}{%
+\subsection{\texorpdfstring{Exercise 2 (More \texttt{lm} for Multiple
+Regression)}{Exercise 2 (More lm for Multiple Regression)}}\label{exercise-2-more-lm-for-multiple-regression}}
+
+For this exercise we will use the data stored in
+\href{goalies.csv}{\texttt{goalies.csv}}. It contains career data for
+462 players in the National Hockey League who played goaltender at some
+point up to and including the 2014-2015 season. The variables in the
+dataset are:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{W} - Wins
+\item
+  \texttt{GA} - Goals Against
+\item
+  \texttt{SA} - Shots Against
+\item
+  \texttt{SV} - Saves
+\item
+  \texttt{SV\_PCT} - Save Percentage
+\item
+  \texttt{GAA} - Goals Against Average
+\item
+  \texttt{SO} - Shutouts
+\item
+  \texttt{MIN} - Minutes
+\item
+  \texttt{PIM} - Penalties in Minutes
+\end{itemize}
+
+For this exercise we will consider three models, each with Wins as the
+response. The predictors for these models are:
+
+\begin{itemize}
+\tightlist
+\item
+  Model 1: Goals Against, Saves
+\item
+  Model 2: Goals Against, Saves, Shots Against, Minutes, Shutouts
+\item
+  Model 3: All Available
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{goalies =}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"goalies.csv"}\NormalTok{)}
+\NormalTok{glm_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(W }\OperatorTok{~}\StringTok{ }\NormalTok{GA }\OperatorTok{+}\StringTok{ }\NormalTok{SV, }\DataTypeTok{data =}\NormalTok{ goalies)}
+\NormalTok{glm_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(W }\OperatorTok{~}\StringTok{ }\NormalTok{GA }\OperatorTok{+}\StringTok{ }\NormalTok{SV }\OperatorTok{+}\StringTok{ }\NormalTok{SA }\OperatorTok{+}\StringTok{ }\NormalTok{MIN }\OperatorTok{+}\StringTok{ }\NormalTok{SO, }\DataTypeTok{data =}\NormalTok{ goalies)}
+\NormalTok{glm_}\DecValTok{3}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(W }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =}\NormalTok{ goalies)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(a)} Use an \(F\)-test to compares Models 1 and 2. Report the
+following:
+
+\begin{itemize}
+\tightlist
+\item
+  The null hypothesis
+\item
+  The value of the test statistic
+\item
+  The p-value of the test
+\item
+  A statistical decision at \(\alpha = 0.05\)
+\item
+  The model you prefer
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(glm_}\DecValTok{1}\NormalTok{, glm_}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Model 1: W ~ GA + SV
+## Model 2: W ~ GA + SV + SA + MIN + SO
+##   Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+## 1    459 294757                                  
+## 2    456  72899  3    221858 462.59 < 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\(Ho\) : \(\beta_{\texttt{SA}}\) = \(\beta_{\texttt{SV}}\) =
+\(\beta_{\texttt{SO}}\) = 0
+
+The value of the Test Statistics is F = 462.59
+
+The p-value of the test is 2.2e-16
+
+A statistical decision at \(\alpha = 0.05\) is Reject \(Ho\)
+
+Model Preference: Model 2
+
+\textbf{(b)} Use an \(F\)-test to compare Model 3 to your preferred
+model from part \textbf{(a)}. Report the following:
+
+\begin{itemize}
+\tightlist
+\item
+  The null hypothesis
+\item
+  The value of the test statistic
+\item
+  The p-value of the test
+\item
+  A statistical decision at \(\alpha = 0.05\)
+\item
+  The model you prefer
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{anova}\NormalTok{(glm_}\DecValTok{2}\NormalTok{, glm_}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Analysis of Variance Table
+## 
+## Model 1: W ~ GA + SV + SA + MIN + SO
+## Model 2: W ~ GA + SA + SV + SV_PCT + GAA + SO + MIN + PIM
+##   Res.Df   RSS Df Sum of Sq     F   Pr(>F)   
+## 1    456 72899                               
+## 2    453 70994  3    1905.1 4.052 0.007353 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\(Ho\) : \(\beta_{\texttt{SVPCT}}\) = \(\beta_{\texttt{GAA}}\) =
+\(\beta_{\texttt{PIM}}\) = 0
+
+The value of the Test Statistics is F = 4.052
+
+The p-value of the test is 0.007353
+
+A statistical decision at \(\alpha = 0.05\) is Reject \(Ho\)
+
+Model Preference: Model 3
+
+\textbf{(c)} Use a \(t\)-test to test
+\(H_0: \beta_{\texttt{SV}} = 0 \ \text{vs} \ H_1: \beta_{\texttt{SV}} \neq 0\)
+for the model you preferred in part \textbf{(b)}. Report the following:
+
+\begin{itemize}
+\tightlist
+\item
+  The value of the test statistic
+\item
+  The p-value of the test
+\item
+  A statistical decision at \(\alpha = 0.05\)
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(glm_}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = W ~ ., data = goalies)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -51.204  -3.126   0.935   2.835  64.078 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  5.2651619 16.8181423   0.313 0.754376    
+## GA          -0.1132805  0.0148085  -7.650 1.22e-13 ***
+## SA           0.0516385  0.0135565   3.809 0.000159 ***
+## SV          -0.0582151  0.0150905  -3.858 0.000131 ***
+## SV_PCT      -8.0475191 17.6600154  -0.456 0.648830    
+## GAA         -0.0496006  0.4821957  -0.103 0.918116    
+## SO           0.4599359  0.1989567   2.312 0.021240 *  
+## MIN          0.0131790  0.0009504  13.867  < 2e-16 ***
+## PIM          0.0468422  0.0136373   3.435 0.000647 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 12.52 on 453 degrees of freedom
+## Multiple R-squared:  0.9858, Adjusted R-squared:  0.9856 
+## F-statistic:  3938 on 8 and 453 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The value of the test statistic is -3.858
+
+The p-value of the test is 0.000131
+
+A statistical decision at \(\alpha = 0.05\) is Reject \(Ho\)
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-3-regression-without-lm}{%
+\subsection{\texorpdfstring{Exercise 3 (Regression without
+\texttt{lm})}{Exercise 3 (Regression without lm)}}\label{exercise-3-regression-without-lm}}
+
+For this exercise we will once again use the \texttt{Ozone} data from
+the \texttt{mlbench} package. The goal of this exercise is to fit a
+model with \texttt{ozone} as the response and the remaining variables as
+predictors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{data}\NormalTok{(Ozone, }\DataTypeTok{package =} \StringTok{"mlbench"}\NormalTok{)}
+\NormalTok{Ozone =}\StringTok{ }\NormalTok{Ozone[, }\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{6}\NormalTok{, }\DecValTok{7}\NormalTok{, }\DecValTok{8}\NormalTok{)]}
+\KeywordTok{colnames}\NormalTok{(Ozone) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"ozone"}\NormalTok{, }\StringTok{"wind"}\NormalTok{, }\StringTok{"humidity"}\NormalTok{, }\StringTok{"temp"}\NormalTok{)}
+\NormalTok{Ozone =}\StringTok{ }\NormalTok{Ozone[}\KeywordTok{complete.cases}\NormalTok{(Ozone), ]}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(a)} Obtain the estimated regression coefficients
+\textbf{without} the use of \texttt{lm()} or any other built-in
+functions for regression. That is, you should use only matrix
+operations. Store the results in a vector \texttt{beta\_hat\_no\_lm}. To
+ensure this is a vector, you may need to use \texttt{as.vector()}.
+Return this vector as well as the results of
+\texttt{sum(beta\_hat\_no\_lm\ \^{}\ 2)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n =}\StringTok{ }\KeywordTok{nrow}\NormalTok{(Ozone)}
+\NormalTok{X =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{,n), }\KeywordTok{as.matrix}\NormalTok{(}\KeywordTok{subset}\NormalTok{(Ozone, }\DataTypeTok{select =} \KeywordTok{c}\NormalTok{(}\StringTok{"wind"}\NormalTok{, }\StringTok{"humidity"}\NormalTok{, }\StringTok{"temp"}\NormalTok{))))}
+\NormalTok{y =}\StringTok{ }\NormalTok{Ozone}\OperatorTok{$}\NormalTok{ozone}
+
+\NormalTok{beta_hat_no_lm =}\StringTok{ }\KeywordTok{solve}\NormalTok{(}\KeywordTok{t}\NormalTok{(X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{X) }\OperatorTok{%*%}\StringTok{ }\KeywordTok{t}\NormalTok{(X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{y}
+\NormalTok{beta_hat_no_lm =}\StringTok{ }\KeywordTok{as.vector}\NormalTok{(beta_hat_no_lm)}
+\NormalTok{beta_hat_no_lm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -16.38178539  -0.18594444   0.08340014   0.38984294
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sum}\NormalTok{(beta_hat_no_lm }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 268.5564
+\end{verbatim}
+
+\textbf{(b)} Obtain the estimated regression coefficients \textbf{with}
+the use of \texttt{lm()}. Store the results in a vector
+\texttt{beta\_hat\_lm}. To ensure this is a vector, you may need to use
+\texttt{as.vector()}. Return this vector as well as the results of
+\texttt{sum(beta\_hat\_lm\ \^{}\ 2)}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ozone_lm =}\StringTok{ }\KeywordTok{lm}\NormalTok{(ozone }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =}\NormalTok{ Ozone)}
+\NormalTok{beta_hat_lm =}\StringTok{ }\KeywordTok{as.vector}\NormalTok{(}\KeywordTok{coef}\NormalTok{(ozone_lm))}
+\NormalTok{beta_hat_lm}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -16.38178539  -0.18594444   0.08340014   0.38984294
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sum}\NormalTok{(beta_hat_lm }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 268.5564
+\end{verbatim}
+
+\textbf{(c)} Use the \texttt{all.equal()} function to verify that the
+results are the same. You may need to remove the names of one of the
+vectors. The \texttt{as.vector()} function will do this as a side
+effect, or you can directly use \texttt{unname()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{all.equal}\NormalTok{(beta_hat_no_lm, beta_hat_lm)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+
+\textbf{(d)} Calculate \(s_e\) without the use of \texttt{lm()}. That
+is, continue with your results from \textbf{(a)} and perform additional
+matrix operations to obtain the result. Output this result. Also, verify
+that this result is the same as the result obtained from \texttt{lm()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#summary(ozone_lm)$sigma}
+
+\NormalTok{y_hat =}\StringTok{ }\NormalTok{X }\OperatorTok{%*%}\StringTok{ }\KeywordTok{solve}\NormalTok{(}\KeywordTok{t}\NormalTok{(X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{X) }\OperatorTok{%*%}\StringTok{ }\KeywordTok{t}\NormalTok{(X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{y}
+\NormalTok{e =}\StringTok{ }\NormalTok{y }\OperatorTok{-}\StringTok{ }\NormalTok{y_hat}
+\NormalTok{(}\DataTypeTok{s_e =} \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{t}\NormalTok{(e) }\OperatorTok{%*%}\StringTok{ }\NormalTok{e}\OperatorTok{/}\StringTok{ }\NormalTok{(n }\OperatorTok{-}\StringTok{ }\KeywordTok{length}\NormalTok{(beta_hat_no_lm)))[}\DecValTok{1}\NormalTok{,])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4.806115
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{all.equal}\NormalTok{(}\KeywordTok{summary}\NormalTok{(ozone_lm)}\OperatorTok{$}\NormalTok{sigma, s_e)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+
+\textbf{(e)} Calculate \(R^2\) without the use of \texttt{lm()}. That
+is, continue with your results from \textbf{(a)} and \textbf{(d)}, and
+perform additional operations to obtain the result. Output this result.
+Also, verify that this result is the same as the result obtained from
+\texttt{lm()}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sse =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{t}\NormalTok{(y}\OperatorTok{-}\NormalTok{y_hat) }\OperatorTok{%*%}\StringTok{ }\NormalTok{(y}\OperatorTok{-}\NormalTok{y_hat))}
+\NormalTok{sst =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{t}\NormalTok{(y}\OperatorTok{-}\KeywordTok{mean}\NormalTok{(y)) }\OperatorTok{%*%}\StringTok{ }\NormalTok{(y}\OperatorTok{-}\KeywordTok{mean}\NormalTok{(y)))}
+
+\NormalTok{(}\DataTypeTok{r2 =} \DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{sse}\OperatorTok{/}\NormalTok{sst)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.6398887
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{all.equal}\NormalTok{(r2, }\KeywordTok{summary}\NormalTok{(ozone_lm)}\OperatorTok{$}\NormalTok{r.squared)  }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] TRUE
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-4-regression-for-prediction}{%
+\subsection{Exercise 4 (Regression for
+Prediction)}\label{exercise-4-regression-for-prediction}}
+
+For this exercise use the \texttt{Auto} dataset from the \texttt{ISLR}
+package. Use \texttt{?Auto} to learn about the dataset. The goal of this
+exercise is to find a model that is useful for \textbf{predicting} the
+response \texttt{mpg}. We remove the \texttt{name} variable as it is not
+useful for this analysis. (Also, this is an easier to load version of
+data from the textbook.)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# load required package, remove "name" variable}
+\KeywordTok{library}\NormalTok{(ISLR)}
+\NormalTok{Auto =}\StringTok{ }\KeywordTok{subset}\NormalTok{(Auto, }\DataTypeTok{select =} \OperatorTok{-}\KeywordTok{c}\NormalTok{(name)) }\CommentTok{#Error in eval(substitute(select), nl, parent.frame()) : object 'name' not found}
+\end{Highlighting}
+\end{Shaded}
+
+When evaluating a model for prediction, we often look at RMSE. However,
+if we both fit the model with all the data as well as evaluate RMSE
+using all the data, we're essentially cheating. We'd like to use RMSE as
+a measure of how well the model will predict on \emph{unseen} data. If
+you haven't already noticed, the way we had been using RMSE resulted in
+RMSE decreasing as models became larger.
+
+To correct for this, we will only use a portion of the data to fit the
+model, and then we will use leftover data to evaluate the model. We will
+call these datasets \textbf{train} (for fitting) and \textbf{test} (for
+evaluating). The definition of RMSE will stay the same
+
+\[
+\text{RMSE}(\text{model, data}) = \sqrt{\frac{1}{n} \sum_{i = 1}^{n}(y_i - \hat{y}_i)^2}
+\]
+
+where
+
+\begin{itemize}
+\tightlist
+\item
+  \(y_i\) are the actual values of the response for the given data.
+\item
+  \(\hat{y}_i\) are the predicted values using the fitted model and the
+  predictors from the data.
+\end{itemize}
+
+However, we will now evaluate it on both the \textbf{train} set and the
+\textbf{test} set separately. So each model you fit will have a
+\textbf{train} RMSE and a \textbf{test} RMSE. When calculating
+\textbf{test} RMSE, the predicted values will be found by predicting the
+response using the \textbf{test} data with the model fit using the
+\textbf{train} data. \emph{\textbf{Test} data should never be used to
+fit a model.}
+
+\begin{itemize}
+\tightlist
+\item
+  Train RMSE: Model fit with \emph{train} data. Evaluate on
+  \textbf{train} data.
+\item
+  Test RMSE: Model fit with \emph{train} data. Evaluate on \textbf{test}
+  data.
+\end{itemize}
+
+Set a seed of \texttt{11}, and then split the \texttt{Auto} data into
+two datasets, one called \texttt{auto\_trn} and one called
+\texttt{auto\_tst}. The \texttt{auto\_trn} data frame should contain 292
+randomly chosen observations. The \texttt{auto\_tst} data will contain
+the remaining observations. Hint: consider the following code:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{11}\NormalTok{)}
+\NormalTok{auto_trn_idx =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(Auto), }\DecValTok{292}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(Auto)}
+\end{Highlighting}
+\end{Shaded}
+
+Fit a total of five models using the training data.
+
+\begin{itemize}
+\tightlist
+\item
+  One must use all possible predictors.
+\item
+  One must use only \texttt{displacement} as a predictor.
+\item
+  The remaining three you can pick to be anything you like. One of these
+  should be the \emph{best} of the five for predicting the response.
+\end{itemize}
+
+For each model report the \textbf{train} and \textbf{test} RMSE. Arrange
+your results in a well-formatted markdown table. Argue that one of your
+models is the best for predicting the response.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rmse =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(actual, predicted) \{}
+  \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{mean}\NormalTok{((actual }\OperatorTok{-}\StringTok{ }\NormalTok{predicted)}\OperatorTok{^}\DecValTok{2}\NormalTok{)) }
+\NormalTok{\}}
+
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{11}\NormalTok{)}
+\NormalTok{auto_trn_idx =}\StringTok{ }\KeywordTok{sample}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(Auto), }\DecValTok{292}\NormalTok{)}
+\NormalTok{auto_trn =}\StringTok{ }\NormalTok{Auto[auto_trn_idx, ]}
+\NormalTok{auto_tst =}\StringTok{ }\NormalTok{Auto[}\OperatorTok{-}\NormalTok{auto_trn_idx, ]}
+
+\NormalTok{auto_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =}\NormalTok{ auto_trn)}
+\NormalTok{auto_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{displacement, }\DataTypeTok{data =}\NormalTok{ auto_trn)}
+\NormalTok{auto_}\DecValTok{3}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{cylinders }\OperatorTok{+}\StringTok{ }\NormalTok{displacement }\OperatorTok{+}\StringTok{ }\NormalTok{weight }\OperatorTok{+}\StringTok{ }\NormalTok{year }\OperatorTok{+}\StringTok{ }\NormalTok{origin, }\DataTypeTok{data =}\NormalTok{ auto_trn)}
+\NormalTok{auto_}\DecValTok{4}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{cylinders }\OperatorTok{+}\StringTok{ }\NormalTok{displacement, }\DataTypeTok{data =}\NormalTok{ auto_trn)}
+\NormalTok{auto_}\DecValTok{5}\NormalTok{ =}\StringTok{ }\KeywordTok{lm}\NormalTok{(mpg }\OperatorTok{~}\StringTok{ }\NormalTok{displacement }\OperatorTok{+}\StringTok{ }\NormalTok{horsepower }\OperatorTok{+}\StringTok{ }\NormalTok{weight, }\DataTypeTok{data =}\NormalTok{ auto_trn)}
+
+\NormalTok{trn_res =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{1}\NormalTok{, auto_trn)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{2}\NormalTok{, auto_trn)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{3}\NormalTok{, auto_trn)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{4}\NormalTok{, auto_trn)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{5}\NormalTok{, auto_trn)))}
+
+\NormalTok{tst_res =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{1}\NormalTok{, auto_tst)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{2}\NormalTok{, auto_tst)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{3}\NormalTok{, auto_tst)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{4}\NormalTok{, auto_tst)),}
+            \KeywordTok{rmse}\NormalTok{(auto_trn}\OperatorTok{$}\NormalTok{mpg, }\KeywordTok{predict}\NormalTok{(auto_}\DecValTok{5}\NormalTok{, auto_tst)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+
+## Warning in actual - predicted: longer object length is not a multiple of shorter
+## object length
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{test_summary =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Model =} \KeywordTok{c}\NormalTok{(}\StringTok{"auto_1"}\NormalTok{, }\StringTok{"auto_2"}\NormalTok{, }\StringTok{"auto_3"}\NormalTok{, }\StringTok{"auto_4"}\NormalTok{, }\StringTok{"auto_5"}\NormalTok{),}
+                          \DataTypeTok{Trained_RMSE =}\NormalTok{ trn_res, }
+                          \DataTypeTok{Tested_RMSE =}\NormalTok{ tst_res)}
+\KeywordTok{colnames}\NormalTok{(test_summary) =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Train Model"}\NormalTok{, }\StringTok{"Train RMSE"}\NormalTok{, }\StringTok{"Test RMSE"}\NormalTok{)}
+
+\KeywordTok{library}\NormalTok{(knitr)}
+\KeywordTok{kable}\NormalTok{(test_summary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule
+Train Model & Train RMSE & Test RMSE\tabularnewline
+\midrule
+\endhead
+auto\_1 & 3.223650 & 10.58236\tabularnewline
+auto\_2 & 4.553319 & 10.64192\tabularnewline
+auto\_3 & 3.245324 & 10.54884\tabularnewline
+auto\_4 & 4.539067 & 10.59205\tabularnewline
+auto\_5 & 4.141059 & 10.37919\tabularnewline
+\bottomrule
+\end{longtable}
+
+Based on the above results, auto\_4 model is the best model for
+predicting, since it has lowest Test\_RMSE value of 3.566250 with
+``cylinders + displacement + weight + year + origin'' predictors.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{exercise-5-simulating-multiple-regression}{%
+\subsection{Exercise 5 (Simulating Multiple
+Regression)}\label{exercise-5-simulating-multiple-regression}}
+
+For this exercise we will simulate data from the following model:
+
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \beta_4 x_{i4} + \beta_5 x_{i5} + \epsilon_i
+\]
+
+Where \(\epsilon_i \sim N(0, \sigma^2).\) Also, the parameters are known
+to be:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\beta_0 = 2\)
+\item
+  \(\beta_1 = -0.75\)
+\item
+  \(\beta_2 = 1.5\)
+\item
+  \(\beta_3 = 0\)
+\item
+  \(\beta_4 = 0\)
+\item
+  \(\beta_5 = 2\)
+\item
+  \(\sigma^2 = 25\)
+\end{itemize}
+
+We will use samples of size \texttt{n\ =\ 42}.
+
+We will verify the distribution of \(\hat{\beta}_2\) as well as
+investigate some hypothesis tests.
+
+\textbf{(a)} We will first generate the \(X\) matrix and data frame that
+will be used throughout the exercise. Create the following nine
+variables:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{x0}: a vector of length \texttt{n} that contains all
+  \texttt{1}
+\item
+  \texttt{x1}: a vector of length \texttt{n} that is randomly drawn from
+  a normal distribution with a mean of \texttt{0} and a standard
+  deviation of \texttt{2}
+\item
+  \texttt{x2}: a vector of length \texttt{n} that is randomly drawn from
+  a uniform distribution between \texttt{0} and \texttt{4}
+\item
+  \texttt{x3}: a vector of length \texttt{n} that is randomly drawn from
+  a normal distribution with a mean of \texttt{0} and a standard
+  deviation of \texttt{1}
+\item
+  \texttt{x4}: a vector of length \texttt{n} that is randomly drawn from
+  a uniform distribution between \texttt{-2} and \texttt{2}
+\item
+  \texttt{x5}: a vector of length \texttt{n} that is randomly drawn from
+  a normal distribution with a mean of \texttt{0} and a standard
+  deviation of \texttt{2}
+\item
+  \texttt{X}: a matrix that contains \texttt{x0}, \texttt{x1},
+  \texttt{x2}, \texttt{x3}, \texttt{x4}, and \texttt{x5} as its columns
+\item
+  \texttt{C}: the \(C\) matrix that is defined as \((X^\top X)^{-1}\)
+\item
+  \texttt{y}: a vector of length \texttt{n} that contains all \texttt{0}
+\item
+  \texttt{sim\_data}: a data frame that stores \texttt{y} and the
+  \textbf{five} \emph{predictor} variables. \texttt{y} is currently a
+  placeholder that we will update during the simulation.
+\end{itemize}
+
+Report the sum of the diagonal of \texttt{C} as well as the 5th row of
+\texttt{sim\_data}. For this exercise we will use the seed \texttt{420}.
+Generate the above variables in the order listed after running the code
+below to set a seed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{420}\NormalTok{)}
+\NormalTok{sample_size =}\StringTok{ }\DecValTok{42}
+\NormalTok{x0 =}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, sample_size)}
+\NormalTok{x1 =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\NormalTok{x2 =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{min =} \DecValTok{0}\NormalTok{, }\DataTypeTok{max =} \DecValTok{4}\NormalTok{)}
+\NormalTok{x3 =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{x4 =}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{min =} \DecValTok{-2}\NormalTok{, }\DataTypeTok{max =} \DecValTok{2}\NormalTok{)}
+\NormalTok{x5 =}\StringTok{ }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =} \DecValTok{2}\NormalTok{)}
+\NormalTok{X =}\StringTok{ }\KeywordTok{cbind}\NormalTok{(x0, x1, x2, x3, x4, x5)}
+\NormalTok{C =}\StringTok{ }\KeywordTok{solve}\NormalTok{(}\KeywordTok{t}\NormalTok{(X) }\OperatorTok{%*%}\StringTok{ }\NormalTok{X)}
+\NormalTok{y =}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, sample_size)}
+\NormalTok{sim_data =}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(y, x1, x2, x3, x4, x5)}
+\KeywordTok{sum}\NormalTok{(}\KeywordTok{diag}\NormalTok{(C))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1792443
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_data[}\DecValTok{5}\NormalTok{, ]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   y        x1        x2        x3        x4         x5
+## 5 0 0.7959582 0.4283331 0.6079313 0.4994189 -0.9018014
+\end{verbatim}
+
+\textbf{(b)} Create three vectors of length \texttt{2500} that will
+store results from the simulation in part \textbf{(c)}. Call them
+\texttt{beta\_hat\_1}, \texttt{beta\_3\_pval}, and
+\texttt{beta\_5\_pval}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{num_sims =}\StringTok{ }\DecValTok{2500}
+\NormalTok{beta_hat_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, num_sims)}
+\NormalTok{beta_}\DecValTok{3}\NormalTok{_pval =}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, num_sims)}
+\NormalTok{beta_}\DecValTok{5}\NormalTok{_pval =}\StringTok{ }\KeywordTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, num_sims)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(c)} Simulate 2500 samples of size \texttt{n\ =\ 42} from the
+model above. Each time update the \texttt{y} value of
+\texttt{sim\_data}. Then use \texttt{lm()} to fit a multiple regression
+model. Each time store:
+
+\begin{itemize}
+\tightlist
+\item
+  The value of \(\hat{\beta}_1\) in \texttt{beta\_hat\_1}
+\item
+  The p-value for the two-sided test of \(\beta_3 = 0\) in
+  \texttt{beta\_3\_pval}
+\item
+  The p-value for the two-sided test of \(\beta_5 = 0\) in
+  \texttt{beta\_5\_pval}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beta_}\DecValTok{0}\NormalTok{ =}\StringTok{ }\DecValTok{2}
+\NormalTok{beta_}\DecValTok{1}\NormalTok{ =}\StringTok{ }\FloatTok{-0.75}
+\NormalTok{beta_}\DecValTok{2}\NormalTok{ =}\StringTok{ }\FloatTok{1.5}
+\NormalTok{beta_}\DecValTok{3}\NormalTok{ =}\StringTok{ }\DecValTok{0}
+\NormalTok{beta_}\DecValTok{4}\NormalTok{ =}\StringTok{ }\DecValTok{0}
+\NormalTok{beta_}\DecValTok{5}\NormalTok{ =}\StringTok{ }\DecValTok{2}
+\NormalTok{sigma =}\StringTok{ }\DecValTok{5}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\StringTok{ }\NormalTok{num_sims) \{}
+\NormalTok{  sim_data}\OperatorTok{$}\NormalTok{y =}\StringTok{ }\NormalTok{beta_}\DecValTok{0} \OperatorTok{*}\NormalTok{x0 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{1} \OperatorTok{*}\StringTok{ }\NormalTok{x1 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{x2 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{3} \OperatorTok{*}\StringTok{ }\NormalTok{x3 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{4} \OperatorTok{*}\StringTok{ }\NormalTok{x4 }\OperatorTok{+}\StringTok{ }\NormalTok{beta_}\DecValTok{5} \OperatorTok{*}\StringTok{ }\NormalTok{x5 }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{rnorm}\NormalTok{(}\DataTypeTok{n =}\NormalTok{ sample_size, }\DataTypeTok{mean =} \DecValTok{0}\NormalTok{, }\DataTypeTok{sd =}\NormalTok{ sigma)}
+\NormalTok{  sim_model =}\StringTok{ }\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{., }\DataTypeTok{data =}\NormalTok{ sim_data)}
+
+\NormalTok{  beta_hat_}\DecValTok{1}\NormalTok{[i] =}\StringTok{ }\KeywordTok{coef}\NormalTok{(sim_model)[}\DecValTok{2}\NormalTok{]}
+\NormalTok{  beta_}\DecValTok{3}\NormalTok{_pval[i] =}\StringTok{ }\KeywordTok{summary}\NormalTok{(sim_model)}\OperatorTok{$}\NormalTok{coefficients[}\StringTok{"x3"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{  beta_}\DecValTok{5}\NormalTok{_pval[i] =}\StringTok{ }\KeywordTok{summary}\NormalTok{(sim_model)}\OperatorTok{$}\NormalTok{coefficients[}\StringTok{"x5"}\NormalTok{, }\StringTok{"Pr(>|t|)"}\NormalTok{]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{(d)} Based on the known values of \(X\), what is the true
+distribution of \(\hat{\beta}_1\)? The true distribution of
+\(\hat{\beta}_1\) is
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\DataTypeTok{covariance =}\NormalTok{ sigma}\OperatorTok{^}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{C[}\DecValTok{1}\OperatorTok{+}\DecValTok{1}\NormalTok{, }\DecValTok{1}\OperatorTok{+}\DecValTok{1}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1892102
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(}\DataTypeTok{mean =}\NormalTok{ beta_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.75
+\end{verbatim}
+
+\textbf{(e)} Calculate the mean and variance of \texttt{beta\_hat\_1}.
+Are they close to what we would expect? Plot a histogram of
+\texttt{beta\_hat\_1}. Add a curve for the true distribution of
+\(\hat{\beta}_1\). Does the curve seem to match the histogram?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(beta_hat_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.7461209
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{var}\NormalTok{(beta_hat_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.1853515
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(beta_hat_}\DecValTok{1}\NormalTok{, }\DataTypeTok{prob =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{breaks =} \DecValTok{20}\NormalTok{, }\DataTypeTok{xlab =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{hat}\NormalTok{(beta)[}\DecValTok{1}\NormalTok{]), }\DataTypeTok{main =} \StringTok{""}\NormalTok{, }\DataTypeTok{border =} \StringTok{"orange"}\NormalTok{)}
+\KeywordTok{curve}\NormalTok{(}\KeywordTok{dnorm}\NormalTok{(x, }\DataTypeTok{mean =}\NormalTok{ beta_}\DecValTok{1}\NormalTok{, }\DataTypeTok{sd =} \KeywordTok{sqrt}\NormalTok{(sigma }\OperatorTok{^}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{C[}\DecValTok{1}\OperatorTok{+}\DecValTok{1}\NormalTok{, }\DecValTok{1}\OperatorTok{+}\DecValTok{1}\NormalTok{])), }\DataTypeTok{col =} \StringTok{"green"}\NormalTok{, }\DataTypeTok{add =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{lwd =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{w04-hw-bollamr2_files/figure-latex/unnamed-chunk-27-1.pdf}
+The results are close to our expectations.
+
+The curve seems to match the histogram. \textbf{(f)} What proportion of
+the p-values stored in \texttt{beta\_3\_pval} is less than 0.10? Is this
+what you would expect?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(beta_}\DecValTok{3}\NormalTok{_pval }\OperatorTok{<}\StringTok{ }\FloatTok{0.10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.096
+\end{verbatim}
+
+Yes. This matches our expectaions, since \(\beta_3\) \(\neq\) 0 meaning
+that 9.6\% of the p-values are significant at alpha = 0.10
+
+\textbf{(g)} What proportion of the p-values stored in
+\texttt{beta\_5\_pval} is less than 0.01? Is this what you would expect?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(beta_}\DecValTok{5}\NormalTok{_pval }\OperatorTok{<}\StringTok{ }\FloatTok{0.01}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.7956
+\end{verbatim}
+
+Yes. This matches our expectations, since \(\beta_3\) \(\neq\) 0.
+
+\end{document}

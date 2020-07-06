@@ -234,9 +234,15 @@ We would prefer the Model from "d".
 **(e)** Using the model in **(d)**, give an estimate of the change in average `Blood` for a one-unit increase in `Age` for a highly educated, low income, male patient.
 
 ``` {r}
-summary(hospital_mmlr)
+#summary(hospital_mmlr)
+as.numeric(coef(hospital_mmlr)["Age"] +
+coef(hospital_mmlr)["Age:Sexmale"] +
+coef(hospital_mmlr)["Age:Incomelow"] +
+coef(hospital_mmlr)["Age:Incomelow:Sexmale"])
 
-  ```
+```
+
+Average change is 0.0053
 
 ***
 
@@ -308,8 +314,11 @@ Answer would be a $\beta_3$ for the Additive model.
 **(c)** Give an expression based on the additive model in part **(a)** for the true change in length of hospital stay in days for a 1 bpm increase in `Rate` for a patient with a `Pressure` of 139 mmHg and a `Blood` of 10 gm/dL. Your answer should be a linear function of the $\beta$s.
 
 In case of model from **a**, we have answer as: $\beta_3 + \beta_5 x_1 + \beta_6 x_2 + \beta_7 x_1 x_2$ where 
-x1 = 10
+x1 = 10, 
 x2 = 139
+
+ie. $\beta_3 + 10\beta_5 + 139\beta_6 + 1390\beta_7$ 
+
 
 ***
 

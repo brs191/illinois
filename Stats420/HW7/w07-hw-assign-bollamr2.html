@@ -650,33 +650,13 @@ hospital_mmlr</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>As we can see, p-value of less than alpha 0.10 and so we reject the Null Hypothesis. We would prefer the Model from “d”.</p>
 <p><strong>(e)</strong> Using the model in <strong>(d)</strong>, give an estimate of the change in average <code>Blood</code> for a one-unit increase in <code>Age</code> for a highly educated, low income, male patient.</p>
-<pre class="r"><code>summary(hospital_mmlr)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = Blood ~ Age + Education + Income + Sex + Sex * Age + 
-##     Sex * Income + Income * Age + Age * Income * Sex, data = hospital)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -13.79  -4.95  -1.79   3.23  47.11 
-## 
-## Coefficients:
-##                       Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)            14.3481     2.6074    5.50  5.6e-08 ***
-## Age                    -0.0175     0.0415   -0.42    0.674    
-## Educationlow            0.5646     0.7546    0.75    0.455    
-## Incomelow              -8.3236     3.6496   -2.28    0.023 *  
-## Sexmale                -5.6283     3.5532   -1.58    0.114    
-## Age:Sexmale             0.0424     0.0566    0.75    0.455    
-## Incomelow:Sexmale      10.9485     5.2999    2.07    0.039 *  
-## Age:Incomelow           0.1149     0.0570    2.02    0.044 *  
-## Age:Incomelow:Sexmale  -0.1345     0.0838   -1.60    0.109    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 7.85 on 571 degrees of freedom
-## Multiple R-squared:  0.0342, Adjusted R-squared:  0.0207 
-## F-statistic: 2.53 on 8 and 571 DF,  p-value: 0.0104</code></pre>
+<pre class="r"><code>#summary(hospital_mmlr)
+as.numeric(coef(hospital_mmlr)[&quot;Age&quot;] +
+coef(hospital_mmlr)[&quot;Age:Sexmale&quot;] +
+coef(hospital_mmlr)[&quot;Age:Incomelow&quot;] +
+coef(hospital_mmlr)[&quot;Age:Incomelow:Sexmale&quot;])</code></pre>
+<pre><code>## [1] 0.0053</code></pre>
+<p>Average change is 0.0053</p>
 <hr />
 </div>
 <div id="exercise-3-hospital-support-data-stay-duration" class="section level2">
@@ -730,7 +710,8 @@ anova(days_add, days_ilm)$F[2]</code></pre>
 <p><strong>(b)</strong> Give an expression based on the model in the exercise description for the true change in length of hospital stay in days for a 1 bpm increase in <code>Rate</code> for a patient with a <code>Pressure</code> of 139 mmHg and a <code>Blood</code> of 10 gm/dL. Your answer should be a linear function of the <span class="math inline">\(\beta\)</span>s.</p>
 <p>Answer would be a <span class="math inline">\(\beta_3\)</span> for the Additive model.</p>
 <p><strong>(c)</strong> Give an expression based on the additive model in part <strong>(a)</strong> for the true change in length of hospital stay in days for a 1 bpm increase in <code>Rate</code> for a patient with a <code>Pressure</code> of 139 mmHg and a <code>Blood</code> of 10 gm/dL. Your answer should be a linear function of the <span class="math inline">\(\beta\)</span>s.</p>
-<p>In case of model from <strong>a</strong>, we have answer as: <span class="math inline">\(\beta_3 + \beta_5 x_1 + \beta_6 x_2 + \beta_7 x_1 x_2\)</span> where x1 = 10 x2 = 139</p>
+<p>In case of model from <strong>a</strong>, we have answer as: <span class="math inline">\(\beta_3 + \beta_5 x_1 + \beta_6 x_2 + \beta_7 x_1 x_2\)</span> where x1 = 10, x2 = 139</p>
+<p>ie. <span class="math inline">\(\beta_3 + 10\beta_5 + 139\beta_6 + 1390\beta_7\)</span></p>
 <hr />
 </div>
 <div id="exercise-4-t-test-is-a-linear-model" class="section level2">

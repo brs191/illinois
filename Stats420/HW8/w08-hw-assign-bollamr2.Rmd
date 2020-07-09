@@ -46,6 +46,25 @@ The function should output:
 
 Consider using this function to help with the remainder of the assignment as well.
 
+``` {r}
+diagnostics = function(model, pcol = "grey", lcol = "dodgerblue", alpha = 0.05, plotit = TRUE, testit = TRUE) {
+  if (plotit) {
+    par (mfrow = c(1,2))
+    plot(fitted(model), resid(model), col = pcol, pch = 10, xlab = "Fitted Values", ylab = "Residuals value") 
+    abline(h = 0, col = lcol, lwd = 1)
+    qqnorm(resid(model), main = "Noraml Q-Q plot of resids", col = pcol)
+    qqline(resid(model), col = lcol, lwd = 1)
+  }
+  
+  if (testit) {
+    p = shapiro.test(resid(model))$p.value
+    deci = ifelse(p < alpha, "Reject", "FTR")
+    list(p_val = p, decision = deci)
+  }
+}
+```
+
+  
 **(b)** Run the following code.
 
 ```{r}
@@ -67,7 +86,7 @@ data_3$y = with(data_3, 2 + 1 * x + rnorm(n = 40, sd = x))
 fit_3 = lm(y ~ x, data = data_3)
 ```
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 diagnostics(fit_1, plotit = FALSE)$p_val
 diagnostics(fit_2, plotit = FALSE)$decision
 diagnostics(fit_1, testit = FALSE, pcol = "black", lcol = "black")
@@ -87,9 +106,26 @@ library(faraway)
 
 **(a)** Fit an additive multiple regression model with `lpsa` as the response and the remaining variables in the `prostate` dataset as predictors. Report the $R^2$ value for this model.
 
+``` {r}
+prostate_mlm = lm(lpsa ~ ., data = prostate)
+summary(prostate_mlm)$r.squared
+```
+
 **(b)** Check the constant variance assumption for this model. Do you feel it has been violated? Justify your answer.
+``` {r}
+prostate_mlm = lm(lpsa ~ ., data = prostate)
+diagnostics(prostate_mlm)
+
+library(lmtest)
+bptest(prostate_mlm)
+```
 
 **(c)** Check the normality assumption for this model. Do you feel it has been violated? Justify your answer.
+
+``` {r}
+prostate_mlm = lm(lpsa ~ ., data = prostate)
+
+```
 
 **(d)** Check for any high leverage observations. Report any observations you determine to have high leverage.
 

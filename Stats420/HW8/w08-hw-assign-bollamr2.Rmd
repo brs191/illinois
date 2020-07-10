@@ -124,16 +124,42 @@ bptest(prostate_mlm)
 
 ``` {r}
 prostate_mlm = lm(lpsa ~ ., data = prostate)
-
+shapiro.test(resid(prostate_mlm))$p.value
 ```
 
 **(d)** Check for any high leverage observations. Report any observations you determine to have high leverage.
+``` {r}
+prostate_mlm = lm(lpsa ~ ., data = prostate)
+sum(hatvalues(prostate_mlm) > 2 * mean(hatvalues(prostate_mlm)))
+prostate[hatvalues(prostate_mlm) > 2 * mean(hatvalues(prostate_mlm)),]
+```
 
 **(e)** Check for any influential observations. Report any observations you determine to be influential.
+``` {r}
+prostate_mlm = lm(lpsa ~ ., data = prostate)
+
+cd = cooks.distance(prostate_mlm)
+influ_cd = cd > 4 / length(cd)
+sum(influ_cd)
+prostate[influ_cd, ]
+```
 
 **(f)** Refit the additive multiple regression model without any points you identified as influential. Compare the coefficients of this fitted model to the previously fitted model.
 
+``` {r}
+refit_prostate_mlm = lm(lpsa ~ ., data = prostate, subset = (cd <= 4/length(cd)))
+coef(refit_prostate_mlm)
+coef(prostate_mlm)
+
+``` 
+
 **(g)** Create a data frame that stores the observations that were "removed" because they were influential. Use the two models you have fit to make predictions with these observations. Comment on the difference between these two sets of predictions.
+
+``` {r}
+influ_data = prostate[influ_cd, ]
+predict(prostate_mlm, newdata = influ_data)
+predict(refit_prostate_mlm, newdata = influ_data)
+```
 
 ***
 
@@ -170,6 +196,7 @@ library(lmtest)
 y_1 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = 1)
 fit_1 = lm(y_1 ~ x_1 + x_2)
 bptest(fit_1)
+summary(fit_1)
 ```
 
 Then, we simulate `y_2` in a manner that **does** violate assumptions, which we again verify. In this case $\epsilon \sim N(0, \sigma = |x_2|).$
@@ -199,7 +226,32 @@ Repeat the above process of generating `y_1` and `y_2` as defined above, and fit
 
 using both models, in the appropriate variables defined above. (You do not need to use a data frame as we have in the past. Although, feel free to modify the code to instead use a data frame.)
 
+``` {r}
+
+for (i in 1: num_sims) {
+  y_1 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = 1)
+  fit_1 = lm(y_1 ~ x_1 + x_2)
+  
+  y_2 = 4 + 1 * x_1 + 0 * x_2 + rnorm(n = n, mean = 0, sd = abs(x_2))
+  fit_2 = lm(y_2 ~ x_1 + x_2)
+  
+  p_val_1[i] = summary(fit_1)$coefficients["x_2", "Pr(>|t|)"]
+  p_val_2[i] = summary(fit_2)$coefficients["x_2", "Pr(>|t|)"]
+}
+
+``` 
+
 **(b)** What proportion of the `p_val_1` values is less than 0.01? Less than 0.05? Less than 0.10? What proportion of the `p_val_2` values is less than 0.01? Less than 0.05? Less than 0.10? Arrange your results in a table. Briefly explain these results.
+
+``` {r}
+p1 = c(mean(p_val_1 < 0.01), mean(p_val_1 < 0.05), mean(p_val_1 < 0.10))
+p2 = c(mean(p_val_2 < 0.01), mean(p_val_2 < 0.05), mean(p_val_2 < 0.10))
+table = rbind(p1, p1)
+colnames(table) = c("< 0.01", "< 0.05", "< 0.10")
+rownames(table) = c("Model 1", "Model 2")
+
+knitr::kable(table)
+```
 
 ***
 
@@ -213,7 +265,35 @@ library(faraway)
 
 **(a)** Fit a simple linear regression with `loss` as the response and `Fe` as the predictor. Plot a scatterplot and add the fitted line. Check the assumptions of this model.
 
+``` {r}
+corrosion_lm = lm(loss ~ Fe, data = corrosion)
+plot(loss ~ Fe, data = corrosion, col = "blue", pch = 20, cex = 1, main = "Corrosion Loss vs Fe")
+abline(corrosion_lm, col = "blue", lwd = 1)
+
+diagnostics(corrosion_lm)
+
+bptest(corrosion_lm)
+```
+
 **(b)** Fit higher order polynomial models of degree 2, 3, and 4. For each, plot a fitted versus residuals plot and comment on the constant variance assumption. Based on those plots, which of these three models do you think are acceptable? Use a statistical test(s) to compare the models you just chose. Based on the test, which is preferred? Check the normality assumption of this model. Identify any influential observations of this model.
+
+```{r}
+corrosion_2lm = lm(loss ~ Fe + I(Fe ^ 2), data = corrosion)
+corrosion_3lm = lm(loss ~ Fe + I(Fe ^ 2) + I(Fe ^ 3), data = corrosion)
+corrosion_4lm = lm(loss ~ Fe + I(Fe ^ 2) + I(Fe ^ 3) + I(Fe ^ 4), data = corrosion)
+
+par(mfrow = c(1, 3))
+plot(fitted(corrosion_2lm), resid(corrosion_2lm), pch = 20, col = "blue")
+abline(h = 0, col = "blue", lwd = 1)
+
+plot(fitted(corrosion_3lm), resid(corrosion_3lm), pch = 20, col = "blue")
+abline(h = 0, col = "blue", lwd = 1)
+
+plot(fitted(corrosion_4lm), resid(corrosion_4lm), pch = 20, col = "blue")
+abline(h = 0, col = "blue", lwd = 1)
+
+```
+
 
 ***
 
@@ -227,17 +307,61 @@ library(ggplot2)
 
 **(a)** Fit a linear model with `price` as the response variable $y$, and `carat` as the predictor $x$. Return the summary information of this model.
 
+``` {r}
+diamond_lm = lm(price ~ carat, data = diamonds)
+summary(diamond_lm)
+
+```
+
 **(b)** Plot a scatterplot of price versus carat and add the line for the fitted model in part **(a)**. Using a fitted versus residuals plot and/or a Q-Q plot, comment on the diagnostics. 
 
+``` {r}
+plot(price ~ carat, data = diamonds, col = "blue")
+abline(diamond_lm, col = "black", lwd = 3)
+
+plot(fitted(diamond_lm), resid(diamond_lm), col = "blue")
+abline(h = 0, col = "black", lwd = 3)
+
+qqnorm(resid(diamond_lm), col = "blue")
+qqline(resid(diamond_lm), colo = "black", lwd = 3)
+```
 
 **(c)** Seeing as the price stretches over several orders of magnitude, it seems reasonable to try a log transformation of the response. Fit a model with a logged response, plot a scatterplot of log-price versus carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
 
 ```{r}
 qplot(price, data = diamonds, bins = 30)
+
+diamond_loglm = lm(log(price) ~ carat, data = diamonds)
+plot(log(price) ~ carat, data = diamonds, col = "blue", pch = 20)
+abline(diamond_loglm, col = "black", lwd = 3)
+
+plot(fitted(diamond_loglm), resid(diamond_loglm), col = "blue", pch = 20)
+abline(h = 0, col = "black", lwd = 2)
+
+qqnorm(resid(diamond_loglm), col = "blue")
+qqline(resid(diamond_loglm), col = "black", lwd = 3)
+
 ```
 
 
 **(d)** Try adding log transformation of the predictor. Fit a model with a logged response and logged predictor, plot a scatterplot of log-price versus log-carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
 
+``` {r}
+diamond_lllm = lm(log(price) ~ log(carat), data = diamonds)
+
+plot(log(price) ~ log(carat), data = diamonds, col = "blue", pch = 20)
+abline(diamond_lllm, col = "black", lwd = 3)
+
+plot(fitted(diamond_lllm), resid(diamond_lllm), col = "blue", pch = 20)
+abline(h = 0, col = "black", lwd = 3)
+
+qqnorm(resid(diamond_lllm), col = "blue")
+qqline(resid(diamond_lllm), col = "black", lwd = 3)
+```
+
 **(e)** Use the model from part **(d)** to predict the price (in dollars) of a 3-carat diamond. Construct a 99% prediction interval for the price (in dollars).
 
+``` {r}
+exp(predict(diamond_lllm, newdata = data.frame(carat = log(3)), interval = "prediction", level = 0.99))
+
+```

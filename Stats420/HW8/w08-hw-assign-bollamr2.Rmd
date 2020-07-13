@@ -50,7 +50,7 @@ Consider using this function to help with the remainder of the assignment as wel
 diagnostics = function(model, pcol = "grey", lcol = "dodgerblue", alpha = 0.05, plotit = TRUE, testit = TRUE) {
   if (plotit) {
     par (mfrow = c(1,2))
-    plot(fitted(model), resid(model), col = pcol, pch = 10, xlab = "Fitted Values", ylab = "Residuals value") 
+    plot(fitted(model), resid(model), col = pcol, pch = 10, xlab = "Fitted", ylab = "Residuals") 
     abline(h = 0, col = lcol, lwd = 1)
     qqnorm(resid(model), main = "Noraml Q-Q plot of resids", col = pcol)
     qqline(resid(model), col = lcol, lwd = 1)
@@ -112,13 +112,19 @@ summary(prostate_mlm)$r.squared
 ```
 
 **(b)** Check the constant variance assumption for this model. Do you feel it has been violated? Justify your answer.
-``` {r}
+``` {r, warning = FALSE, message = FALSE}
 prostate_mlm = lm(lpsa ~ ., data = prostate)
-diagnostics(prostate_mlm)
+diagnostics(prostate_mlm, testit = FALSE)
 
 library(lmtest)
 bptest(prostate_mlm)
 ```
+
+We can notice from Residuals~Fitted graph, the residual value is largely at 0 value and the residual values spread-out is as expected. We can conclude that the constant variance is not violated.
+
+As for the $bptest$, the p-value is quite large, ascertaining that the constant variance assumption
+isn't violated.
+
 
 **(c)** Check the normality assumption for this model. Do you feel it has been violated? Justify your answer.
 
@@ -126,6 +132,10 @@ bptest(prostate_mlm)
 prostate_mlm = lm(lpsa ~ ., data = prostate)
 shapiro.test(resid(prostate_mlm))$p.value
 ```
+As per the $Shapiro-test$, pvalue is quite high, hence we conclude that "FTR null hypothesis" and normality is not violated.
+
+From the Normal Q-Q Plot, we notice that all the Sample values are around the straight line, to ascertain that the residuals follow a normal distribution.
+
 
 **(d)** Check for any high leverage observations. Report any observations you determine to have high leverage.
 ``` {r}
@@ -133,6 +143,10 @@ prostate_mlm = lm(lpsa ~ ., data = prostate)
 sum(hatvalues(prostate_mlm) > 2 * mean(hatvalues(prostate_mlm)))
 prostate[hatvalues(prostate_mlm) > 2 * mean(hatvalues(prostate_mlm)),]
 ```
+
+There are a total of 5 high leverage observations. 
+High leverage observations are calculated based on a beta_hat_value is greater than 2 * mean(beta_hat_values)
+
 
 **(e)** Check for any influential observations. Report any observations you determine to be influential.
 ``` {r}
@@ -144,6 +158,10 @@ sum(influ_cd)
 prostate[influ_cd, ]
 ```
 
+We calculated Influential Observations as observations that have "cook's distance" greater than 4/length(cook's distance entries).
+We notice a total of 7 Observations.
+
+
 **(f)** Refit the additive multiple regression model without any points you identified as influential. Compare the coefficients of this fitted model to the previously fitted model.
 
 ``` {r}
@@ -153,13 +171,21 @@ coef(prostate_mlm)
 
 ``` 
 
+Between the refitted model and the original model we notice that intercepts has changed the signs.
+
+
 **(g)** Create a data frame that stores the observations that were "removed" because they were influential. Use the two models you have fit to make predictions with these observations. Comment on the difference between these two sets of predictions.
 
 ``` {r}
 influ_data = prostate[influ_cd, ]
 predict(prostate_mlm, newdata = influ_data)
 predict(refit_prostate_mlm, newdata = influ_data)
+
+predict(refit_prostate_mlm, newdata = influ_data) / predict(prostate_mlm, newdata = influ_data) 
 ```
+
+There seems to be roughly 10% difference in the predictions between these two models.
+
 
 ***
 
@@ -246,12 +272,15 @@ for (i in 1: num_sims) {
 ``` {r}
 p1 = c(mean(p_val_1 < 0.01), mean(p_val_1 < 0.05), mean(p_val_1 < 0.10))
 p2 = c(mean(p_val_2 < 0.01), mean(p_val_2 < 0.05), mean(p_val_2 < 0.10))
-table = rbind(p1, p1)
+table = rbind(p1, p2)
 colnames(table) = c("< 0.01", "< 0.05", "< 0.10")
 rownames(table) = c("Model 1", "Model 2")
 
 knitr::kable(table)
 ```
+
+We notice that pvalues of Model 2 has high proportion whose values are higher than threshold in comparison with Model 1. These higher pvalues creates a possibility that Model 2 could possibily violate Constant Variance assumption and also reject Null Hypothesis.
+
 
 ***
 
@@ -270,10 +299,22 @@ corrosion_lm = lm(loss ~ Fe, data = corrosion)
 plot(loss ~ Fe, data = corrosion, col = "blue", pch = 20, cex = 1, main = "Corrosion Loss vs Fe")
 abline(corrosion_lm, col = "blue", lwd = 1)
 
-diagnostics(corrosion_lm)
+diagnostics(corrosion_lm, testit = FALSE)
 
 bptest(corrosion_lm)
+shapiro.test(resid(corrosion_lm))$p.value
 ```
+
+Constant Variance Assumption
+
+The residual vs Fitted graph shows that the residual value hovers around zero value.
+We do notice that the value are distributed as expected.
+As for the BPTest results, p-value is shown as high value, hence we can conclude that the Constant Variance assumption is not violated.
+
+Normality Assumption
+
+As for the Q-Q plot, the values seems to fit around the straight line (largely).
+Shapiro-test shows a high p-value suggesting that the Normality Assumption isn't violated.
 
 **(b)** Fit higher order polynomial models of degree 2, 3, and 4. For each, plot a fitted versus residuals plot and comment on the constant variance assumption. Based on those plots, which of these three models do you think are acceptable? Use a statistical test(s) to compare the models you just chose. Based on the test, which is preferred? Check the normality assumption of this model. Identify any influential observations of this model.
 
@@ -292,8 +333,32 @@ abline(h = 0, col = "blue", lwd = 1)
 plot(fitted(corrosion_4lm), resid(corrosion_4lm), pch = 20, col = "blue")
 abline(h = 0, col = "blue", lwd = 1)
 
+diagnostics(corrosion_2lm, testit = FALSE)
+diagnostics(corrosion_3lm, testit = FALSE)
+diagnostics(corrosion_4lm, testit = FALSE)
+
+anova(corrosion_2lm, corrosion_3lm)
+
+anova(corrosion_3lm, corrosion_4lm)
+
+pval = c(bptest(corrosion_2lm)$p.value, bptest(corrosion_3lm)$p.value, bptest(corrosion_4lm)$p.value)
+st2 = shapiro.test(resid(corrosion_2lm))
+st3 = shapiro.test(resid(corrosion_3lm))
+st4 = shapiro.test(resid(corrosion_4lm))
+
+sha = c(st2$p.value, st3$p.value, st4$p.value)
+
+ptable = rbind(pval, sha)
+colnames(ptable) = c("Model 2", "Model 3", "Model 4")
+rownames(ptable) = c("BP P Values", "Shapiro P Values")
+knitr::kable(ptable)
+
+
 ```
 
+Based on the Residual vs Fitted graph and Q-Q graphs, we notice that Model 3 - "corrosion_3lm" model seems to be the preferred model. It doesn't seem to violate Constant Variance assumption and the Normality Assumption. This is supported from the result from anova test. We notice a small p-value for Model 3.
+
+As illustrated from the table with p-values from BP Test and Shapiro Test, Model 3 doesn't violate Constant Variance assumption and Normality Assumption.
 
 ***
 
@@ -326,6 +391,11 @@ qqnorm(resid(diamond_lm), col = "blue")
 qqline(resid(diamond_lm), colo = "black", lwd = 3)
 ```
 
+As we notice from the Price ~ carat graph, the observations aren't concentrated around the fitted value as we would expect. It is safe to assume that the constant variance assumption is violated.
+This can be validated from the Residual vs fitted graph as the observations aren't spread as expected.
+As we can notice from the Normal Q-Q plot, we noted that the observations doesn't spread close to the fitted line. It is safe to assume that the Normality assumption is also violated.
+
+
 **(c)** Seeing as the price stretches over several orders of magnitude, it seems reasonable to try a log transformation of the response. Fit a model with a logged response, plot a scatterplot of log-price versus carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
 
 ```{r}
@@ -343,6 +413,8 @@ qqline(resid(diamond_loglm), col = "black", lwd = 3)
 
 ```
 
+We notice from the Residual vs Fitted graph that the Constant Variance Assumption is violated. As the fitted value increase we notice that the values aren't observed around the line
+Normality Assumption is also violated as observed from Normal Q-Q Plot.
 
 **(d)** Try adding log transformation of the predictor. Fit a model with a logged response and logged predictor, plot a scatterplot of log-price versus log-carat and add the line for the fitted model, then use a fitted versus residuals plot and/or a Q-Q plot to comment on the diagnostics of the model.
 
@@ -358,6 +430,12 @@ abline(h = 0, col = "black", lwd = 3)
 qqnorm(resid(diamond_lllm), col = "blue")
 qqline(resid(diamond_lllm), col = "black", lwd = 3)
 ```
+
+We notice that the observations are plotted reasonable even in loge(price) vs log(carat).
+As for the residual vs fitted graph, we notice that observations reasonbly around the fitted line. Not an ideal scenario, but much better than previous model plots. We can safely say that Constant variance assumption isn't violated.
+
+Normal Q-Q plot shows that the observations are around the fitted line and can safely assume that the Normality assumption isn't violated.
+
 
 **(e)** Use the model from part **(d)** to predict the price (in dollars) of a 3-carat diamond. Construct a 99% prediction interval for the price (in dollars).
 

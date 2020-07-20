@@ -35,13 +35,57 @@ View(longley)
 
 **(a)** What is the largest correlation between any pair of predictors in the dataset?
 
+``` {r}
+round(cor(longley), 2)
+```
+
+From the results above we notice that 1.00 seems to be the largest correction value between GNP and Year.
+
+
 **(b)** Fit a model with `Employed` as the response and the remaining variables as predictors. Calculate and report the variance inflation factor (VIF) for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?
+
+``` {r, warning = FALSE, message = FALSE}
+
+library(car)
+ll_lm = lm(Employed ~ ., data = longley)
+car::vif(ll_lm)
+
+```
+
+As per the results above, GNP seems to have highest VIF value with 1788.513.
+In practice it is common to say that any VIF greater than 5 is cause for concern.
+We notice from the results that except for Armed.Forces, all others have a VIF more than 5 and that is a multicollinearity concern.
 
 **(c)** What proportion of the observed variation in `Population` is explained by a linear relationship with the other predictors?
 
+``` {r}
+pop_emp = lm(Population ~ . - Employed, data = longley)
+summary(pop_emp)$r.squared
+```
+
 **(d)** Calculate the partial correlation coefficient for `Population` and `Employed` **with the effects of the other predictors removed**.
 
+``` {r}
+emp_pop = lm(Employed ~ . - Population, data = longley)
+pop_emp = lm(Population ~ . - Employed, data = longley)
+
+cor(resid(emp_pop), resid(pop_emp))
+```
+
 **(e)** Fit a new model with `Employed` as the response and the predictors from the model in **(b)** that were significant. (Use $\alpha = 0.05$.) Calculate and report the variance inflation factor for each of the predictors. Which variable has the largest VIF? Do any of the VIFs suggest multicollinearity?
+
+``` {r}
+#names(longley)
+model = lm(Employed ~ ., data = longley)
+#summary(model)
+new_model = lm(Employed ~ Year + Armed.Forces + Unemployed, data = longley)
+summary(new_model)
+
+car::vif(new_model)
+```
+As per the results shown, largest VIF is seen for Year with a 3.891 value.
+Since all the VIF values are below 5, we can say that there is no multicollinearity.
+
 
 **(f)** Use an $F$-test to compare the models in parts **(b)** and **(e)**. Report the following:
 
@@ -51,6 +95,15 @@ View(longley)
 - The p-value
 - A decision
 - Which model you prefer, **(b)** or **(e)**
+
+``` {r}
+anova(new_model, model)
+```
+The null hypothesis, we can notice that GNP.deflator, GNP and Population is zero.
+The Test statistic values is : 1.75
+F distribution there are 9 and 3 degress of freedom.
+P-Value is around 0.23
+Decision:- FTR at alpha = 0.05 as p-value is large and we would prefer the model in **(e)**.
 
 **(g)** Check the assumptions of the model chosen in part **(f)**. Do any assumptions appear to be violated?
 
@@ -67,6 +120,20 @@ plot_qq = function(model, pointcol = "dodgerblue", linecol = "darkorange") {
   qqline(resid(model), col = linecol, lwd = 2)
 }
 ```
+
+``` {r}
+plot_fitted_resid(new_model)
+plot_qq(new_model)
+```
+```{r, warning = FALSE, message = FALSE}
+library(lmtest)
+bptest(new_model)$p.value
+shapiro.test(resid(new_model))$p.value
+```
+We notice that the residuals values aren't average around the line and so it is safe to assume that the constant variance assumption seems to be violated. As from the Normal Q-Q Plot we can see that the Normality assumption seems to be violated. But when we run the BPTest and Shapiro test, the p-values are rather large. 
+
+Hence we can conclude that the Constant Variance assumption and Normality assumptions are not violated.
+
 
 ***
 
@@ -123,6 +190,130 @@ get_adj_r2(mod_a)
 get_bp_decision(mod_a, alpha = 0.01)
 get_num_params(mod_a)
 ```
+
+``` {r}
+names(Credit)
+balance_all = lm(Balance ~ ., data = Credit)
+summary(balance_all)
+```
+
+```{r}
+#1. Selected all predictors with less than 0.3 P-Value .02
+balance_7 = lm(Balance ~ Income + Limit + Rating + Cards + Age + Student, data = Credit)
+summary(balance_7)
+```
+As a result Education, Gender, Married and Ethnicity are eliminated because of high p-value. 
+
+```{r}
+#2. Find the VIF value and eliminate the highest VIF Value predictor
+vif(balance_7)
+```
+Limit and Rating has almost same VIF value. We can find the collinearity to eliminate one of the the two as shown below.
+
+``` {r}
+#3. Collinearity
+cor(resid(lm(Balance ~ . - Rating, data = Credit)), resid(lm(Rating ~ . - Balance, data = Credit)))
+cor(resid(lm(Balance ~ . - Limit, data = Credit)), resid(lm(Limit ~ . - Balance, data = Credit)))
+```
+As per the rule the predictor with low collinearity value get eliminated. So Limit predictor is chosen over Rating predictor.
+
+``` {r}
+#4. misc drop, clean up
+balance_5 = lm(Balance ~ Income + Limit + Cards + Age + Student, data = Credit)
+anova(lm(Balance ~ Income + Limit + Cards + Student, data = Credit), balance_5)
+```
+In the above balance_5 summary, we notice that every predictor expect Age has a much lower p-value.
+Let's run anova on a model that doesn't have Age predictor and check for prefered model.
+
+As we can notice, model with 4 parameters i.e Model1 seems to be better model in comparison.
+
+
+``` {r}
+#5. Figure out if we can use log values for anything.
+balance_4 = lm(Balance ~ Income + Limit + Cards + Student, data = Credit)
+vif(balance_4)
+```
+Since Income and Limit has high VIF values in comparison (though less than 5), let try log on these two predictors.
+
+``` {r}
+#6 Create models based on Log predictors.
+balance_4_limit = lm(Balance ~ Income + log(Limit) + Cards + Student, data = Credit)
+balance_4_income = lm(Balance ~ log(Income) + Limit + Cards + Student, data = Credit)
+```
+As shown above now we have 3 models with 4 predictors. Now lets try to check if there is any assumptions violations
+
+``` {r}
+#7 bptest and shiparo.test on the 3 available models
+bp = c(bptest(balance_4)$p.value, bptest(balance_4_limit)$p.value, bptest(balance_4_income)$p.value)
+bp
+
+shiparo = c(shapiro.test(resid(balance_4))$p.value, shapiro.test(resid(balance_4_limit))$p.value, shapiro.test(resid(balance_4_income))$p.value)
+shiparo
+```
+As shown above, we notice that bptest and shapiro tests suggests that balance_4_income is a better model in comparison with other models.
+Same can be justfied with Norma Q-Q Plots and Residual-Fitted graphs as shown below
+
+``` {r}
+#8 Residual Fitted Graphs
+par(mfrow = c(1,3))
+plot_fitted_resid(balance_4)
+plot_fitted_resid(balance_4_limit)
+plot_fitted_resid(balance_4_income)
+
+```
+``` {r}
+#9 Normal Q-Q Plots
+par(mfrow = c(1,3))
+plot_qq(balance_4)
+plot_qq(balance_4_limit)
+plot_qq(balance_4_income)
+```
+As concluded above, model balance_4_income seems to yield betters results in "Residual vs Fitted" graph and "Normal Q-Q" Plots
+
+```{r}
+#10 AIC Forward Search
+balance_4_income_start = balance_4_income
+balance_4_income_forw_aic = step(balance_4_income_start,
+                                 scope = Balance ~ ((log(Income) + Limit + Cards + Student) ^2),
+                                 direction = "both", trace = FALSE)
+#summary(balance_4_income_forw_aic)
+balance_4_income_back_aic = step(balance_4_income_start, direction = "backward", trace = FALSE)
+#summary(balance_4_income_back_aic)
+```
+As we can notice, AIC forward search results in a model with the following parameters.
+**lm(formula = Balance ~ log(Income) + Limit + Cards + Student + 
+    log(Income):Limit + Limit:Student + log(Income):Student + 
+    Limit:Cards, data = Credit)**
+
+But we notice that rmse is 120.6, adj_r2 is 0.9335, decision is "Reject", and # of predictors is "9"
+
+We are still failing in 2 parameters. Clearly further tuning is required.
+
+``` {r}
+#11 Heuristics
+
+#remove Limit:Cards from the model. It has high p-value
+mod_a = lm(formula = Balance ~ log(Income) + log(Income):Student + log(Income):Cards +
+          Limit + Cards + Student, data = Credit)
+
+vif(mod_a)
+# Final Test
+get_loocv_rmse(mod_a)
+get_adj_r2(mod_a)
+get_bp_decision(mod_a, alpha = 0.01)
+get_num_params(mod_a)
+```
+Finally we arrive at a model that has the following values::
+
+Reach a LOOCV-RMSE below 140 **132.9**
+
+Obtain an adjusted R2 above 0.90 **0.9193**
+
+Fail to reject the Breusch-Pagan test with an α of 0.01 **"Fail to Reject"**
+
+Use fewer than 10 β parameters **7**
+
+
 
 **(b)** Find another "good" model for `balance` using the available predictors. Use any methods seen in class except transformations of the response. The model should:
 
@@ -204,6 +395,12 @@ sac_tst_data = sac_data[-sac_trn_idx, ]
 The training data should be used for all model fitting. Our goal is to find a model that is useful for predicting home prices.
 
 **(a)** Find a "good" model for `price`. Use any methods seen in class. The model should reach a LOOCV-RMSE below 77,500 in the training data. Do not use any transformations of the response variable.
+
+``` {r}
+names(sac_trn_data)
+sacramento_lm = lm(price ~ ., data = sac_trn_data)
+
+```
 
 **(b)** Is a model that achieves a LOOCV-RMSE below 77,500 useful in this case? That is, is an average error of 77,500 low enough when predicting home prices? To further investigate, use the held-out test data and your model from part **(a)** to do two things:
 

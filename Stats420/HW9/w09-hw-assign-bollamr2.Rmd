@@ -303,15 +303,17 @@ get_adj_r2(mod_a)
 get_bp_decision(mod_a, alpha = 0.01)
 get_num_params(mod_a)
 ```
-Finally we arrive at a model that has the following values::
+Finally we arrive at a model 
 
-Reach a LOOCV-RMSE below 140 **132.9**
+**lm(formula = Balance ~ log(Income) + log(Income):Student + log(Income):Cards +
+          Limit + Cards + Student, data = Credit)**
+          
+that has the following values::
 
-Obtain an adjusted R2 above 0.90 **0.9193**
-
-Fail to reject the Breusch-Pagan test with an α of 0.01 **"Fail to Reject"**
-
-Use fewer than 10 β parameters **7**
+- Reach a LOOCV-RMSE below 140 **132.9**
+- Obtain an adjusted R2 above 0.90 **0.9193**
+- Fail to reject the Breusch-Pagan test with an α of 0.01 **"Fail to Reject"**
+- Use fewer than 10 β parameters **7 parameters**
 
 
 
@@ -357,13 +359,47 @@ get_sw_decision(mod_b, alpha = 0.01)
 get_num_params(mod_b)
 ```
 
+``` {r, message = FALSE, warning = FALSE}
+
+balance_all = lm(Balance ~ ., data = Credit)
+mod_a = lm(formula = Balance ~ log(Income) + log(Income):Student + log(Income):Cards +
+          Limit + Cards + Student, data = Credit)
+#summary(balance_all)
+#summary(mod_a)
+#summary(balance_4_income_forw_aic)
+#summary(balance_4_income)
+
+balance_4_income_big = lm(formula = Balance ~ (log(Income) + Limit + Cards + Student)^3, 
+    data = Credit)
+#summary(balance_4_income_big)
+balance_4_income_BIG = lm(formula = Balance ~ (log(Income) + Limit + Cards + Student)^4, 
+    data = Credit)
+#summary(balance_4_income_BIG)
+mod_b = balance_4_income_big
+#car::vif(mod_b)
+
+# Final Test
+get_loocv_rmse(mod_b)
+get_adj_r2(mod_b)
+get_sw_decision(mod_b, alpha = 0.01)
+get_num_params(mod_b)
+```
+The required criteria is met with the following the details:
+
+- Reach a LOOCV-RMSE below `130` : **119.5**
+- Obtain an adjusted $R^2$ above `0.85` : **0.9355**
+- Fail to reject the Shapiro-Wilk test with an $\alpha$ of $0.01$ : **FTR**
+- Use fewer than 25 $\beta$ parameters **15**
+
+and my preferred model is  **lm(formula = Balance ~ (log(Income) + Limit + Cards + Student)^3, 
+    data = Credit)**
 ***
 
 ## Exercise 3 (`Sacramento` Housing Data)
 
 For this exercise, use the `Sacramento` data from the `caret` package. Use the following code to perform some preprocessing of the data.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(caret)
 library(ggplot2)
 data(Sacramento)
@@ -397,10 +433,31 @@ The training data should be used for all model fitting. Our goal is to find a mo
 **(a)** Find a "good" model for `price`. Use any methods seen in class. The model should reach a LOOCV-RMSE below 77,500 in the training data. Do not use any transformations of the response variable.
 
 ``` {r}
-names(sac_trn_data)
+#names(sac_trn_data)
 sacramento_lm = lm(price ~ ., data = sac_trn_data)
+#summary(sacramento_lm)
 
+
+# Drop predictor with high p-value
+sacromento_p = lm(price ~ beds + sqft + longitude + type + latitude, data = sac_trn_data)
+
+# Run Forward Search AIC
+scaromento_p_full = lm(price ~ (beds + sqft + longitude + type + latitude)^2, data = sac_trn_data)
+scaromento_p_full_aic = step(sacromento_p, 
+                             scope = price ~ (beds + sqft + longitude + type + latitude)^2,
+                             direction = "forward", 
+                             trace = FALSE)
+#summary(scaromento_p_full_aic)
+
+get_loocv_rmse(sacromento_p)
+get_loocv_rmse(scaromento_p_full_aic)
+mod_c = scaromento_p_full_aic
 ```
+
+Model **lm(price ~ beds + sqft + longitude + type + latitude, data = sac_trn_data)** gives a rmse value **77393**, which is below 77500. This model should be good enough for the question.
+
+I also explored on the forward search aic with the model **lm(formula = price ~ beds + sqft + longitude + type + latitude + beds:longitude + beds:sqft, data = sac_trn_data)**.
+AIC model gives a rmse value of **75959** way better the **sacromento_p** model.
 
 **(b)** Is a model that achieves a LOOCV-RMSE below 77,500 useful in this case? That is, is an average error of 77,500 low enough when predicting home prices? To further investigate, use the held-out test data and your model from part **(a)** to do two things:
 
@@ -411,6 +468,17 @@ sacramento_lm = lm(price ~ ., data = sac_trn_data)
 - Plot the predicted versus the actual values and add the line $y = x$.
 
 Based on all of this information, argue whether or not this model is useful.
+
+``` {r}
+predicted_values = predict(mod_c, newdata = sac_tst_data)
+sum((abs(predicted_values - sac_tst_data$price)/predicted_values) * 100) / nrow(sac_trn_data)
+plot(predicted_values ~ sac_tst_data$price, col = "orange")
+abline(a = 0, b = 1, lwd = 2, col = "blue")
+```
+We notice from the plot that the predicted values are around the line suggesting that our model seems to be ok. We also notice divergence of the data past 500000. We suppose more work need to be done on the modeling to accomodate these data correctly in our model.
+
+Average Percent error is around **6.269** which i believe to be quite low.
+
 
 ***
 
@@ -518,6 +586,69 @@ Note that in both cases, you could `sum()` the result to obtain the number of fa
 
 Calculate the rate of false positives and negatives for both AIC and BIC. Compare the rates between the two methods. Arrange your results in a well formatted table.
 
+``` {r}
+birthday = 19830611
+set.seed(birthday)
+
+# with new seed
+n = 100
+x_1  = runif(n, 0, 10)
+x_2  = runif(n, 0, 10)
+x_3  = runif(n, 0, 10)
+x_4  = runif(n, 0, 10)
+x_5  = runif(n, 0, 10)
+x_6  = runif(n, 0, 10)
+x_7  = runif(n, 0, 10)
+x_8  = runif(n, 0, 10)
+x_9  = runif(n, 0, 10)
+x_10 = runif(n, 0, 10)
+y =  rep(0, n)
+
+# Create new sim data
+sim_data_1 = data.frame(y, x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10)
+
+# sim data run for number of simulations
+num_sim = 300
+
+# initialize
+fn_aic = matrix(0, num_sim, 5)
+fp_aic = matrix(0, num_sim, 5)
+fn_bic = matrix(0, num_sim, 5)
+fp_bic = matrix(0, num_sim, 5)
+  
+for (i in 1:num_sim) {
+  sim_data_1$y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
+      beta_5 * x_5 + rnorm(n, 0 , sigma)
+  
+  model = lm(y ~ ., data = sim_data_1)
+  model_back_aic = step(model, direction = "backward", trace = FALSE)
+  model_back_bic = step(model, direction = "backward", k = log(n), trace = FALSE)
+  
+  fn_aic[i,] = !(signif %in% names(coef(model_back_aic))) 
+  fp_aic[i,] = not_sig %in% names(coef(model_back_aic))
+  fn_bic[i,] = !(signif %in% names(coef(model_back_bic)))
+  fp_bic[i,] = not_sig %in% names(coef(model_back_bic))
+}
+
+rate_fn_aic = sum(fn_aic) / (num_sim * 5)
+rate_fp_aic = sum(fp_aic) / (num_sim * 5)
+rate_fn_bic = sum(fn_bic) / (num_sim * 5)
+rate_fp_bic = sum(fp_bic) / (num_sim * 5)
+
+# Print as a table
+table = rbind(c(rate_fn_aic, rate_fp_aic), c(rate_fn_bic, rate_fp_bic))
+colnames(table) = c("False Negative", "False Positive")
+rownames(table) = c("AIC", "BIC")
+
+knitr::kable(table)
+```
+
+
+As we can notice from the table, we have **zero** False with AIC and BIC.
+
+BIC seems to have better rate in comparison with AIC.
+
+
 **(b)** Set a seed equal to your birthday; then, using the given data for each `x` variable below in `sim_data_2`, simulate the response variable `y` 300 times. Each time,
 
 - Fit an additive model using each of the `x` variables.
@@ -529,7 +660,7 @@ Calculate the rate of false positives and negatives for both AIC and BIC. Compar
 Calculate the rate of false positives and negatives for both AIC and BIC. Compare the rates between the two methods. Arrange your results in a well formatted table. Also compare to your answers in part **(a)** and suggest a reason for any differences.
 
 ```{r}
-set.seed(94)
+set.seed(birthday)
 x_1  = runif(n, 0, 10)
 x_2  = runif(n, 0, 10)
 x_3  = runif(n, 0, 10)
@@ -540,10 +671,53 @@ x_7  = runif(n, 0, 10)
 x_8  = x_1 + rnorm(n, 0, 0.1)
 x_9  = x_1 + rnorm(n, 0, 0.1)
 x_10 = x_2 + rnorm(n, 0, 0.1)
+y =  rep(0, n)
 
-sim_data_2 = data.frame(x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10,
-  y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
+# Create new sim data
+sim_data_2 = data.frame(y, x_1, x_2, x_3, x_4, x_5, x_6, x_7, x_8, x_9, x_10)
+
+# sim data run for number of simulations
+num_sim = 300
+
+# initialize
+fn_aic2 = matrix(0, num_sim, 5)
+fp_aic2 = matrix(0, num_sim, 5)
+fn_bic2 = matrix(0, num_sim, 5)
+fp_bic2 = matrix(0, num_sim, 5)
+  
+for (i in 1:num_sim) {
+  sim_data_2$y = beta_0 + beta_1 * x_1 + beta_2 * x_2 + beta_3 * x_3 + beta_4 * x_4 + 
       beta_5 * x_5 + rnorm(n, 0 , sigma)
-)
+  
+  model = lm(y ~ ., data = sim_data_2)
+  model_back_aic = step(model, direction = "backward", trace = FALSE)
+  model_back_bic = step(model, direction = "backward", k = log(n), trace = FALSE)
+  
+  fn_aic2[i,] = !(signif %in% names(coef(model_back_aic))) 
+  fp_aic2[i,] = not_sig %in% names(coef(model_back_aic))
+  fn_bic2[i,] = !(signif %in% names(coef(model_back_bic)))
+  fp_bic2[i,] = not_sig %in% names(coef(model_back_bic))
+}
+
+rate_fn_aic2 = sum(fn_aic2) / (num_sim * 5)
+rate_fp_aic2 = sum(fp_aic2) / (num_sim * 5)
+rate_fn_bic2 = sum(fn_bic2) / (num_sim * 5)
+rate_fp_bic2 = sum(fp_bic2) / (num_sim * 5)
+
+# Print as a table
+table = rbind(c(rate_fn_aic, rate_fp_aic, rate_fn_aic2, rate_fp_aic2), c(rate_fn_bic, rate_fp_bic, rate_fn_bic2, rate_fp_bic2))
+
+colnames(table) = c("False Negative Sim(a)", "False Positive Sim(a)", "False Negative Sim(b)", "False Positive Sim(b)")
+rownames(table) = c("AIC", "BIC")
+
+knitr::kable(table)
 ```
+
+We notice from the above table, that Simulation result b are not as good as the Simulation result a.
+This occurred because of the predictors x_8, x_9, x_10. Since they are dependent on x_1 and x_2.
+The task of choosing a good predictor from the data become difficult because of collinearity as it effects the predicting capabilities of each predictors.
+
+Hence the disparity in the observed results.
+
+
 

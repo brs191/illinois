@@ -1,0 +1,190 @@
+---
+title: "Week 10 - Homework"
+author: "STAT 420, Summer 2020, D. Unger"
+date: ''
+output:
+  html_document: 
+    theme: readable
+    toc: yes
+  pdf_document: default
+urlcolor: cyan
+---
+
+
+# Directions
+
+Students are encouraged to work together on homework. However, sharing, copying or providing any part of a homework solution or code is an infraction of the University's rules on Academic Integrity. Any violation will be punished as severely as possible.
+
+- Be sure to remove this section if you use this `.Rmd` file as a template.
+- You may leave the questions in your final document.
+
+***
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+options(scipen = 1, digits = 4, width = 80, fig.align = "center")
+```
+
+## Exercise 1 (Simulating Wald and Likelihood Ratio Tests)
+
+In this exercise we will investigate the distributions of hypothesis tests for logistic regression. For this exercise, we will use the following predictors.
+
+```{r}
+sample_size = 150
+set.seed(120)
+x1 = rnorm(n = sample_size)
+x2 = rnorm(n = sample_size)
+x3 = rnorm(n = sample_size)
+```
+
+Recall that
+
+$$
+p({\bf x}) = P[Y = 1 \mid {\bf X} = {\bf x}]
+$$
+
+Consider the true model
+
+$$
+\log\left(\frac{p({\bf x})}{1 - p({\bf x})}\right) = \beta_0 + \beta_1 x_1
+$$
+
+where
+
+- $\beta_0 = 0.4$
+- $\beta_1 = -0.35$
+
+**(a)** To investigate the distributions, simulate from this model 2500 times. To do so, calculate 
+
+$$
+P[Y = 1 \mid {\bf X} = {\bf x}]
+$$ 
+
+for an observation, and then make a random draw from a Bernoulli distribution with that success probability. (Note that a Bernoulli distribution is a Binomial distribution with parameter $n = 1$. There is no direction function in `R` for a Bernoulli distribution.)
+
+Each time, fit the model:
+
+$$
+\log\left(\frac{p({\bf x})}{1 - p({\bf x})}\right) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3
+$$
+
+Store the test statistics for two tests:
+
+- The Wald test for $H_0: \beta_2 = 0$, which we say follows a standard normal distribution for "large" samples
+- The likelihood ratio test for $H_0: \beta_2 = \beta_3 = 0$, which we say follows a $\chi^2$ distribution (with some degrees of freedom) for "large" samples
+
+**(b)** Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a large sample.
+
+**(c)** Use the empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1. Also report this probability using the true distribution of the test statistic assuming a large sample.
+
+**(d)** Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a large sample.
+
+**(e)** Use the empirical results for the likelihood ratio test statistic to estimate the probability of observing a test statistic larger than 5. Also report this probability using the true distribution of the test statistic assuming a large sample.
+
+**(f)** Repeat **(a)**-**(e)** but with simulation using a smaller sample size of 10. Based on these results, is this sample size large enough to use the standard normal and $\chi^2$ distributions in this situation? Explain.
+
+```{r}
+sample_size = 10
+set.seed(120)
+x1 = rnorm(n = sample_size)
+x2 = rnorm(n = sample_size)
+x3 = rnorm(n = sample_size)
+```
+
+***
+
+## Exercise 2 (Surviving the Titanic)
+
+For this exercise use the `ptitanic` data from the `rpart.plot` package. (The `rpart.plot` package depends on the `rpart` package.) Use `?rpart.plot::ptitanic` to learn about this dataset. We will use logistic regression to help predict which passengers aboard the [Titanic](https://en.wikipedia.org/wiki/RMS_Titanic) will survive based on various attributes.
+
+```{r, message = FALSE, warning = FALSE}
+# install.packages("rpart")
+# install.packages("rpart.plot")
+library(rpart)
+library(rpart.plot)
+data("ptitanic")
+```
+
+For simplicity, we will remove any observations with missing data. Additionally, we will create a test and train dataset.
+
+```{r}
+ptitanic = na.omit(ptitanic)
+set.seed(420)
+trn_idx = sample(nrow(ptitanic), 300)
+ptitanic_trn = ptitanic[trn_idx, ]
+ptitanic_tst = ptitanic[-trn_idx, ]
+```
+
+**(a)** Consider the model
+
+$$
+\log\left(\frac{p({\bf x})}{1 - p({\bf x})}\right) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \beta_5 x_3x_4
+$$
+
+where
+
+$$
+p({\bf x}) = P[Y = 1 \mid {\bf X} = {\bf x}]
+$$
+
+is the probability that a certain passenger survives given their attributes and
+
+- $x_1$ is a dummy variable that takes the value $1$ if a passenger was 2nd class.
+- $x_2$ is a dummy variable that takes the value $1$ if a passenger was 3rd class.
+- $x_3$ is a dummy variable that takes the value $1$ if a passenger was male.
+- $x_4$ is the age in years of a passenger.
+
+Fit this model to the training data and report its deviance.
+
+**(b)** Use the model fit in **(a)** and an appropriate statistical test to determine if class played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
+
+- The null hypothesis of the test
+- The test statistic of the test
+- The p-value of the test
+- A statistical decision
+- A practical conclusion
+
+**(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
+
+- The null hypothesis of the test
+- The test statistic of the test
+- The p-value of the test
+- A statistical decision
+- A practical conclusion
+
+**(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
+
+***
+
+## Exercise 3 (Breast Cancer Detection)
+
+For this exercise we will use data found in [`wisc-train.csv`](wisc-train.csv) and [`wisc-test.csv`](wisc-test.csv), which contain train and test data, respectively. `wisc.csv` is provided but not used. This is a modification of the Breast Cancer Wisconsin (Diagnostic) dataset from the UCI Machine Learning Repository. Only the first 10 feature variables have been provided. (And these are all you should use.)
+
+- [UCI Page](https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic))
+- [Data Detail](https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.names)
+
+You should consider coercing the response to be a factor variable if it is not stored as one after importing the data.
+
+**(a)** The response variable `class` has two levels: `M` if a tumor is malignant, and `B` if a tumor is benign. Fit three models to the training data.
+
+- An additive model that uses `radius`, `smoothness`, and `texture` as predictors
+- An additive model that uses all available predictors
+- A model chosen via backwards selection using AIC. Use a model that considers all available predictors as well as their two-way interactions for the start of the search.
+
+For each, obtain a 5-fold cross-validated misclassification rate using the model as a classifier that seeks to minimize the misclassification rate. Based on this, which model is best? Relative to the best, are the other two underfitting or over fitting? Report the test misclassification rate for the model you picked as the best.
+
+**(b)** In this situation, simply minimizing misclassifications might be a bad goal since false positives and false negatives carry very different consequences. Consider the `M` class as the "positive" label. Consider each of the probabilities stored in `cutoffs` in the creation of a classifier using the **additive** model fit in **(a)**.
+
+```{r}
+cutoffs = seq(0.01, 0.99, by = 0.01)
+```
+
+That is, consider each of the values stored in `cutoffs` as $c$. Obtain the sensitivity and specificity in the test set for each of these classifiers. Using a single graphic, plot both sensitivity and specificity as a function of the cutoff used to create the classifier. Based on this plot, which cutoff would you use? (0 and 1 have not been considered for coding simplicity. If you like, you can instead consider these two values.)
+
+$$
+\hat{C}(\bf x) = 
+\begin{cases} 
+      1 & \hat{p}({\bf x}) > c \\
+      0 & \hat{p}({\bf x}) \leq c 
+\end{cases}
+$$
+

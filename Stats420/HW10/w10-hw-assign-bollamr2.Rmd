@@ -72,23 +72,99 @@ Store the test statistics for two tests:
 - The Wald test for $H_0: \beta_2 = 0$, which we say follows a standard normal distribution for "large" samples
 - The likelihood ratio test for $H_0: \beta_2 = \beta_3 = 0$, which we say follows a $\chi^2$ distribution (with some degrees of freedom) for "large" samples
 
+``` {r}
+beta0 = 0.4
+beta1 = -0.35
+y = rep(0, sample_size)
+sim_data = data.frame(y, x1, x2, x3)
+
+num_sims = 2500
+wald_test = rep(0, num_sims)
+likelihood_ratio_test = rep(0, num_sims)
+for (i in 1:num_sims) {
+  eta = beta0 + beta1 * x1
+  p = 1/(1+exp(-eta))
+  sim_data$y = rbinom(n = sample_size, size = 1, prob = p)
+  model = glm(y ~ x1 + x2 + x3, data = sim_data, family = "binomial")
+  wald_test[i] = summary(model)$coefficients["x2", "z value"]
+  model_x1 = glm(y ~ x1, data = sim_data, family = "binomial")
+  likelihood_ratio_test[i] = anova(model_x1, model, test = "LRT")[2, "Deviance"]
+}
+
+```
+
 **(b)** Plot a histogram of the empirical values for the Wald test statistic. Overlay the density of the true distribution assuming a large sample.
+
+``` {r}
+hist(wald_test, freq = FALSE, breaks = 20, col = "orange")
+x = seq(-1, 1, length = 100)
+curve(dnorm(x, mean = 0, sd = 1), col = "blue", add = TRUE, lwd = 4)
+```
 
 **(c)** Use the empirical results for the Wald test statistic to estimate the probability of observing a test statistic larger than 1. Also report this probability using the true distribution of the test statistic assuming a large sample.
 
+``` {r}
+mean(wald_test > 1)
+pnorm(1, mean = 0, sd = 1, lower.tail = FALSE)
+```
+
 **(d)** Plot a histogram of the empirical values for the likelihood ratio test statistic. Overlay the density of the true distribution assuming a large sample.
+
+``` {r}
+hist(likelihood_ratio_test, freq = FALSE, breaks = 20, col = "orange")
+curve(dchisq(x, df = (3 - 1)), col = "blue", add = TRUE, lwd = 4)
+```
 
 **(e)** Use the empirical results for the likelihood ratio test statistic to estimate the probability of observing a test statistic larger than 5. Also report this probability using the true distribution of the test statistic assuming a large sample.
 
+``` {r}
+mean(likelihood_ratio_test > 5)
+pchisq(5, df = (3-1), lower.tail = FALSE)
+```
+
 **(f)** Repeat **(a)**-**(e)** but with simulation using a smaller sample size of 10. Based on these results, is this sample size large enough to use the standard normal and $\chi^2$ distributions in this situation? Explain.
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 sample_size = 10
 set.seed(120)
 x1 = rnorm(n = sample_size)
 x2 = rnorm(n = sample_size)
 x3 = rnorm(n = sample_size)
+
+beta0 = 0.4
+beta1 = -0.35
+y = rep(0, sample_size)
+sim_data2 = data.frame(y, x1, x2, x3)
+
+num_sims = 2500
+wald_test2 = rep(0, num_sims)
+likelihood_ratio_test2 = rep(0, num_sims)
+for (i in 1:num_sims) {
+  eta = beta0 + beta1 * x1
+  p = 1/(1+exp(-eta))
+  sim_data2$y = rbinom(n = sample_size, size = 1, prob = p)
+  model = glm(y ~ x1 + x2 + x3, data = sim_data2, family = "binomial")
+  wald_test2[i] = summary(model)$coefficients["x2", "z value"]
+  model_x1 = glm(y ~ x1, data = sim_data2, family = "binomial")
+  likelihood_ratio_test2[i] = anova(model_x1, model, test = "LRT")[2, "Deviance"]
+}
+
+hist(wald_test2, freq = FALSE, breaks = 20, col = "blue")
+x = seq(-1, 1, length = 100)
+curve(dnorm(x, mean = 0, sd = 1), col = "orange", add = TRUE, lwd = 4)
+
+hist(likelihood_ratio_test2, freq = FALSE, breaks = 20, col = "blue")
+curve(dchisq(x, df = (3 - 1)), col = "orange", add = TRUE, lwd = 4)
+
+mean(wald_test2 > 1)
+mean(likelihood_ratio_test2 > 5)
 ```
+From the histogram plots, we notice that the curve doesn't follow this histogram distribution in both Wald Test and Likelihood Rate Test and the estimated and true probability will vary significantly.
+
+We can safely conclude that the sample_size of 10 is no enough to use the standard normal and χ2 distributions.
+
+
+
 
 ***
 
@@ -135,6 +211,12 @@ is the probability that a certain passenger survives given their attributes and
 
 Fit this model to the training data and report its deviance.
 
+```{r}
+#names(ptitanic)
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = "binomial")
+deviance(model)
+```
+
 **(b)** Use the model fit in **(a)** and an appropriate statistical test to determine if class played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
 
 - The null hypothesis of the test
@@ -142,6 +224,26 @@ Fit this model to the training data and report its deviance.
 - The p-value of the test
 - A statistical decision
 - A practical conclusion
+
+``` {r}
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = "binomial")
+model_noclass = glm(survived ~ sex + age + sex:age, data = ptitanic_trn, family = "binomial")
+res = anova(model_noclass, model, test = "LRT")
+#res
+#summary(res)
+
+res[2, "Deviance"]
+res[2, "Pr(>Chi)"]
+res[2, "Pr(>Chi)"] > 0.01
+
+#summary(model)
+```
+
+We reject the NULL Hypothesis
+Test statistic of the test is 
+We can notice that p-value is less than the alpha (0.01) with a value of 2.42e-09. 
+We prefer the model with **"pclass + sex + age + sex:age"** predictors (larger model), since the p-value is smaller than alpha.
+
 
 **(c)** Use the model fit in **(a)** and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use $\alpha = 0.01$. Report:
 
@@ -151,7 +253,52 @@ Fit this model to the training data and report its deviance.
 - A statistical decision
 - A practical conclusion
 
+``` {r}
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = "binomial")
+model_1 = glm(survived ~ pclass + sex + age, data = ptitanic_trn, family = "binomial")
+res = anova(model_1, model, test = "LRT")
+#res
+#summary(res)
+
+res[2, "Deviance"]
+res[2, "Pr(>Chi)"]
+res[2, "Pr(>Chi)"] > 0.01
+
+#summary(model)
+```
+
+We can notice that p-value is less than the alpha (0.01) at 0.005399. 
+We reject the NULL Hypothesis
+Test statistic of the test is 
+We prefer the model with **"pclass + sex + age + sex:age"** predictors (larger model), since the p-value is smaller than alpha.
+
+
+
 **(d)** Use the model fit in **(a)** as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)
+
+``` {r}
+#names(ptitanic_trn)
+model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = "binomial")
+predicted_value = ifelse(predict(model, ptitanic_tst, type = "response") > 0.5, "survived", "died")
+
+mean(predicted_value != ptitanic_tst$survived)
+
+confidence_mat = table(predicted = predicted_value, actual = ptitanic_tst$survived)
+#confidence_mat
+
+sensitivity = confidence_mat[2,2]/sum(confidence_mat[, 2])
+sensitivity
+
+specificity = confidence_mat[1,1]/sum(confidence_mat[, 1])
+specificity
+```
+
+Misclassification rate is at 0.2212.
+
+Sensivity is at 0.6444
+
+Specificity of this classifer is at 0.877
+
 
 ***
 
@@ -172,6 +319,38 @@ You should consider coercing the response to be a factor variable if it is not s
 
 For each, obtain a 5-fold cross-validated misclassification rate using the model as a classifier that seeks to minimize the misclassification rate. Based on this, which model is best? Relative to the best, are the other two underfitting or over fitting? Report the test misclassification rate for the model you picked as the best.
 
+``` {r, warning=FALSE, message=FALSE}
+wisc_trn = read.csv("wisc-train.csv")
+#is.factor(wisc_trn$class)
+wisc_trn$class = as.factor(wisc_trn$class)
+
+wisc_tst = read.csv("wisc-test.csv")
+#is.factor(wisc_tst$class)
+wisc_tst$class = as.factor(wisc_tst$class)
+
+#names(wisc_trn)
+
+model_1 = glm(class ~ radius + smoothness + texture, data = wisc_trn, family = "binomial")
+model_all = glm(class ~ ., data = wisc_trn, family = "binomial")
+
+model_2all = glm(class ~ .^2, data = wisc_trn, family = "binomial")
+model_aic = step(model_2all, direction = "backward", trace = FALSE)
+summary(model_aic)
+
+```
+``` {r, warning=FALSE, message=FALSE}
+boot::cv.glm(wisc_trn, model_1, K =5)$delta[1]
+boot::cv.glm(wisc_trn, model_all, K =5)$delta[1]
+boot::cv.glm(wisc_trn, model_aic, K =5)$delta[1]
+```
+```{r}
+prediction_value = ifelse(predict(model_1, wisc_tst, type = "response") > 0.5, "M", "B")
+mean(prediction_value != wisc_tst$class)
+```
+The misClassification rate is at 0.08955. Model_1, the **additive model that uses radius, smoothness, and texture as predictors** seems to be the preferred model.
+
+
+
 **(b)** In this situation, simply minimizing misclassifications might be a bad goal since false positives and false negatives carry very different consequences. Consider the `M` class as the "positive" label. Consider each of the probabilities stored in `cutoffs` in the creation of a classifier using the **additive** model fit in **(a)**.
 
 ```{r}
@@ -187,4 +366,47 @@ $$
       0 & \hat{p}({\bf x}) \leq c 
 \end{cases}
 $$
+
+``` {r}
+n = length(cutoffs)
+sensitivity = rep(0, n)
+specificity = rep(0, n)
+
+for (i in 1:n) {
+  predicted_value = ifelse(predict(model_1, wisc_tst, type = "response") > cutoffs[i], "M", "B")
+  confidence_mat = table(predicted = predicted_value, actual = wisc_tst$class)
+  sensitivity[i] = confidence_mat[2,2]/sum(confidence_mat[, 2])
+  specificity[i] = confidence_mat[1,1]/sum(confidence_mat[, 1])
+}
+
+plot(sensitivity ~ cutoffs, type = "l", lwd = 2, col = "orange")
+lines(cutoffs, specificity, col = "blue", lwd = 2)
+legend("bottom", c("Sensitivity", "Specificity"), lwd = 2, col = c("orange", "blue"))
+axis(1, seq(0, 1, 0.1))
+
+
+n = length(cutoffs)
+sensitivity = rep(0, n)
+specificity = rep(0, n)
+
+for (i in 1:n) {
+  predicted_value = ifelse(predict(model_all, wisc_tst, type = "response") > cutoffs[i], "M", "B")
+  confidence_mat = table(predicted = predicted_value, actual = wisc_tst$class)
+  sensitivity[i] = confidence_mat[2,2]/sum(confidence_mat[, 2])
+  specificity[i] = confidence_mat[1,1]/sum(confidence_mat[, 1])
+}
+
+plot(sensitivity ~ cutoffs, type = "l", lwd = 2, col = "orange")
+lines(cutoffs, specificity, col = "blue", lwd = 2)
+legend("bottom", c("Sensitivity", "Specificity"), lwd = 2, col = c("orange", "blue"))
+axis(1, seq(0, 1, 0.1))
+```
+
+
+From the above plot from Model_1 **(radius + smoothness + texture)** we notice that the intersection of Sensitivity and Specificity is inbetween 0.6 and 0.7.
+
+From the above plot from Model_all **(class ~ .)** we notice that the intersection of Sensitivity and Specificity is inbetween 0.8 and 0.9.
+
+
+
 

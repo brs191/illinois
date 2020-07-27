@@ -504,7 +504,7 @@ curve(dchisq(x, df = (3 - 1)), col = &quot;orange&quot;, add = TRUE, lwd = 4)</c
 <pre><code>## [1] 0.0804</code></pre>
 <pre class="r"><code>mean(likelihood_ratio_test2 &gt; 5)</code></pre>
 <pre><code>## [1] 0.3016</code></pre>
-<p>From the histogram plots, we notice that the curve doesn’t follow this histogram distribution in both Wald Test and Likelihood Rate Test and the estimated and true probability will vary significantly.</p>
+<p>From the histogram plots above, we notice that the curve doesn’t follow this histogram distribution in both Wald Test and Likelihood Rate Test and the estimated and true probability will vary significantly.</p>
 <p>We can safely conclude that the sample_size of 10 is no enough to use the standard normal and χ2 distributions.</p>
 <hr />
 </div>
@@ -553,8 +553,17 @@ deviance(model)</code></pre>
 <pre class="r"><code>model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = &quot;binomial&quot;)
 model_noclass = glm(survived ~ sex + age + sex:age, data = ptitanic_trn, family = &quot;binomial&quot;)
 res = anova(model_noclass, model, test = &quot;LRT&quot;)
-#res
-#summary(res)
+res</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: survived ~ sex + age + sex:age
+## Model 2: survived ~ pclass + sex + age + sex:age
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)    
+## 1       296        330                         
+## 2       294        298  2     32.6  8.4e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#summary(res)
 
 res[2, &quot;Deviance&quot;]</code></pre>
 <pre><code>## [1] 32.58</code></pre>
@@ -563,7 +572,7 @@ res[2, &quot;Deviance&quot;]</code></pre>
 <pre class="r"><code>res[2, &quot;Pr(&gt;Chi)&quot;] &gt; 0.01</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code>#summary(model)</code></pre>
-<p>We reject the NULL Hypothesis Test statistic of the test is We can notice that p-value is less than the alpha (0.01) with a value of 2.42e-09. We prefer the model with <strong>“pclass + sex + age + sex:age”</strong> predictors (larger model), since the p-value is smaller than alpha.</p>
+<p>We reject the NULL Hypothesis. Test statistic of the test is 32.58 (Deviance). We can notice that p-value is less than the alpha (0.01) with a value of 8.4e-08. We prefer the model with <strong>“pclass + sex + age + sex:age”</strong> predictors (larger model), since the p-value is smaller than alpha.</p>
 <p><strong>(c)</strong> Use the model fit in <strong>(a)</strong> and an appropriate statistical test to determine if an interaction between age and sex played a significant role in surviving on the Titanic. Use <span class="math inline">\(\alpha = 0.01\)</span>. Report:</p>
 <ul>
 <li>The null hypothesis of the test</li>
@@ -585,7 +594,7 @@ res[2, &quot;Deviance&quot;]</code></pre>
 <pre class="r"><code>res[2, &quot;Pr(&gt;Chi)&quot;] &gt; 0.01</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>#summary(model)</code></pre>
-<p>We can notice that p-value is less than the alpha (0.01) at 0.005399. We reject the NULL Hypothesis Test statistic of the test is We prefer the model with <strong>“pclass + sex + age + sex:age”</strong> predictors (larger model), since the p-value is smaller than alpha.</p>
+<p>We can notice that p-value is greater than the alpha (0.01) at 0.02002. We Fail to Reject the NULL Hypothesis. Test statistic of the test is 5.41 (Deviance). We prefer the model with <strong>“pclass + sex + age + sex:age”</strong> predictors (larger model), since the p-value is smaller than alpha.</p>
 <p><strong>(d)</strong> Use the model fit in <strong>(a)</strong> as a classifier that seeks to minimize the misclassification rate. Classify each of the passengers in the test dataset. Report the misclassification rate, the sensitivity, and the specificity of this classifier. (Use survived as the positive class.)</p>
 <pre class="r"><code>#names(ptitanic_trn)
 model = glm(survived ~ pclass + sex + age + sex:age, data = ptitanic_trn, family = &quot;binomial&quot;)
@@ -602,9 +611,9 @@ sensitivity</code></pre>
 <pre class="r"><code>specificity = confidence_mat[1,1]/sum(confidence_mat[, 1])
 specificity</code></pre>
 <pre><code>## [1] 0.8013</code></pre>
-<p>Misclassification rate is at 0.2212.</p>
-<p>Sensivity is at 0.6444</p>
-<p>Specificity of this classifer is at 0.877</p>
+<p>Misclassification rate is at 0.2078.</p>
+<p>Sensivity is at 0.7785</p>
+<p>Specificity of this classifer is at 0.8013</p>
 <hr />
 </div>
 <div id="exercise-3-breast-cancer-detection" class="section level2">

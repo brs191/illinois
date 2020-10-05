@@ -1,0 +1,38 @@
+<!DOCTYPE resume [
+    <!ELEMENT resume (personal, introduction, education, professionexperience, technicalskills, others*)>
+    <!ELEMENT personal (personalinfo+)>
+    <!ELEMENT personalinfo (personalinfoName, personalinfoPhone, personalinfoEmail)>
+    <!ELEMENT personalinfoName EMPTY>
+    <!ATTLIST personalinfoName name CDATA #REQUIRED>
+    <!ELEMENT personalinfoPhone EMPTY>
+    <!ATTLIST personalinfoPhone phonenumber CDATA #REQUIRED>
+    <!ELEMENT personalinfoEmail EMPTY>
+    <!ATTLIST personalinfoEmail email CDATA #REQUIRED>
+    <!ELEMENT introduction ANY>
+    <!ELEMENT education (institute+)>
+    <!ELEMENT institute (instituteName, instituteType, instituteYearStart, instituteYearEnd, instituteMajor)>
+    <!ELEMENT instituteName (#PCDATA)>
+    <!ELEMENT instituteType (#PCDATA)>
+    <!ELEMENT instituteYearStart (#PCDATA)>
+    <!ELEMENT instituteYearEnd (#PCDATA)>
+    <!ELEMENT instituteMajor (#PCDATA)>
+    <!ELEMENT professionexperience (pexp+)>
+    <!ELEMENT pexp (pexpEmployer, pexpDesignation, pexpProject, pexpYearStart, pexpYearEnd?, pexpDescription)>
+    <!ELEMENT pexpEmployer (#PCDATA)>
+    <!ELEMENT pexpDesignation (#PCDATA)>
+    <!ELEMENT pexpProject (#PCDATA)>
+    <!ELEMENT pexpYearStart (#PCDATA)>
+    <!ELEMENT pexpYearEnd (#PCDATA)>
+    <!ELEMENT pexpDescription (#PCDATA)>
+    <!ELEMENT technicalskills (skills)>
+    <!ELEMENT skills (#PCDATA)>
+    <!ATTLIST skills
+        domain CDATA "Mobile"
+        languagues CDATA "Computer Programming"
+        skills CDATA "Computer Frameworks"
+        procotols CDATA "TCP/IP"
+        databases CDATA #IMPLIED
+        OS CDATA #IMPLIED
+    >
+    <!ELEMENT others (#PCDATA)>
+]>

@@ -17,13 +17,14 @@
     <!ELEMENT instituteYearStart (#PCDATA)>
     <!ELEMENT instituteYearEnd (#PCDATA)>
     <!ELEMENT instituteMajor (#PCDATA)>
-    <!ELEMENT professionexperience (pexp+)>
-    <!ELEMENT pexp (pexpEmployer, pexpDesignation, pexpProject, pexpYearStart, pexpYearEnd?, pexpDescription)>
+    <!ELEMENT professionexperience (professionalExperience+)>
+    <!ELEMENT professionalExperience (pexpEmployer, pexpDesignation, pexpProject, pexpYearStart?, pexpYearEnd?, pexpDuration?,  pexpDescription)>
     <!ELEMENT pexpEmployer (#PCDATA)>
     <!ELEMENT pexpDesignation (#PCDATA)>
     <!ELEMENT pexpProject (#PCDATA)>
     <!ELEMENT pexpYearStart (#PCDATA)>
     <!ELEMENT pexpYearEnd (#PCDATA)>
+    <!ELEMENT pexpDuration (#PCDATA)>
     <!ELEMENT pexpDescription (#PCDATA)>
     <!ELEMENT technicalskills (skills)>
     <!ELEMENT skills (#PCDATA)>
@@ -71,7 +72,7 @@
         </institute>
     </education>
     <professionexperience>
-        <pexp>
+        <professionalExperience>
             <pexpEmployer>Samsung Electornics, Suwon</pexpEmployer>
             <pexpDesignation>Software Engineer</pexpDesignation>
             <pexpProject>RCS Application Server</pexpProject>
@@ -80,11 +81,11 @@
                 Mobile Handsets.
                 Design and Development of registration service and presence service.
                 Provide ELK, Prometheus, and Grafana Interface for metrics and performance.</pexpDescription>
-        </pexp>
-        <pexp>
+        </professionalExperience>
+        <professionalExperience>
             <pexpEmployer>Samsung Electornics, Suwon</pexpEmployer>
             <pexpDesignation>Software Engineer</pexpDesignation>
-            <pexpProject>RCS Application Server</pexpProject>
+            <pexpProject>Samsung MAAP development</pexpProject>
             <pexpYearStart>2017</pexpYearStart>
             <pexpYearEnd>2019</pexpYearEnd>
             <pexpDescription>Platform with a complete framework to build and deploy intelligent
@@ -96,8 +97,8 @@
                 Development of smart bots to test and verify bot platform.
                 Customization, Deployment and Maintenance of MAAP Solution on AWS
                 Instance using various AWS Services for different mobile Operators.</pexpDescription>
-        </pexp>
-        <pexp>
+        </professionalExperience>
+        <professionalExperience>
             <pexpEmployer>Kyocera Wirless India</pexpEmployer>
             <pexpDesignation>Software Engineer</pexpDesignation>
             <pexpProject>CDMA Mobile Handsets Development</pexpProject>
@@ -107,7 +108,7 @@
                 Development of FOTA Client Download Manager based on OMA Requirements
                 in Kyocera Native Platform.
                 Bug fixing in Multimedia Messaging Service 2.0 for USA operators.</pexpDescription>
-        </pexp>
+        </professionalExperience>
     </professionexperience>
     <technicalskills>
         <skills domain="Mobile Communications Solutions Development" languagues="Kotlin, Golang, C, C++, Java" skills="Kubernetes, Docker, Vertx, ELK, Grafana, Prometheus" procotols="RCS, SIP, MSRP, RTP/RTCP, TCP/IP, MMS, EMS, CMAS, SMS" databases="Mysql, redis" OS="Android, Linux" />

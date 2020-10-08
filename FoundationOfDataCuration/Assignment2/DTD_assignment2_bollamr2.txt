@@ -16,8 +16,8 @@
     <!ELEMENT instituteYearStart (#PCDATA)>
     <!ELEMENT instituteYearEnd (#PCDATA)>
     <!ELEMENT instituteMajor (#PCDATA)>
-    <!ELEMENT professionexperience (pexp+)>
-    <!ELEMENT pexp (pexpEmployer, pexpDesignation, pexpProject, pexpYearStart, pexpYearEnd?, pexpDescription)>
+    <!ELEMENT professionexperience (professionalExperience+)>
+    <!ELEMENT professionalExperience (pexpEmployer, pexpDesignation, pexpProject, pexpYearStart, pexpYearEnd?, pexpDescription)>
     <!ELEMENT pexpEmployer (#PCDATA)>
     <!ELEMENT pexpDesignation (#PCDATA)>
     <!ELEMENT pexpProject (#PCDATA)>

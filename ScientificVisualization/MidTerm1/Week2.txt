@@ -1,0 +1,49 @@
+Week2:
+
+1. Attenuation:
+
+Suppose we are shading using the Phong lighting model. 
+An attenuation factor can be intriduced to model the reduction of light intensity with distance. 
+This factor is applied to which parts of the Phong lighting model?
+
+Ans:
+(a) The specular and diffuse terms
+
+2. Diffuse Reflection in the Phong Lighting Model
+Suppose we are shading the vertex N using the Phong lighting model. 
+The normal at the vertex is shown as an arrow. 
+Which of the following positions of the eye point and a point light will produce the strongest diffuse reflection?
+
+Put the eye point at A and the light point at B
+
+3. Specular Reflection in the Phong Lighting Model 
+
+Put the eye point at A and the light point at C
+
+4. The Blinn-Phong Lighting Model 
+Imagine you stop using the Phong lighting model and switch to the Blinn-Phong lighting model. You see the following result:
+. Assume that the Blinn-Phong model uses a shininess coeffecient α in the range [1, infinity] . If you wish for the specular highlights 
+in the Blinn-Phong image to match the specular highlights in the Phong image, which of the following should you do?
+
+(e) Increase the shininess coefficient α in the Blinn-Phong model.
+
+5. Gouraud Shading
+Which of the following is true of Gouraud shading?
+
+Ans:
+(c) It shades fragments by interpolating colors across the face of each triangle.
+
+6. Rasterization 1 2 
+In this class, we focus on the rendering algorithm known as rasterization. 
+Which of the following algorithms best expresses the process of rasterization when applied to a scene consisting of triangles?
+
+c) For each triangle
+        Project the triangle to the view plane
+          Color the pixels covered by the triangle      
+		  
+7. Rasterization 1 3 
+In this class, we focus on the rendering algorithm known as rasterization. 
+Which of the following is true of rasterization?
+
+(a) In general, for each object in a scene, 
+rasterization will determine which pixels in the frame will be covered by the projected image of the object.

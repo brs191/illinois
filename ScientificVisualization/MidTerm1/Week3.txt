@@ -1,0 +1,17 @@
+Week3:
+
+1. Mean and Variance 
+Suppose you have a data set consisting of 11 data points with two fields each: x and y. 
+The mean of x is 9, the variance of x is 11, 
+the mean of y is 7.50, and the variance of y is 4.125. 
+Which of the above scatterplots depicts a distribution with these characteristics? 
+
+(e)
+All plots depict a distribution with these characteristics.
+
+2. Bilinear Interpolation
+
+
+
+
+

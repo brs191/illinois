@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resume [
+    <!ELEMENT resume (personal, introduction, education, professionexperience+, technicalskills, others*)>
+    <!ELEMENT personal (personalinfo)>
+    <!ELEMENT personalinfo (personalinfoName, personalinfoPhone+, personalinfoEmail+)>
+    <!ELEMENT personalinfoName EMPTY>
+    <!ATTLIST personalinfoName name CDATA #REQUIRED>
+    <!ELEMENT personalinfoPhone EMPTY>
+    <!ATTLIST personalinfoPhone phonenumber CDATA #REQUIRED>
+    <!ELEMENT personalinfoEmail EMPTY>
+    <!ATTLIST personalinfoEmail email CDATA #REQUIRED>
+    <!ELEMENT introduction ANY>
+    <!ELEMENT education (institute+)>
+    <!ELEMENT institute (instituteName, instituteType, instituteYearStart, instituteYearEnd, instituteMajor)>
+    <!ELEMENT instituteName (#PCDATA)>
+    <!ELEMENT instituteType (#PCDATA)>
+    <!ELEMENT instituteYearStart (#PCDATA)>
+    <!ELEMENT instituteYearEnd (#PCDATA)>
+    <!ELEMENT instituteMajor (#PCDATA)>
+    <!ELEMENT professionexperience (professionalExperience+)>
+    <!ELEMENT professionalExperience (Employer, YearsInThisCompany, Projects+)>
+    <!ELEMENT Employer (#PCDATA)>
+    <!ELEMENT YearsInThisCompany (#PCDATA)>
+    <!ELEMENT Projects (ProjectName, Designation, YearStart?, YearEnd?, Duration?, Description)>
+    <!ELEMENT ProjectName (#PCDATA)>
+    <!ELEMENT Designation (#PCDATA)>
+    <!ELEMENT YearStart (#PCDATA)>
+    <!ELEMENT YearEnd (#PCDATA)>
+    <!ELEMENT Duration (#PCDATA)>
+    <!ELEMENT Description (#PCDATA)>
+    <!ELEMENT technicalskills (skills)>
+    <!ELEMENT skills (#PCDATA)>
+    <!ATTLIST skills
+        domain CDATA "Mobile"
+        languagues CDATA "Computer Programming"
+        skills CDATA "Computer Frameworks"
+        procotols CDATA "TCP/IP"
+        databases CDATA #IMPLIED
+        OS CDATA #IMPLIED
+    >
+    <!ELEMENT others (#PCDATA)>
+]>

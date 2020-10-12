@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resume [
+    <!ELEMENT resume (personal, introduction, education, professionexperience+, technicalskills, others*)>
+    <!ELEMENT personal (personalinfo)>
+    <!ELEMENT personalinfo (personalinfoName, personalinfoPhone+, personalinfoEmail+)>
+    <!ELEMENT personalinfoName EMPTY>
+    <!ATTLIST personalinfoName name CDATA #REQUIRED>
+    <!ELEMENT personalinfoPhone EMPTY>
+    <!ATTLIST personalinfoPhone phonenumber CDATA #REQUIRED>
+    <!ELEMENT personalinfoEmail EMPTY>
+    <!ATTLIST personalinfoEmail email CDATA #REQUIRED>
+    <!ELEMENT introduction ANY>
+    <!ELEMENT education (institute+)>
+    <!ELEMENT institute (instituteName, instituteType, instituteYearStart, instituteYearEnd, instituteMajor)>
+    <!ELEMENT instituteName (#PCDATA)>
+    <!ELEMENT instituteType (#PCDATA)>
+    <!ELEMENT instituteYearStart (#PCDATA)>
+    <!ELEMENT instituteYearEnd (#PCDATA)>
+    <!ELEMENT instituteMajor (#PCDATA)>
+    <!ELEMENT professionexperience (professionalExperience+)>
+    <!ELEMENT professionalExperience (Employer, YearsInThisCompany, Projects+)>
+    <!ELEMENT Employer (#PCDATA)>
+    <!ELEMENT YearsInThisCompany (#PCDATA)>
+    <!ELEMENT Projects (ProjectName, Designation, YearStart?, YearEnd?, Duration?, Description)>
+    <!ELEMENT ProjectName (#PCDATA)>
+    <!ELEMENT Designation (#PCDATA)>
+    <!ELEMENT YearStart (#PCDATA)>
+    <!ELEMENT YearEnd (#PCDATA)>
+    <!ELEMENT Duration (#PCDATA)>
+    <!ELEMENT Description (#PCDATA)>
+    <!ELEMENT technicalskills (skills)>
+    <!ELEMENT skills (#PCDATA)>
+    <!ATTLIST skills
+        domain CDATA "Mobile"
+        languagues CDATA "Computer Programming"
+        skills CDATA "Computer Frameworks"
+        procotols CDATA "TCP/IP"
+        databases CDATA #IMPLIED
+        OS CDATA #IMPLIED
+    >
+    <!ELEMENT others (#PCDATA)>
+]>
+<resume>
+    <personal>
+        <personalinfo>
+            <personalinfoName name="Thanos of Titan" />
+            <personalinfoPhone phonenumber="821034094034" />
+            <personalinfoEmail email="bollamr2@illinois.edu" />
+            <personalinfoEmail email="dummy@dummer.edu" />
+        </personalinfo>
+    </personal>
+    <introduction>I am a mobile communications specialist with over 15 years of experience in software development. I designed and developed messaging solutions client and server for mobile devices. Messaging technologies that worked on includes IP-Based Multimedia Subsystem (IMS), VoLTE and RCS Services on mobile networks.Currently I am involved with development of “Messaging as a Platform” (MAAP) Solution based on GMSA RCS and RCS Application Server. I have in-depth knowledge on IMS, xMS, VoLTE communication protocols in wireless network. I’m currently working as Senior Engineer at Samsung Electronics, Suwon, South Korea in Mobile Communication Business.</introduction>
+    <education>
+        <institute>
+            <instituteName>University of Illinois Urbana-Champaign</instituteName>
+            <instituteType>PostGraduation</instituteType>
+            <instituteYearStart>2019</instituteYearStart>
+            <instituteYearEnd>2021</instituteYearEnd>
+            <instituteMajor>MCS-DS</instituteMajor>
+        </institute>
+        <institute>
+            <instituteName>Birla Institute of Technology</instituteName>
+            <instituteType>Graduation</instituteType>
+            <instituteYearStart>2000</instituteYearStart>
+            <instituteYearEnd>2004</instituteYearEnd>
+            <instituteMajor>Bachelors in Computer Science</instituteMajor>
+        </institute>
+    </education>
+    <professionexperience>
+        <professionalExperience>
+            <Employer>Samsung Electornics, Suwon</Employer>
+            <YearsInThisCompany>12+ Years</YearsInThisCompany>
+            <Projects>
+                <ProjectName>Samsung RCS Application Server</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <YearStart>2019</YearStart>
+                <Description>RCS Application Server to provide RCS and MAAP Services for Mobile Handsets. Design and Development of registration service and presence service. Provide ELK, Prometheus, and Grafana Interface for metrics and performance.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>Samsung MAAP development</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <YearStart>2017</YearStart>
+                <YearEnd>2019</YearEnd>
+                <Description>Platform with a complete framework to build and deploy intelligent chat bots for providing RCS users a great conversational experience. Design and Development of micro services for Bot Life Cycle management, Bot Interface with MAAP, MAAP Core Services and RCS Client Service. Development of RCS client on Mobile Handset to connect to Chatbot. Development of MAAP RCS compliant micro service on MAAP platform. Development of smart bots to test and verify bot platform. Customization, Deployment and Maintenance of MAAP Solution on AWS Instance using various AWS Services for different mobile Operators.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>Samsung IMS Test Framework</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <Duration>6 Months</Duration>
+                <Description>Develop an ecosystem to run automated Test Cases for IMS Client. Use Cases as per operator requirements. Design and Development of basic call framework for IMS Client. Design and Development of Audio Conference Call.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>IP based Multimedia Subsystem Client on Android</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <Duration>2 Years</Duration>
+                <Description>Development of IMS Client in C++11. Resiprocate open source is used to support RFC 3261, SIP Parsing and Transportation. Design and Development of basic framework for IMS Client  .Design and Development of VoLTE SIP signaling as per 3GPP standards.Design and Development of N-Way and Group Conference Call as per 3GPPstandards.Design and Development of RFC 4575 for Conference Event Subscription.Design and Development of MSRP protocol based on RFC 4975 to suppor tRCS applications. Review of 3GPP VoLTE Requirements, IR 92 and IR 94.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>Evolution RIL Client on Android Mobile Handset</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <Duration>1.5 Years</Duration>
+                <Description>RIL Client to support multiple chipsets in multiple air interfaces (CDMA, GSM, and LTE) for multiple Operators. Design and Development of Short Messaging Service based on QMI and Samsung IPC in Radio Interface Layer for Android OS in both GSM and CDMA. Review of CDMA and GSM Messaging Service Requirements TIA and 3GPP. Bug fixing Messaging Services (SMS, EMS, MMS) in RIL and Android framework.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>RIL Client on Android Mobile Handset</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <Duration>3 Years</Duration>
+                <Description>Bug fixing for Messaging Services in RIL and Android Framework. Design and Development of 3GPP TS 23.040 for Enhanced Messaging Service (EMS). Development and bug fixing for SMS and MMS applications in Native RIL Client.</Description>
+            </Projects>
+            <Projects>
+                <ProjectName>Messaging Solutions on Samsung Native Platforms</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <Duration>2 Years</Duration>
+                <Description>Development of various messaging solutions for different operators in Samsung Native Platforms. Development of OMA Wireless Datagram Protocol for Samsung MMS Client on SHP Platform for China Operators. Development and bug fixing for MMS Client, Picture Mail Application, xMS applications for network operators in SHP Platform and Samsung native platform.</Description>
+            </Projects>
+        </professionalExperience>
+    </professionexperience>
+    <professionexperience>
+        <professionalExperience>
+            <Employer>Kyocera Wirless India</Employer>
+            <YearsInThisCompany>3 Years</YearsInThisCompany>
+            <Projects>
+                <ProjectName>CDMA Mobile Handsets Development</ProjectName>
+                <Designation>Software Engineer</Designation>
+                <YearStart>2004</YearStart>
+                <YearEnd>2007</YearEnd>
+                <Description>Development of mobile applications for US Operators. Development of FOTA Client Download Manager based on OMA Requirements in Kyocera Native Platform. Bug fixing in Multimedia Messaging Service 2.0 for USA operators.</Description>
+            </Projects>
+        </professionalExperience>
+    </professionexperience>
+    <technicalskills>
+        <skills domain="Mobile Communications Solutions Development" languagues="Kotlin, Golang, C, C++, Java" skills="Kubernetes, Docker, Vertx, ELK, Grafana, Prometheus" procotols="RCS, SIP, MSRP, RTP/RTCP, TCP/IP, MMS, EMS, CMAS, SMS" databases="Mysql, redis" OS="Android, Linux" />
+    </technicalskills>
+    <others>PLEASE PLEASE PLEASE PLEASE HIRE ME.</others>
+</resume> 

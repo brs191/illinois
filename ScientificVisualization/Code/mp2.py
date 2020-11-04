@@ -91,7 +91,10 @@ for i in range(terrain.z.shape[0]):
         if (k == 89):
             print("i, j is ", i, j)
             print("89 is ", terrain.z[i,j,0], intz[i,j,0])
-            
+
+        if (k == 66039):
+            print("t3 i, j is ", i, j)
+            print("-10 is ", terrain.z[i,j,0], intz[i,j,0])
         errz[k] = abs(terrain.z[i,j,0] - intz[i,j,0])
         k = k + 1
     
@@ -105,4 +108,5 @@ print("test2 ", intz[247][13][0])
 
 print("errz t1 ", errz[89])
 print("errz t2 ", errz[30678])
+print("-10 is ", len(errz) - 10)
 print("errz t3 ", errz[-10])

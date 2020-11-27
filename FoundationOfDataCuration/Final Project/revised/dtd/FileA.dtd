@@ -1,0 +1,54 @@
+<!ELEMENT consumerComplaints (complaint+)>
+<!ATTLIST consumerComplaints xmlns  CDATA #FIXED ''>
+
+<!ELEMENT complaint ((event+|product|issue|consumerNarrative*|company|submitted)+, response)>
+<!ATTLIST complaint xmlns CDATA #FIXED ''
+    id CDATA #REQUIRED
+>
+
+<!ELEMENT event EMPTY>
+<!ATTLIST event xmlns CDATA #FIXED ''
+    date CDATA #REQUIRED
+    type CDATA #REQUIRED
+>
+
+<!ELEMENT product (productType, subproduct?)>
+<!ATTLIST product xmlns CDATA #FIXED ''>
+<!ELEMENT productType (#PCDATA)>
+<!ATTLIST productType xmlns CDATA #FIXED ''>
+<!ELEMENT subproduct (#PCDATA)>
+<!ATTLIST subproduct xmlns CDATA #FIXED ''>
+
+<!ELEMENT issue (issueType, subissue?)>
+<!ATTLIST issue xmlns CDATA #FIXED ''>
+<!ELEMENT issueType (#PCDATA)>
+<!ATTLIST issueType xmlns CDATA #FIXED ''>
+<!ELEMENT subissue (#PCDATA)>
+<!ATTLIST subissue xmlns CDATA #FIXED ''>
+
+<!ELEMENT consumerNarrative (#PCDATA)>
+
+<!ELEMENT company (companyName,companyState,companyZip)>
+<!ATTLIST company xmlns CDATA #FIXED ''>
+<!ELEMENT companyName (#PCDATA)>
+<!ATTLIST companyName xmlns CDATA #FIXED ''>
+<!ELEMENT companyState (#PCDATA)>
+<!ATTLIST companyState xmlns CDATA #FIXED ''>
+<!ELEMENT companyZip (#PCDATA)>
+<!ATTLIST companyZip xmlns CDATA #FIXED ''>
+
+
+<!ELEMENT submitted EMPTY>
+<!ATTLIST submitted xmlns CDATA #FIXED ''
+    via CDATA #REQUIRED
+>
+
+<!ELEMENT response (publicResponse?, responseType)>
+<!ATTLIST response xmlns CDATA #FIXED ''
+    consumerDisputed CDATA #REQUIRED
+    timely CDATA #REQUIRED
+>
+<!ELEMENT publicResponse (#PCDATA)>
+<!ATTLIST publicResponse xmlns CDATA #FIXED ''>
+<!ELEMENT responseType (#PCDATA)>
+<!ATTLIST responseType xmlns CDATA #FIXED ''>

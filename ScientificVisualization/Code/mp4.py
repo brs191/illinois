@@ -82,7 +82,7 @@ def advance(ux, uy, x, y, fx, fy, nx, ny):
     if y >= ny:
         y = ny-1
         
-    print(x,y,fx,fy)
+#    print(x,y,fx,fy)
     
     return (x,y,fx,fy)
 
@@ -114,33 +114,59 @@ for (x,y) in vortices:
 L = 5 #Radius of the kernel
 kernel = np.sin(np.arange(2*L+1)*np.pi/(2*L+1)).astype(np.float64)
 
+# vx, vy, texture = (100, 100)
 def compute_streamline(vx, vy, texture, px, py, kernel):
     # YOUR CODE HERE
-    #You may assume that the shape of vx, vy, and texture are all identical
-    print(vx.shape)
-    print(vy.shape)
+    h = vx.shape[0]
+    w = vx.shape[1]
     
-    res = 3.622
-#    Initializing the subpixel position (fx,fy) to the center of the pixel (px,py), where fx and fy function as in advance() above
-    fx = 0.5
-    fy = 0.5
-
-    print(kernel.shape)
     klen = kernel.shape[0]
+    res = np.zeros((h,w))    
+   
+    for i in range(h):
+        for j in range(w):
+            x = j;
+            y = i;
+            # step 1
+            fx = 0.5
+            fy = 0.5
+            
+            k = klen//2
+            res[i,j] += kernel[k] * texture[x,y]
+            while k < klen -1:
+                (x, y, fx, fy) = advance(vx[y,x], vy[y,x], x, y, fx, fy, w, h)
+                k += 1
+                res[i,j] += kernel[k] * texture[x,y]
+#                print("+ ", k, " res ", res[i,j])
+                
+            k = klen//2
+            x = j;
+            y = i;
+            fx = 0.5
+            fy = 0.5
+            while k > 0:
+                (x, y, fx, fy) = advance(-vx[y,x], -vy[y,x], x, y, fx, fy, w, h)
+#                print("-", k)
+                k -= 1
+                res[i,j] += kernel[k] * texture[x,y]
+                
+            
+
     
-    k = klen//2
-    res = kernel[k]*texture[px, py] #kw*dw
+#    k = klen//2
+#    res = kernel[k]*texture[px, py] #kw*dw
 #    while k>0:
-#        (x, y, fx, fy) = advance(0,0,0,0,0,0,0,0)
+#        (x[k], y[k], fx[k], fy[k]) = advance(0,0,0,0,0,0,0,0)
 #        k-=1
+#        print("k is ", k)
 #        
-    k = klen//2
+#    k = klen//2
 #    while k<klen-1:
 #        (x, y, fx, fy) = advance(0,0,0,0,0,0,0,0)
 #        k+=1
-        
     return res
     
+#compute_streamline(vx, vy, texture, 9, 9, kernel)
 np.testing.assert_allclose(compute_streamline(vx, vy, texture, 9, 9, kernel), 3.622, atol=0.01,rtol=0)
 #np.testing.assert_allclose(compute_streamline(vx, vy, texture, 30, 82, kernel), 5.417, atol=0.01,rtol=0)
 #np.testing.assert_allclose(compute_streamline(vx, vy, texture, 99, 99, kernel), 4.573, atol=0.01,rtol=0)

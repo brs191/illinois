@@ -163,7 +163,7 @@ def compute_streamline(vx, vy, texture, px, py, kernel):
 #        (x, y, fx, fy) = advance(0,0,0,0,0,0,0,0)
 #        k+=1
 
-    print(res)
+#    print(res)
     return res
     
 #compute_streamline(vx, vy, texture, 9, 9, kernel)
